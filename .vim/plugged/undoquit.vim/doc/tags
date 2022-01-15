@@ -1,0 +1,12 @@
+:Undoquit	undoquit.txt	/*:Undoquit*
+:UndoquitTab	undoquit.txt	/*:UndoquitTab*
+CTRL-W_U	undoquit.txt	/*CTRL-W_U*
+CTRL-W_u	undoquit.txt	/*CTRL-W_u*
+g:undoquit_mapping	undoquit.txt	/*g:undoquit_mapping*
+g:undoquit_tab_mapping	undoquit.txt	/*g:undoquit_tab_mapping*
+undoquit	undoquit.txt	/*undoquit*
+undoquit-contents	undoquit.txt	/*undoquit-contents*
+undoquit-installation	undoquit.txt	/*undoquit-installation*
+undoquit-settings	undoquit.txt	/*undoquit-settings*
+undoquit-usage	undoquit.txt	/*undoquit-usage*
+undoquit.txt	undoquit.txt	/*undoquit.txt*

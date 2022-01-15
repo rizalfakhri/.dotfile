@@ -1,0 +1,49 @@
+{
+  "diagnostics": {
+    "%2FUsers%2Frizalfakhri%2Fbb%2Fhrms-backend": [
+      "  ",
+      "rra",
+      " /"
+    ],
+    "%2FUsers%2Frizalfakhri%2Fbb%2Fallo-billing": [
+      " ="
+    ],
+    "%2FUsers%2Frizalfakhri%2FProject%2FScript%2Fsoftether": [
+      "sty"
+    ],
+    "%2FUsers%2Frizalfakhri%2Fbb%2Fhrms-backend-2": [
+      "  ",
+      " {"
+    ],
+    "%2FUsers%2Frizalfakhri%2Fbb%2Finvoice-api": [
+      " jj"
+    ],
+    "%2FUsers%2Frizalfakhri%2Fbb%2Fopen-access": [
+      "  ",
+      " jj"
+    ],
+    "%2FUsers%2Frizalfakhri%2Fbb%2Fallo-installer": [
+      " jj"
+    ]
+  },
+  "symbols": {
+    "%2FUsers%2Frizalfakhri%2Fbb%2Fhrms-backend-2": [
+      "identity_type"
+    ]
+  },
+  "extensions": {
+    "%2FUsers%2Frizalfakhri%2Fbb%2Fopen-access": [
+      "e``",
+      "eee",
+      "eeeee"
+    ],
+    "%2FUsers%2Frizalfakhri%2Fbb%2Fbilling-prod": [
+      "``"
+    ]
+  },
+  "commands": {
+    "%2FUsers%2Frizalfakhri%2Fbb%2Fopen-access": [
+      "on"
+    ]
+  }
+}

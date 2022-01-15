@@ -1,0 +1,11 @@
+{
+    "tld": "test",
+    "paths": [
+        "/Users/rizalfakhri/.config/valet/Sites",
+        "/Users/rizalfakhri/bb",
+        "/Users/rizalfakhri/Code",
+        "/Users/rizalfakhri/Project",
+        "/Volumes/SSD/bb"
+    ],
+    "loopback": "127.0.0.1"
+}

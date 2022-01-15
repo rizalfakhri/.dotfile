@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =6
+let g:netrw_dirhist_6='/Volumes/SSD/bb/crm-backend/app/Console/Commands'
+let g:netrw_dirhist_5='/Volumes/SSD/bb/billing-backup/database/migrations'
+let g:netrw_dirhist_4='/Users/rizalfakhri/Project/ontrowulan/lib'
+let g:netrw_dirhist_3='/Volumes/SSD/bb/billing-backup/public/js'
+let g:netrw_dirhist_2='/Volumes/SSD/bb/billing-backup/app/Services/BulkUpdater/Handlers'
+let g:netrw_dirhist_1='/Volumes/SSD/bb/billing-backup/database/migrations'
+let g:netrw_dirhist_0='/Volumes/SSD/bb/billing-backup/app'
+let g:netrw_dirhist_9='/Volumes/SSD/bb/allo-installer/database/migrations'
+let g:netrw_dirhist_8='/Volumes/SSD/bb/allo-installer/app'
+let g:netrw_dirhist_7='/Volumes/SSD/bb/allo-installer/database/migrations'

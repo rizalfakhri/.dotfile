@@ -1,0 +1,17 @@
+[user]
+    name = rodrigore
+    email = rodrigopcg@gmail.com
+[diff]
+    tool = vimdiff
+    compactionHeuristic = true
+[color]
+    ui = auto
+[alias]
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset' --abbrev-commit --date=relative
+    ch = checkout -
+[core]
+    ignore = dirty
+    editor = vim
+	excludesfile = ~/.gitignore_global
+[credential]
+	helper = osxkeychain
