@@ -3,7 +3,6 @@ if polyglot#init#is_disabled(expand('<sfile>:p'), 'fsharp', 'autoload/fsharp.vim
 endif
 
 " Vim autoload functions
-
 if exists('g:loaded_autoload_fsharp')
     finish
 endif
@@ -11,6 +10,15 @@ let g:loaded_autoload_fsharp = 1
 
 let s:cpo_save = &cpo
 set cpo&vim
+
+
+" basic setups
+
+let s:script_root_dir = expand('<sfile>:p:h') . "/../"
+
+if has('nvim-0.5')
+    lua ionide = require("ionide")
+endif
 
 function! s:prompt(msg)
     let height = &cmdheight
@@ -20,6 +28,9 @@ function! s:prompt(msg)
     echom a:msg
     let &cmdheight = height
 endfunction
+
+
+" FSAC payload interfaces
 
 function! s:PlainNotification(content)
     return { 'Content': a:content }
@@ -80,8 +91,24 @@ function! s:FsdnRequest(query)
     return { 'Query': a:query }
 endfunction
 
+
+" LSP functions
+
 function! s:call(method, params, cont)
-    call LanguageClient#Call(a:method, a:params, a:cont)
+    if g:fsharp#backend == 'languageclient-neovim'
+        call LanguageClient#Call(a:method, a:params, a:cont)
+    elseif g:fsharp#backend == 'nvim'
+        let key = fsharp#register_callback(a:cont)
+        call luaeval('ionide.call(_A[1], _A[2], _A[3])', [a:method, a:params, key])
+    endif
+endfunction
+
+function! s:notify(method, params)
+    if g:fsharp#backend == 'languageclient-neovim'
+        call LanguageClient#Notify(a:method, a:params)
+    elseif g:fsharp#backend == 'nvim'
+        call luaeval('ionide.notify(_A[1], _A[2])', [a:method, a:params])
+    endif
 endfunction
 
 function! s:signature(filePath, line, character, cont)
@@ -121,8 +148,11 @@ function! s:documentationSymbol(xmlSig, assembly, cont)
     return s:call('fsharp/documentationSymbol', s:DocumentationForSymbolRequest(a:xmlSig, a:assembly), a:cont)
 endfunction
 
+
+" FSAC configuration
+
 " FSharpConfigDto from https://github.com/fsharp/FsAutoComplete/blob/master/src/FsAutoComplete/LspHelpers.fs
-" 
+"
 " * The following options seems not working with workspace/didChangeConfiguration
 "   since the initialization has already completed?
 "     'AutomaticWorkspaceInit',
@@ -153,14 +183,14 @@ let s:config_keys_camel =
     \     {'key': 'EnableAnalyzers', 'default': 0},
     \     {'key': 'AnalyzersPath'},
     \     {'key': 'DisableInMemoryProjectReferences', 'default': 0},
-    \     {'key': 'LineLens', 'default': {'enabled': 'replaceCodeLens', 'prefix': '//'}},
+    \     {'key': 'LineLens', 'default': {'enabled': 'never', 'prefix': ''}},
     \     {'key': 'UseSdkScripts', 'default': 1},
     \     {'key': 'dotNetRoot'},
     \     {'key': 'fsiExtraParameters', 'default': []},
     \ ]
 let s:config_keys = []
 
-function! fsharp#toSnakeCase(str)
+function! s:toSnakeCase(str)
     let sn = substitute(a:str, '\(\<\u\l\+\|\l\+\)\(\u\)', '\l\1_\l\2', 'g')
     if sn == a:str | return tolower(a:str) | endif
     return sn
@@ -170,7 +200,7 @@ function! s:buildConfigKeys()
     if len(s:config_keys) == 0
         for key_camel in s:config_keys_camel
             let key = {}
-            let key.snake = fsharp#toSnakeCase(key_camel.key)
+            let key.snake = s:toSnakeCase(key_camel.key)
             let key.camel = key_camel.key
             if has_key(key_camel, 'default')
                 let key.default = key_camel.default
@@ -180,9 +210,9 @@ function! s:buildConfigKeys()
     endif
 endfunction
 
-function! g:fsharp#getServerConfig()
+function! fsharp#getServerConfig()
     let fsharp = {}
-    call s:buildConfigKeys() 
+    call s:buildConfigKeys()
     for key in s:config_keys
         if exists('g:fsharp#' . key.snake)
             let fsharp[key.camel] = g:fsharp#{key.snake}
@@ -196,54 +226,208 @@ function! g:fsharp#getServerConfig()
     return fsharp
 endfunction
 
-function! g:fsharp#updateServerConfig()
+function! fsharp#updateServerConfig()
     let fsharp = fsharp#getServerConfig()
     let settings = {'settings': {'FSharp': fsharp}}
-    call LanguageClient#Notify('workspace/didChangeConfiguration', settings)
+    call s:notify('workspace/didChangeConfiguration', settings)
 endfunction
 
-function! s:findWorkspace(dir, cont)
-    let s:cont_findWorkspace = a:cont
-    function! s:callback_findWorkspace(result)
-        let result = a:result
-        let content = json_decode(result.result.content)
-        if len(content.Data.Found) < 1
-            return []
-        endif
-        let workspace = { 'Type': 'none' }
-        for found in content.Data.Found
-            if workspace.Type == 'none'
-                let workspace = found
-            elseif found.Type == 'solution'
-                if workspace.Type == 'project'
-                    let workspace = found
-                else
-                    let curLen = len(workspace.Data.Items)
-                    let newLen = len(found.Data.Items)
-                    if newLen > curLen
-                        let workspace = found
-                    endif
-                endif
+function! fsharp#loadConfig()
+    if exists('s:config_is_loaded')
+        return
+    endif
+
+    if !exists('g:fsharp#fsautocomplete_command')
+        let s:fsac = fnamemodify(s:script_root_dir . "fsac/fsautocomplete.dll", ":p")
+        let g:fsharp#fsautocomplete_command =
+            \ ['dotnet', s:fsac,
+                \ '--background-service-enabled'
+            \ ]
+    endif
+    if !exists('g:fsharp#use_recommended_server_config')
+        let g:fsharp#use_recommended_server_config = 1
+    endif
+    call fsharp#getServerConfig()
+    if !exists('g:fsharp#automatic_workspace_init')
+        let g:fsharp#automatic_workspace_init = 1
+    endif
+    if !exists('g:fsharp#automatic_reload_workspace')
+        let g:fsharp#automatic_reload_workspace = 1
+    endif
+    if !exists('g:fsharp#show_signature_on_cursor_move')
+        let g:fsharp#show_signature_on_cursor_move = 1
+    endif
+    if !exists('g:fsharp#fsi_command')
+        let g:fsharp#fsi_command = "dotnet fsi"
+    endif
+    if !exists('g:fsharp#fsi_keymap')
+        let g:fsharp#fsi_keymap = "vscode"
+    endif
+    if !exists('g:fsharp#fsi_window_command')
+        let g:fsharp#fsi_window_command = "botright 10new"
+    endif
+    if !exists('g:fsharp#fsi_focus_on_send')
+        let g:fsharp#fsi_focus_on_send = 0
+    endif
+    if !exists('g:fsharp#backend')
+        if has('nvim-0.5')
+            if exists('g:LanguageClient_loaded')
+                let g:fsharp#backend = "languageclient-neovim"
+            else
+                let g:fsharp#backend = "nvim"
             endif
-        endfor
-        if workspace.Type == 'solution'
-            call s:cont_findWorkspace([workspace.Data.Path])
         else
-            call s:cont_findWorkspace(workspace.Data.Fsprojs)
+            let g:fsharp#backend = "languageclient-neovim"
         endif
-    endfunction
-    call s:workspacePeek(a:dir, g:fsharp#workspace_mode_peek_deep_level, g:fsharp#exclude_project_directories, function("s:callback_findWorkspace"))
+    endif
+
+    " backend configuration
+    if g:fsharp#backend == 'languageclient-neovim'
+        if !exists('g:LanguageClient_serverCommands')
+            let g:LanguageClient_serverCommands = {}
+        endif
+        if !has_key(g:LanguageClient_serverCommands, 'fsharp')
+            let g:LanguageClient_serverCommands.fsharp = {
+                \ 'name': 'fsautocomplete',
+                \ 'command': g:fsharp#fsautocomplete_command,
+                \ 'initializationOptions': {},
+                \}
+            if g:fsharp#automatic_workspace_init
+                let g:LanguageClient_serverCommands.fsharp.initializationOptions = {
+                    \ 'AutomaticWorkspaceInit': v:true,
+                    \}
+            endif
+        endif
+
+        if !exists('g:LanguageClient_rootMarkers')
+            let g:LanguageClient_rootMarkers = {}
+        endif
+        if !has_key(g:LanguageClient_rootMarkers, 'fsharp')
+            let g:LanguageClient_rootMarkers.fsharp = ['*.sln', '*.fsproj', '.git']
+        endif
+    elseif g:fsharp#backend == 'nvim'
+        if !exists('g:fsharp#lsp_auto_setup')
+            let g:fsharp#lsp_auto_setup = 1
+        endif
+        if !exists('g:fsharp#lsp_recommended_colorscheme')
+            let g:fsharp#lsp_recommended_colorscheme = 1
+        endif
+        if !exists('g:fsharp#lsp_codelens')
+            let g:fsharp#lsp_codelens = 1
+        endif
+
+    else
+        if g:fsharp#backend != 'disable'
+            echoerr "[FSAC] Invalid backend: " . g:fsharp#backend
+        endif
+    endif
+
+    " FSI keymaps
+    if g:fsharp#fsi_keymap == "vscode"
+        if has('nvim')
+            let g:fsharp#fsi_keymap_send   = "<M-cr>"
+            let g:fsharp#fsi_keymap_toggle = "<M-@>"
+        else
+            let g:fsharp#fsi_keymap_send   = "<esc><cr>"
+            let g:fsharp#fsi_keymap_toggle = "<esc>@"
+        endif
+    elseif g:fsharp#fsi_keymap == "vim-fsharp"
+        let g:fsharp#fsi_keymap_send   = "<leader>i"
+        let g:fsharp#fsi_keymap_toggle = "<leader>e"
+    elseif g:fsharp#fsi_keymap == "custom"
+        let g:fsharp#fsi_keymap = "none"
+        if !exists('g:fsharp#fsi_keymap_send')
+            echoerr "g:fsharp#fsi_keymap_send is not set"
+        elseif !exists('g:fsharp#fsi_keymap_toggle')
+            echoerr "g:fsharp#fsi_keymap_toggle is not set"
+        else
+            let g:fsharp#fsi_keymap = "custom"
+        endif
+    endif
+
+    let s:config_is_loaded = 1
 endfunction
+
+
+" handlers for notifications
+
+let s:handlers = {
+    \ 'fsharp/notifyWorkspace': 'fsharp#handle_notifyWorkspace',
+    \ }
+
+function! s:registerAutocmds()
+    if g:fsharp#backend == 'nvim' && g:fsharp#lsp_codelens
+        augroup FSharp_AutoRefreshCodeLens
+            autocmd!
+            autocmd CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
+        augroup END
+    endif
+    if g:fsharp#backend != 'disable'
+        augroup FSharp_OnCursorMove
+            autocmd!
+            autocmd CursorMoved *.fs,*.fsi,*.fsx  call fsharp#OnCursorMove()
+        augroup END
+    endif
+endfunction
+
+function! fsharp#initialize()
+    echom '[FSAC] Initialized'
+    if g:fsharp#backend == 'languageclient-neovim'
+        call LanguageClient_registerHandlers(s:handlers)
+    endif
+    call fsharp#updateServerConfig()
+    call s:registerAutocmds()
+endfunction
+
+
+" nvim-lsp specific functions
+
+" handlers are picked up by ionide.setup()
+function! fsharp#get_handlers()
+    return s:handlers
+endfunction
+
+let s:callbacks = {}
+
+function! fsharp#register_callback(fn)
+    if g:fsharp#backend != 'nvim'
+        return -1
+    endif
+    let rnd = reltimestr(reltime())
+    let s:callbacks[rnd] = a:fn
+    return rnd
+endfunction
+
+function! fsharp#resolve_callback(key, arg)
+    if g:fsharp#backend != 'nvim'
+        return
+    endif
+    if has_key(s:callbacks, a:key)
+        let Callback = s:callbacks[a:key]
+        call Callback(a:arg)
+        call remove(s:callbacks, a:key)
+    endif
+endfunction
+
+
+" .NET/F# specific operations
 
 let s:workspace = []
 
+function! fsharp#handle_notifyWorkspace(payload) abort
+    let content = json_decode(a:payload.content)
+    if content.Kind == 'projectLoading'
+        echom "[FSAC] Loading" content.Data.Project
+        let s:workspace = uniq(sort(add(s:workspace, content.Data.Project)))
+    elseif content.Kind == 'workspaceLoad' && content.Data.Status == 'finished'
+        echom printf("[FSAC] Workspace loaded (%d project(s))", len(s:workspace))
+        call fsharp#updateServerConfig()
+    endif
+endfunction
+
+
 function! s:load(arg)
-    let s:loading_workspace = a:arg
-    function! s:callback_load(_)
-        echo "[FSAC] Workspace loaded: " . join(s:loading_workspace, ', ')
-        let s:workspace = s:workspace + s:loading_workspace
-    endfunction
-    call s:workspaceLoad(a:arg, function("s:callback_load"))
+    call s:workspaceLoad(a:arg, v:null)
 endfunction
 
 function! fsharp#loadProject(...)
@@ -254,23 +438,15 @@ function! fsharp#loadProject(...)
     call s:load(prjs)
 endfunction
 
-function! fsharp#loadWorkspaceAuto()
-    if &ft == 'fsharp'
-        call fsharp#updateServerConfig()
-        if g:fsharp#automatic_workspace_init
-            echom "[FSAC] Loading workspace..."
-            let bufferDirectory = fnamemodify(resolve(expand('%:p')), ':h')
-            call s:findWorkspace(bufferDirectory, function("s:load"))
-        endif
-    endif
+function! fsharp#showLoadedProjects()
+    for proj in s:workspace
+        echo "-" proj
+    endfor
 endfunction
 
 function! fsharp#reloadProjects()
     if len(s:workspace) > 0
-        function! s:callback_reloadProjects(_)
-            call s:prompt("[FSAC] Workspace reloaded.")
-        endfunction
-        call s:workspaceLoad(s:workspace, function("s:callback_reloadProjects"))
+        call s:workspaceLoad(s:workspace, v:null)
     else
         echom "[FSAC] Workspace is empty"
     endif
@@ -288,7 +464,7 @@ function! fsharp#showSignature()
         if exists('result.result.content')
             let content = json_decode(result.result.content)
             if exists('content.Data')
-                echom substitute(content.Data, '\n\+$', ' ', 'g')
+                echo substitute(content.Data, '\n\+$', ' ', 'g')
             endif
         endif
     endfunction
@@ -306,13 +482,21 @@ function! fsharp#showF1Help()
     echo result
 endfunction
 
+function! s:hover()
+    if g:fsharp#backend == 'languageclient-neovim'
+        call LanguageClient#textDocument_hover()
+    elseif g:fsharp#backend == 'nvim'
+        lua vim.lsp.buf.hover()
+    endif
+endfunction
+
 function! fsharp#showTooltip()
     function! s:callback_showTooltip(result)
         let result = a:result
         if exists('result.result.content')
             let content = json_decode(result.result.content)
             if exists('content.Data')
-                call LanguageClient#textDocument_hover()
+                call s:hover()
             endif
         endif
     endfunction
@@ -320,14 +504,16 @@ function! fsharp#showTooltip()
     call s:signature(expand('%:p'), line('.') - 1, col('.') - 1, function("s:callback_showTooltip"))
 endfunction
 
-let s:script_root_dir = expand('<sfile>:p:h') . "/../"
-let s:fsac = fnamemodify(s:script_root_dir . "fsac/fsautocomplete.dll", ":p")
-let g:fsharp#languageserver_command =
-    \ ['dotnet', s:fsac, 
-        \ '--background-service-enabled'
-    \ ]
 
-function! s:download(branch)
+" FSAC update utils
+
+function! s:update_win()
+    echom "[FSAC] Downloading FSAC. This may take a while..."
+    let script = s:script_root_dir . "install.ps1"
+    call system('powershell -ExecutionPolicy Unrestricted ' . script . " update")
+endfunction
+
+function! s:update_unix()
     echom "[FSAC] Downloading FSAC. This may take a while..."
     let zip = s:script_root_dir . "fsac.zip"
     call system(
@@ -336,20 +522,23 @@ function! s:download(branch)
         \ )
     if v:shell_error == 0
         call system('unzip -o -d ' . s:script_root_dir . "/fsac " . zip)
-        echom "[FSAC] Updated FsAutoComplete to version " . a:branch . "" 
+        call system('find ' . s:script_root_dir . '/fsac' . ' -type f -exec chmod 777 \{\} \;')
+        echom "[FSAC] Updated FsAutoComplete"
     else
         echom "[FSAC] Failed to update FsAutoComplete"
     endif
 endfunction
 
 function! fsharp#updateFSAC(...)
-    if len(a:000) == 0
-        let branch = "master"
+    if has('win32') && !has('win32unix')
+        call s:update_win()
     else
-        let branch = a:000[0]
+        call s:update_unix()
     endif
-    call s:download(branch)
 endfunction
+
+
+" FSI integration
 
 let s:fsi_buffer = -1
 let s:fsi_job    = -1
@@ -379,7 +568,6 @@ endfunction
 function! fsharp#openFsi(returnFocus)
     if bufwinid(s:fsi_buffer) <= 0
         let fsi_command = s:get_fsi_command()
-        " Neovim
         if exists('*termopen') || exists('*term_start')
             let current_win = win_getid()
             execute g:fsharp#fsi_window_command
@@ -423,7 +611,7 @@ function! fsharp#openFsi(returnFocus)
             if a:returnFocus | call s:win_gotoid_safe(current_win) | endif
             return s:fsi_buffer
         else
-            echom "[FSAC] Your Vim does not support terminal".
+            echom "[FSAC] Your (neo)vim does not support terminal".
             return 0
         endif
     endif

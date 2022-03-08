@@ -53,16 +53,16 @@ func! polyglot#detect#H(...)
   for lnum in range(1, min([line("$"), 200]))
     let line = getline(lnum)
     if line =~# '^\s*\(@\(interface\|class\|protocol\|property\|end\|synchronised\|selector\|implementation\)\(\<\|\>\)\|#import\s\+.\+\.h[">]\)'
-      if exists("g:c_syntax_for_h")
+      if exists('g:c_syntax_for_h')
         set ft=objc | return
       endif
       set ft=objcpp | return
     endif
   endfor
-  if exists("g:c_syntax_for_h")
+  if exists('g:c_syntax_for_h')
     set ft=c | return
   endif
-  if exists("g:ch_syntax_for_h")
+  if exists('g:ch_syntax_for_h')
     set ft=ch | return
   endif
   set ft=cpp | return
@@ -82,7 +82,14 @@ func! polyglot#detect#M(...)
       set ft=objc | return
     endif
     if line =~# '^\s*%'
-      set ft=octave | return
+      if !has_key(g:polyglot_is_disabled, 'octave')
+        set ft=octave | return
+      endif
+    endif
+    if line =~# '^\s*%'
+      if has_key(g:polyglot_is_disabled, 'octave')
+        set ft=matlab | return
+      endif
     endif
     if line =~# '^\s*(\*'
       set ft=mma | return
@@ -97,7 +104,12 @@ func! polyglot#detect#M(...)
   if exists("g:filetype_m")
     let &ft = g:filetype_m | return
   endif
-  set ft=octave | return
+  if !has_key(g:polyglot_is_disabled, 'octave')
+    set ft=octave | return
+  endif
+  if has_key(g:polyglot_is_disabled, 'octave')
+    set ft=matlab | return
+  endif
 endfunc
 
 func! polyglot#detect#Fs(...)
@@ -120,6 +132,18 @@ func! polyglot#detect#Fs(...)
     let &ft = g:filetype_fs | return
   endif
   set ft=forth | return
+endfunc
+
+func! polyglot#detect#Frag(...)
+  if a:0 != 1 && did_filetype()
+    return
+  endif
+  for lnum in range(1, min([line("$"), 50]))
+    let line = getline(lnum)
+    if line =~# '\s*\(#version\|precision\|uniform\|varying\|vec[234]\)'
+      set ft=glsl | return
+    endif
+  endfor
 endfunc
 
 func! polyglot#detect#Re(...)

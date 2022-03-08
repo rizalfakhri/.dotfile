@@ -1,4 +1,5 @@
-.bundle
 mysession.vim
-Gemfile.lock
-test/vim-themis
+/.plugintest.dein.cache/
+/.plugintest.vimrc
+/test/vim-themis
+/doc/tags

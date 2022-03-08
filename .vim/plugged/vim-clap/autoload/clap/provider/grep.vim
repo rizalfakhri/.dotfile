@@ -9,8 +9,8 @@ let s:grep_blink = get(g:, 'clap_provider_grep_blink', [2, 100])
 let s:grep_opts = get(g:, 'clap_provider_grep_opts', '-H --no-heading --vimgrep --smart-case --color=never')
 let s:grep_executable = get(g:, 'clap_provider_grep_executable', 'rg')
 let s:grep_cmd_format = get(g:, 'clap_provider_grep_cmd_format', '%s %s "%s"'.(has('win32') ? ' .' : ''))
-let s:grep_enable_icon = get(g:, 'clap_provider_grep_enable_icon',
-        \ exists('g:loaded_webdevicons') || get(g:, 'spacevim_nerd_fonts', 0))
+let g:clap_provider_grep_enable_icon = get(g:, 'clap_provider_grep_enable_icon', g:clap_enable_icon)
+let s:grep_enable_icon = g:clap_provider_grep_enable_icon
 
 let s:old_query = ''
 let s:grep_timer = -1
@@ -164,7 +164,8 @@ endfunction
 
 function! s:matchlist(line, pattern) abort
   if s:icon_appended && a:line[3] ==# ' '
-    return matchlist(a:line, '^.* '.a:pattern)
+    " Strip the leading icon
+    return matchlist(a:line[4:], '^'.a:pattern)
   else
     return matchlist(a:line, '^'.a:pattern)
   endif
@@ -299,7 +300,13 @@ let s:grep.sink = function('s:grep_sink')
 let s:grep['sink*'] = function('s:grep_sink_star')
 let s:grep.on_typed = function('s:grep_on_typed')
 let s:grep.on_move = function('s:grep_on_move')
-let s:grep.on_move_async = function('clap#impl#on_move#async')
+
+function! s:grep.on_move_async() abort
+  let enable_icon = s:grep_enable_icon ? v:true : v:false
+  call clap#client#call_on_move(
+        \ 'on_move', function('clap#impl#on_move#handler'), {'enable_icon': enable_icon})
+endfunction
+
 let s:grep.on_exit = function('s:grep_exit')
 
 if !clap#maple#is_available() && s:grep_enable_icon

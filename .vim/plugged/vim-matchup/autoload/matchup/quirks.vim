@@ -7,17 +7,35 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! matchup#quirks#isclike() abort " {{{1
+function! s:ftcheck(fts) abort " {{{1
   let l:ft = get(split(&filetype, '\.'), 0, '')
-  return index(s:clikeft, l:ft) > -1
+  return index(a:fts, l:ft) > -1
 endfunction
 
-let s:clikeft = [ 'arduino', 'c', 'cpp', 'cuda',
-            \     'go', 'javascript', 'ld', 'php' ]
+" }}}1
+function! matchup#quirks#isclike() abort " {{{1
+  return s:ftcheck(s:clikeft)
+endfunction
+
+let s:clikeft = [
+      \ 'arduino', 'c', 'cpp', 'cuda', 'ld', 'php', 'go',
+      \ 'javascript', 'typescript',
+      \ 'javascriptreact', 'typescriptreact',
+      \]
 
 " }}}1
+function! matchup#quirks#ishtmllike() abort " {{{1
+  return s:ftcheck(s:htmllikeft)
+endfunction
 
-let s:adjust_max = 7
+let s:htmllikeft = [
+    \ 'tidy', 'php', 'liquid', 'haml', 'tt2html',
+    \ 'html', 'xhtml', 'xml', 'jsp', 'htmldjango',
+    \ 'aspvbs', 'rmd', 'markdown', 'eruby', 'vue',
+    \ 'javascriptreact', 'typescriptreact', 'svelte'
+    \]
+
+" }}}1
 
 function! matchup#quirks#status_adjust(offscreen) abort " {{{1
   if a:offscreen.match ==# '{' && matchup#quirks#isclike()
@@ -34,8 +52,11 @@ function! matchup#quirks#status_adjust(offscreen) abort " {{{1
     " go up to next line with same indent (up to s:adjust_max)
     for l:adjust in range(-1, -s:adjust_max, -1)
       let l:lnum = a:offscreen.lnum + l:adjust
+      if getline(l:lnum) =~? '^\s*$'
+        break
+      endif
       if indent(l:lnum) == l:target
-            \ && getline(l:lnum) !~ '^\s*\%(#\|/\*\|//\)'
+            \ && getline(l:lnum) !~? '^\s*\%(#\|/\*\|//\)'
         return l:adjust
       endif
     endfor
@@ -44,9 +65,10 @@ function! matchup#quirks#status_adjust(offscreen) abort " {{{1
   return 0
 endfunction
 
+let s:adjust_max = 9
+
 " }}}1
 
 let &cpo = s:save_cpo
 
 " vim: fdm=marker sw=2
-

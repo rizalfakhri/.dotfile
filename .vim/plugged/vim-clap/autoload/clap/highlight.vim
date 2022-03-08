@@ -52,6 +52,10 @@ if has('nvim')
 
 else
   function! s:apply_add_highlight(hl_lines) abort
+    " Avoid the error invalid buf
+    if !bufexists(g:clap.display.bufnr)
+      return
+    endif
     " We do not have to clear the previous matches like neovim
     " as the previous lines have been deleted, and the associated text_props have also been removed.
     let lnum = 0
@@ -92,7 +96,11 @@ endfunction
 
 " Used by the async job.
 function! clap#highlight#add_fuzzy_async(hl_lines) abort
-  call s:apply_add_highlight(a:hl_lines)
+  try
+    call s:apply_add_highlight(a:hl_lines)
+  catch
+    return
+  endtry
 endfunction
 
 function! clap#highlight#fg_only(group_name, cermfg, guifg) abort

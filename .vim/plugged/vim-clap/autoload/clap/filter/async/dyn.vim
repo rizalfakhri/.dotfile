@@ -5,7 +5,7 @@ let s:save_cpo = &cpoptions
 set cpoptions&vim
 
 " Currently this is not configurable.
-let s:DYN_ITEMS_TO_SHOW = 30
+let s:DYN_ITEMS_TO_SHOW = 40
 
 function! s:handle_message(msg) abort
   if !g:clap.display.win_is_valid()
@@ -13,7 +13,7 @@ function! s:handle_message(msg) abort
     return
   endif
 
-  call clap#state#handle_message(a:msg)
+  call clap#state#process_raw_message(a:msg)
   call clap#preview#async_open_with_delay()
 endfunction
 
@@ -38,7 +38,7 @@ endfunction
 
 function! s:prepare_grep_cmd() abort
   let s:last_query = g:clap.input.get()
-  let subcmd = g:clap_enable_icon ? ['--icon-painter=Grep'] : []
+  let subcmd = g:clap_enable_icon ? ['--icon=Grep'] : []
   if has_key(g:clap.context, 'no-cache')
     call add(subcmd, '--no-cache')
   endif

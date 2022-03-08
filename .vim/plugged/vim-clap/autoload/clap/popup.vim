@@ -64,7 +64,7 @@ let g:clap#popup#display.open = function('s:create_display')
 
 function! g:clap#popup#display.shrink_if_undersize() abort
   if !clap#preview#is_always_open()
-    if g:clap_preview_direction !=# 'LR'
+    if clap#preview#direction() !=# 'LR'
       let pos = popup_getpos(s:display_winid)
       let line_count = g:clap.display.line_count()
       if line_count < s:display_opts.height
@@ -115,7 +115,7 @@ function! s:create_preview() abort
           \ 'maxwidth': pos.width,
           \ 'posinvert': v:false,
           \ }
-    if g:clap_preview_direction ==# 'LR'
+    if clap#preview#direction() ==# 'LR'
       let preview_opts['line'] = pos.line - 1
       let preview_opts['height'] = pos.height
       let preview_opts['col'] = pos.col + pos.width
@@ -140,7 +140,7 @@ function! s:create_preview() abort
     endif
     let s:preview_winid = popup_create([], preview_opts)
     call setwinvar(s:preview_winid, '&spell', 0)
-    if g:clap_preview_direction !=# 'LR'
+    if clap#preview#direction() !=# 'LR'
       call popup_hide(s:preview_winid)
     endif
     call win_execute(s:preview_winid, 'setlocal nonumber')
@@ -153,9 +153,9 @@ function! s:create_indicator() abort
   if !exists('s:indicator_winid') || empty(popup_getpos(s:indicator_winid))
     let pos = popup_getpos(s:display_winid)
     let pos.line = pos.line - 1
-    let pos.col = pos.col + pos.width - g:__clap_indicator_winwidth - s:symbol_width
-    let pos.minwidth = g:__clap_indicator_winwidth
-    let pos.maxwidth = g:__clap_indicator_winwidth
+    let pos.col = pos.col + pos.width - s:indicator_width - s:symbol_width
+    let pos.minwidth = s:indicator_width
+    let pos.maxwidth = s:indicator_width
     let pos.highlight = 'ClapIndicator'
     let pos.wrap = v:false
     let pos.zindex = 100
@@ -229,7 +229,7 @@ function! s:adjust_spinner() abort
     call popup_move(s:spinner_winid, pos)
     let input_pos = popup_getpos(s:input_winid)
     let input_pos.col = pos.col + spinner_width
-    let input_pos.minwidth = s:display_opts.width - g:__clap_indicator_winwidth - spinner_width
+    let input_pos.minwidth = s:display_opts.width - s:indicator_width - spinner_width
     let input_pos.maxwidth = input_pos.minwidth
     call popup_move(s:input_winid, input_pos)
   endif
@@ -253,7 +253,7 @@ function! s:create_input() abort
     let pos.line = pos.line - 1
     let spinner_width = clap#spinner#width()
     let pos.col += spinner_width + s:symbol_width
-    let pos.minwidth = s:display_opts.width - g:__clap_indicator_winwidth - spinner_width - s:symbol_width
+    let pos.minwidth = s:display_opts.width - s:indicator_width - spinner_width - s:symbol_width
     let pos.maxwidth = pos.minwidth
     let pos.highlight = 'ClapInput'
     let pos.wrap = v:false
@@ -306,7 +306,7 @@ function! g:clap#popup#preview.show(lines) abort
     return
   endif
 
-  if g:clap_preview_direction !=# 'LR'
+  if clap#preview#direction() !=# 'LR'
     let display_pos = popup_getpos(s:display_winid)
     let col = display_pos.col
     let line = display_pos.line + display_pos.height
@@ -370,6 +370,8 @@ function! clap#popup#open() abort
 
   let s:save_t_ve = &t_ve
   set t_ve=
+
+  let s:indicator_width = clap#layout#indicator_width()
 
   call s:open_popup()
   call s:adjust_spinner()

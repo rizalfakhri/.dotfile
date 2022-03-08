@@ -90,7 +90,7 @@ fun! vm#init_buffer(cmd_type) abort
             if !has_key(g:Vm, 'Search')
                 call vm#themes#init()
             else
-                call vm#themes#hi()
+                call vm#themes#search_highlight()
             endif
             hi clear Search
             exe g:Vm.Search
@@ -155,9 +155,7 @@ fun! vm#reset(...)
 
     call vm#comp#exit()
 
-    " restore visual marks
-    call setpos("'<", s:v.vmarks[0])
-    call setpos("'>", s:v.vmarks[1])
+    call s:V.Funcs.restore_visual_marks()
 
     "exiting manually
     if !get(g:, 'VM_silent_exit', 0) && !a:0

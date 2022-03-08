@@ -100,11 +100,11 @@ g:clap_layout                                                    *g:clap_layout*
   Type: |Dict|
   Default: `{'width': '67%', 'height': '33%', 'row': '33%', 'col': '17%'}`
 
-  This variable controls the size and position of vim-clap window. The postion
+  This variable controls the size and position of vim-clap display window. The postion
   is relative to the current window by default. The value can be a |Number| which
   means the window size is fixed or use `[number]%` for a relative size.
 
-  If you change the value of  `width`, normally you'll have to tweak `col` too,
+  If you change the value of `width`, normally you'll have to tweak `col` too,
   otherwise the UI could be weired as vim-clap uses multiple floating_win/popups
   at the same time.
 
@@ -113,10 +113,16 @@ g:clap_layout                                                    *g:clap_layout*
 >
   let g:clap_layout = { 'relative': 'editor' }
 <
-  Make the width wider:
+  Make the width wider when |g:clap_preview_direction| is `'UD'`:
 >
   let g:clap_layout = { 'width': '95%', 'col': '5%' }
-
+<
+  Due to the preview window size is binded to the size of display window, when you use
+  `let g:clap_preview_direction = 'LR'`, that means the maximum value of `width` is `50%`,
+  with `col` set to `0%` at the same time.
+>
+  let g:clap_layout = { 'width': '50%', 'col': '0%' }
+<
 
 g:clap_theme                                                      *g:clap_theme*
 
@@ -154,12 +160,11 @@ g:clap_popup_border                                        *g:clap_popup_border*
   Default: `'rounded'`
 
   This variable adds the border to the preview popup, avaliable border style:
-  `'rounded'`, `'sharp'`.
+
+  - Vim: `'rounded'`, `'sharp'`
+  - NeoVim: `'single'`, `'double'`
 
   Set it to `'nil'` to disable the border.
-
-  NeoVim's floating_win is unsupported as it does not have a native
-  border option and the workaround is not good for clap's use case.
 
 
 g:clap_popup_move_manager                            *g:clap_popup_move_manager*
@@ -203,13 +208,15 @@ g:clap_forerunner_status_sign          *g:clap_forerunner_status_sign*
   Type: |Dict|
   Default: `{ 'running': '!', 'done': '•', 'using_cache': '*' }`
 
-  The async forerunner job is done in this vim-clap session. Everything should
-  be fast and deterministic even you have 1 million items as long as you
-  install the `maple` Rust extension.
+  This variable describes the status of async forerunner job if there is one.
 
-  When it's in `using_cache` status, which means clap is using the cached file
+  When the sign is `using_cache`, it means clap is now using the cached file
   collected from previous run, the results could be outdated, use `+no-cache`
-  to rebuild the cache and start a new fresh run, e.g., `:Clap files +no-cache /` .
+  to start a new fresh run and rebuild the cache, e.g., `:Clap files +no-cache /` .
+
+  Withe the cache strategy, searching should mostly be fairly fast even for
+  the task having 1 million items in the filtered result as long as you have
+  installed the Rust binary.
 
 
 g:clap_disable_bottom_top                            *g:clap_disable_bottom_top*
@@ -359,10 +366,13 @@ g:clap_preview_delay                                     *g:clap_preview_delay*
 g:clap_preview_direction                             *g:clap_preview_direction*
 
   Type: |String|
-  Default: `'LR'`
+  Default: `'AUTO'`
 
   This variable controls the direction of the display window to the preview
-  window, currently there are only `LR` and `UD` options:
+  window, the following options exist:
+
+  - `AUTO` means the direction will be calculated by the number of available
+    columns.
 
   - `LR` means the display window is on the left and the preview window
   is on th right.
@@ -551,6 +561,8 @@ g:clap_enable_background_shadow                 *g:clap_enable_background_shadow
   " Deactivates the background shadow
   let g:clap_enable_background_shadow = v:false
 <
+  If clap break highlights in neovim, you should be turned off this option.
+  https://github.com/liuchengxu/vim-clap/issues/670
 
 g:clap_background_shadow_blend                  *g:clap_background_shadow_blend*
 
@@ -776,18 +788,6 @@ g:clap_provider_yanks_history                     *g:clap_provider_yanks_history
 
 
 -------------------------------------------------------------------------------
-6.3 Other Provider Options                          *clap-other-provider-options*
-
-
-g:clap_provider_buffers_cur_tab_only       *g:clap_provider_buffers_cur_tab_only*
-
-  Type: |bool|
-  Default: `undefined`
-
-  List the buffer list per tab instead of the global buffer list.
-
-
--------------------------------------------------------------------------------
 6.2. Clap History Options                                  *clap-history-options*
 
 
@@ -807,6 +807,35 @@ g:ClapProviderHistoryCustomFilter             *g:ClapProviderHistoryCustomFilter
     return a:line !~? '.so$\|.dat$\|.DS_Store$'
   endfunction
 
+
+-------------------------------------------------------------------------------
+6.3 Other Provider Options                          *clap-other-provider-options*
+
+
+g:clap_provider_buffers_cur_tab_only       *g:clap_provider_buffers_cur_tab_only*
+
+  Type: |bool|
+  Default: `undefined`
+
+  List the buffer list per tab instead of the global buffer list.
+
+
+g:clap_provider_colors_ignore_default     *g:clap_provider_colors_ignore_default*
+
+  Type: |bool|
+  Default: `undefined`
+
+  Ignore the colors under the path `$VIMRUNTIME` .
+
+
+g:clap_provider_tags_force_vista           *g:clap_provider_tags_force_vista*
+
+  Type: |bool|
+  Default: `undefined`
+
+  The latest Rust binary of vim-clap supports generating the source of `tags` on
+  its own, but you can still use this option to use vista.vim before getting
+  the latest Rust binary in case you use the prebuilt binary.
 
 ===============================================================================
 7. Commands                                                     *clap-commands*
@@ -939,6 +968,13 @@ g:clap.display                                               *g:clap.display*
 
   `g:clap.display.setbufvar({varname}, {val})` - Similar to |setbufvar()| with
   the buffer number specified to the display buffer.
+
+
+ClapOnInitialize                                   *ClapOnInitialize-autocmd*
+                                                           *ClapOnInitialize*
+
+  This |User| autocommand is triggered after the initialization is done.
+  Useful for not opening clap window in some special buffers like nerdtree.
 
 
 ClapOnEnter                                             *ClapOnEnter-autocmd*

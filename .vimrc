@@ -57,7 +57,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'https://github.com/joshdick/onedark.vim.git'
 Plug 'artanikin/vim-synthwave84'
 Plug 'mhartington/oceanic-next'
-Plug 'https://github.com/arzg/vim-substrata'
+Plug 'arzg/vim-substrata'
 Plug 'rodrigore/coc-tailwind-intellisense', {'do': 'npm install'}
 
 call plug#end()
@@ -144,8 +144,9 @@ set termguicolors
 " }}}
 " colorscheme {{{
 set background=dark
+set t_Co=256
+"
 
-colorscheme substrata
 
 
 " ====================================================================
@@ -908,4 +909,7 @@ function! s:ZoomToggle() abort
 endfunction
 command! ZoomToggle call s:ZoomToggle()
 nnoremap <silent> <leader>z :ZoomToggle<CR>
+
+colorscheme substrata
+
 

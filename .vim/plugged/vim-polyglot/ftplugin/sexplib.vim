@@ -16,4 +16,6 @@ let b:did_ftplugin=1
 
 " Comment string
 setl commentstring=;\ %s
-setl comments=:;
+setl comments=n:;
+
+let b:undo_ftplugin = "setl cms< com<"

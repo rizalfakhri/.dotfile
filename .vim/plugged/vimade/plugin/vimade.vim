@@ -78,6 +78,11 @@ command! VimadeOverrideSplits call vimade#OverrideVertSplit()
 "highlights that are distracting in faded windows.
 command! VimadeOverrideNonText call vimade#OverrideNonText()
 
+""EXPERIMENTAL -- Overrides the EndOfBuffer highlight by creating a link to the Vimade base fade.
+"This should produce acceptable results for colorschemes that include Folded
+"highlights that are distracting in faded windows.
+command! VimadeOverrideEndOfBuffer call vimade#OverrideEndOfBuffer()
+
 ""EXPERIMENTAL -- Overrides static highlights by creating a link to the Vimade base fade.
 "This should produce acceptable results for colorschemes that include Folded
 "highlights that are distracting in faded windows.
@@ -85,11 +90,11 @@ command! VimadeOverrideAll call vimade#OverrideAll()
 
 if (!exists('g:vimade_running') || g:vimade_running != 0)
   if v:vim_did_enter 
-    call vimade#Init()
+    call vimade#Empty()
   else
     augroup vimade
       au!
-      au VimEnter * call vimade#Init()
+      au VimEnter * call vimade#Empty()
     augroup END
   endif
 endif

@@ -16,6 +16,7 @@ CONTENTS                                          *splitjoin* *splitjoin-content
     HAML...................................: |splitjoin-haml|
     Handlebars.............................: |splitjoin-handlebars|
     HTML...................................: |splitjoin-html|
+    Java...................................: |splitjoin-java|
     Javascript.............................: |splitjoin-javascript| |splitjoin-json|
     JSX/TSX................................: |splitjoin-jsx| |splitjoin-tsx|
     Lua....................................: |splitjoin-lua|
@@ -338,10 +339,53 @@ ELIXIR                                                        *splitjoin-elixir*
 Do-blocks ~
 >
     def function(arguments) when condition, do: body
-
     def function(arguments) when condition do
       body
     end
+
+    let :one, do: two() |> three(four())
+    let :one do
+      two() |> three(four())
+    end
+
+    if(foo, do: bar, else: baz)
+    if foo do
+      bar
+    else
+      baz
+    end
+<
+Comma-separated method calls (join only): ~
+>
+    for a <- 1..10,
+      Integer.is_odd(a) do
+      a
+    end
+
+    for a <- 1..10, Integer.is_odd(a) do
+      a
+    end
+<
+Pipelines: ~
+>
+    String.length("splitjoin")
+
+    "splitjoin"
+    |> String.length()
+<
+This doesn't currently work properly for multi-line arguments:
+>
+    String.length(
+      Enum.join([
+        "split",
+        "join"
+      ])
+    )
+
+    if true do
+      "splitjoin"
+    end
+    |> String.length()
 <
 
 ==============================================================================
@@ -489,8 +533,52 @@ Attributes ~
 <
 
 ==============================================================================
+JAVA                                                            *splitjoin-java*
+
+If-clause bodies ~
+>
+    if (isTrue())
+      doSomething();
+
+    if (isTrue()) doSomething();
+
+    if (isTrue()) {
+      doSomething();
+    }
+
+    if (isTrue()) { doSomething(); }
+<
+If-clause conditions ~
+>
+    if (val1 && val2 || val3)
+        body();
+
+    if (val1
+            && val2
+            || val3)
+        body();
+<
+Function calls ~
+>
+    myfunction(arg1, arg2, arg3, arg4);
+
+    myfunction(arg1,
+            arg2,
+            arg3,
+            arg4);
+<
+Lambda functions ~
+>
+    some_function(foo -> "bar");
+
+    some_function(foo -> {
+      return "bar";
+    });
+<
+
+==============================================================================
 JAVASCRIPT                                                *splitjoin-javascript*
-                                                          *splitjoin-json*
+                                                            *splitjoin-json*
 
 Object and Array splitting also work for JSON, if it's set as a separate
 filetype. (If it's just set to "javascript", it'll just apply javascript
@@ -547,7 +635,7 @@ One-line if conditionals ~
       doSomething();
     }
 
-    if (isTrue()) doSomething;
+    if (isTrue()) doSomething();
 <
 Fat-arrow functions ~
 >
@@ -1013,6 +1101,14 @@ function's arguments?).
 
     one.two.three(foo, bar)
 
+Ruby 3.0 endless def ~
+>
+    def foo(one, two)
+      bar
+    end
+
+    def foo(one, two) = bar
+<
 
 ==============================================================================
 RUST                                                          *splitjoin-rust*
@@ -1775,6 +1871,33 @@ If set to 1:
 
 Joining a chain will also join all the methods calls.
 
+                                   *splitjoin_java_argument_split_first_newline*
+                                    *splitjoin_java_argument_split_last_newline*
+>
+    let g:splitjoin_java_argument_split_first_newline = 1
+    let g:splitjoin_java_argument_split_last_newline  = 1
+<
+Default value: 0
+
+These variables control whether a newline will be placed between the bracket
+and the first or last item of a java argument list when splitting. With the
+default, both set to 0, a split might look like this:
+>
+    functionCall(one,
+            two,
+            three)
+<
+With both values set to 1, a space will be left before the first item and
+after the last one:
+>
+    functionCall(
+            one,
+            two,
+            three
+            )
+<
+This is a setting that might be generalized for other languages and constructs
+at a later time.
 
 ==============================================================================
 INTERNALS                                                *splitjoin-internals*

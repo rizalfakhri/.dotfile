@@ -2,10 +2,10 @@
 
 namespace Phpactor\Extension\ClassMover;
 
+use Phpactor\CodeBuilder\Domain\Updater;
 use Phpactor\Extension\ClassMover\Application\ClassCopy;
 use Phpactor\Extension\ClassMover\Application\ClassMover as ClassMoverApp;
 use Phpactor\Extension\ClassMover\Application\ClassReferences;
-use Phpactor\ClassMover\Adapter\TolerantParser\TolerantClassFinder;
 use Phpactor\ClassMover\Adapter\TolerantParser\TolerantClassReplacer;
 use Phpactor\ClassMover\Adapter\WorseTolerant\WorseTolerantMemberFinder;
 use Phpactor\ClassMover\Adapter\WorseTolerant\WorseTolerantMemberReplacer;
@@ -75,17 +75,6 @@ class ClassMoverExtension implements Extension
 
     private function registerClassMover(ContainerBuilder $container): void
     {
-        $container->register('class_mover.class_mover', function (Container $container) {
-            return new ClassMover(
-                $container->get('class_mover.class_finder'),
-                $container->get('class_mover.ref_replacer')
-            );
-        });
-
-        $container->register('class_mover.class_finder', function (Container $container) {
-            return new TolerantClassFinder();
-        });
-
         $container->register('class_mover.member_finder', function (Container $container) {
             return new WorseTolerantMemberFinder(
                 $container->get(WorseReflectionExtension::SERVICE_REFLECTOR)
@@ -97,7 +86,7 @@ class ClassMoverExtension implements Extension
         });
 
         $container->register('class_mover.ref_replacer', function (Container $container) {
-            return new TolerantClassReplacer();
+            return new TolerantClassReplacer($container->get(Updater::class));
         });
     }
 
@@ -106,7 +95,7 @@ class ClassMoverExtension implements Extension
         $container->register('application.class_mover', function (Container $container) {
             return new ClassMoverApp(
                 $container->get('application.helper.class_file_normalizer'),
-                $container->get('class_mover.class_mover'),
+                $container->get(ClassMover::class),
                 $container->get('source_code_filesystem.registry'),
                 $container->get(NavigationExtension::SERVICE_PATH_FINDER)
             );
@@ -115,7 +104,7 @@ class ClassMoverExtension implements Extension
         $container->register('application.class_copy', function (Container $container) {
             return new ClassCopy(
                 $container->get('application.helper.class_file_normalizer'),
-                $container->get('class_mover.class_mover'),
+                $container->get(ClassMover::class),
                 $container->get('source_code_filesystem.registry')->get('git')
             );
         });

@@ -120,6 +120,7 @@ function! s:apply_default_theme() abort
 
   execute 'hi default link ClapInput' s:input_default_hi_group
   execute 'hi default link ClapDisplay' s:display_default_hi_group
+  hi default link ClapIndicator ClapInput
 endfunction
 
 function! s:make_display_EndOfBuffer_invisible() abort
@@ -191,6 +192,8 @@ function! clap#themes#init() abort
   hi default link ClapMatches Search
   hi default link ClapNoMatchesFound ErrorMsg
   hi default link ClapPopupCursor Type
+
+  hi default link FloatBorder ClapPreview
 
   if exists('g:clap_theme')
     " If anything is wrong, just use the default theme.

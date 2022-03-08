@@ -8,8 +8,7 @@ members = [
     "matcher/extracted_fzy",
     "pattern",
     "printer",
-    "source_item",
-    "stdio_server",
+    "types",
     "utility",
     "upgrade",
 ]

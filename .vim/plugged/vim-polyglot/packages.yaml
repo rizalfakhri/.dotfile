@@ -376,7 +376,7 @@ filetypes:
   - carp
 ---
 name: clojure
-remote: guns/vim-clojure-static
+remote: clojure-vim/clojure.vim
 filetypes:
 - name: clojure
   linguist: Clojure
@@ -773,22 +773,19 @@ filetypes:
   - hsig
 ---
 name: haxe
-remote: yaymukund/vim-haxe
+remote: jdonaldson/vaxe
 filetypes:
 - name: haxe
   linguist: Haxe
----
-name: hcl
-remote: b4b4r07/vim-hcl
-filetypes:
-- name: hcl
-  linguist: HCL
-  extra_filenames:
-  - Appfile
-  ignored_extensions:
-  # handled by vim-terraform
-  - tf
-  - tfvars
+- name: hxml
+  linguist: HXML
+- name: hss
+  extensions:
+    - hss
+ignored_dirs:
+  - ftplugin
+  - autoload
+  - compiler
 ---
 name: hive
 remote: zebradil/hive.vim
@@ -797,19 +794,6 @@ filetypes:
   linguist: HiveQL
   extra_extensions:
   - ql
----
-name: i3
-remote: mboughaba/i3config.vim
-filetypes:
-- name: i3config
-  filenames:
-  - i3.config
-  - i3config
-  - .i3.config
-  - .i3config
-  extensions:
-  - i3.config
-  - i3config
 ---
 name: icalendar
 remote: chutzpah/icalendar.vim
@@ -887,7 +871,7 @@ globs:
 - '**/htmldjango.vim'
 filetypes:
 - name: htmldjango
-  linguist: HTML+Django
+  linguist: Jinja 
   ignore_warnings:
   # handled by mustache plugin
   - mustache
@@ -977,7 +961,7 @@ filetypes:
   linguist: Less
 ---
 name: lilypond
-remote: anowlcalledjosh/vim-lilypond
+remote: anowlcalledjosh/vim-lilypond@main
 filetypes:
 - name: lilypond
   linguist: LilyPond
@@ -985,7 +969,7 @@ filetypes:
 name: livescript
 remote: gkz/vim-ls
 filetypes:
-- name: livescript
+- name: ls
   linguist: LiveScript
 ---
 name: llvm
@@ -1533,11 +1517,6 @@ filetypes:
   - '.zsh*'
   - '*/etc/zprofile'
 ---
-name: zinit
-remote: zinit-zsh/zplugin-vim-syntax
-# just adds to zsh filetype
-filetypes: []
----
 name: slim
 remote: slim-template/vim-slim
 filetypes:
@@ -1558,7 +1537,7 @@ filetypes:
   linguist: SMT
 ---
 name: solidity
-remote: tomlion/vim-solidity
+remote: TovarishFin/vim-solidity
 filetypes:
 - name: solidity
   linguist: Solidity
@@ -1574,7 +1553,7 @@ filetypes:
   - stylus
 ---
 name: svelte
-remote: evanleck/vim-svelte@main
+remote: leafOfTree/vim-svelte-plugin
 filetypes:
 - name: svelte
   linguist: Svelte
@@ -1636,6 +1615,16 @@ filetypes:
   extensions:
   - tf
   - tfvars
+- name: hcl
+  linguist: HCL
+  extra_filenames:
+  - Appfile
+  - .terraformrc
+  - terraform.rc
+  ignored_extensions:
+  # handled by vim-terraform
+  - tf
+  - tfvars
 ---
 name: textile
 remote: timcharper/textile.vim
@@ -1657,7 +1646,7 @@ filetypes:
   - '.tmux*.conf'
 ---
 name: toml
-remote: cespare/vim-toml
+remote: cespare/vim-toml@main
 filetypes:
 - name: toml
   linguist: TOML
@@ -1786,10 +1775,12 @@ filetypes:
   - '*/etc/xdg/menus/*.menu'
   - '*fglrxrc'
   ignored_extensions:
+  - rs
   - ts
   - tsx
   # handled by powershell plugin
   - ps1xml
+  - mm
 ---
 name: xsl
 remote: vim-scripts/XSLT-syntax
@@ -1943,7 +1934,7 @@ filetypes:
   - t
 ---
 name: gitignore
-remote: fszymanski/fzf-gitignore
+remote: SirJson/fzf-gitignore 
 filetypes:
 - name: gitignore
   filenames:
@@ -2158,15 +2149,6 @@ filetypes:
   patterns:
   - pattern: "*/etc/cdrdao.conf,*/etc/defaults/cdrdao,*/etc/default/cdrdao,.cdrdao"
     description: Cdrdao config
----
-name: cfengine
-remote: vim/vim:runtime
-glob: "**/cfengine.vim"
-filetypes:
-- name: cfengine
-  patterns:
-  - pattern: cfengine.conf
-    description: Cfengine
 ---
 name: chaiscript
 remote: vim/vim:runtime
@@ -2732,15 +2714,6 @@ filetypes:
   - pattern: "*.fan,*.fwt"
     description: Fantom
 ---
-name: factor
-remote: vim/vim:runtime
-glob: "**/factor.vim"
-filetypes:
-- name: factor
-  patterns:
-  - pattern: "*.factor"
-    description: Factor
----
 name: fetchmail
 remote: vim/vim:runtime
 glob: "**/fetchmail.vim"
@@ -3041,15 +3014,6 @@ filetypes:
   - pattern: "*.hb"
     description: Hyper Builder
 ---
-name: httest
-remote: vim/vim:runtime
-glob: "**/httest.vim"
-filetypes:
-- name: httest
-  patterns:
-  - pattern: "*.htt,*.htb"
-    description: Httest
----
 name: icon
 remote: vim/vim:runtime
 glob: "**/icon.vim"
@@ -3211,8 +3175,6 @@ filetypes:
   - pattern: Prl*.*,JAM*.*
 ---
 name: java
-remote: vim/vim:runtime
-glob: "**/java.vim"
 filetypes:
 - name: java
   patterns:
@@ -3601,15 +3563,6 @@ filetypes:
   patterns:
   - pattern: "*.mv,*.mpl,*.mws"
     description: Maple V
----
-name: map
-remote: vim/vim:runtime
-glob: "**/map.vim"
-filetypes:
-- name: map
-  patterns:
-  - pattern: "*.map"
-    description: Map (UMN mapserver config file)
 ---
 name: mel
 remote: vim/vim:runtime
@@ -4016,15 +3969,6 @@ filetypes:
   - pattern: "*.pdf"
     description: PDF
 ---
-name: pcmk
-remote: vim/vim:runtime
-glob: "**/pcmk.vim"
-filetypes:
-- name: pcmk
-  patterns:
-  - pattern: "*.pcmk"
-    description: PCMK - HAE - crm configure edit
----
 name: pike
 remote: vim/vim:runtime
 glob: "**/pike.vim"
@@ -4188,15 +4132,6 @@ filetypes:
   patterns:
   - pattern: "*.obj"
     description: 'TODO: is there a way to avoid MS-Windows Object files?'
----
-name: proc
-remote: vim/vim:runtime
-glob: "**/proc.vim"
-filetypes:
-- name: proc
-  patterns:
-  - pattern: "*.pc"
-    description: Oracle Pro*C/C++
 ---
 name: privoxy
 remote: vim/vim:runtime
@@ -4583,7 +4518,7 @@ glob: "**/scheme.vim"
 filetypes:
 - name: scheme
   patterns:
-  - pattern: "*.scm,*.ss,*.rkt"
+  - pattern: "*.scm,*.ss"
     description: Scheme
 ---
 name: screen
@@ -5400,15 +5335,6 @@ filetypes:
   - pattern: "*.zu"
     description: Zimbu
 ---
-name: zimbutempl
-remote: vim/vim:runtime
-glob: "**/zimbutempl.vim"
-filetypes:
-- name: zimbutempl
-  patterns:
-  - pattern: "*.zut"
-    description: Zimbu Templates
----
 name: z8a
 remote: vim/vim:runtime
 glob: "**/z8a.vim"
@@ -5493,30 +5419,14 @@ filetypes:
   - pattern: "*.text,README"
     description: the "conf" type being used if there is a line starting with '#'.
 ---
-name: pullrequest
-remote: vim/vim:runtime
-glob: "**/pullrequest.vim"
-filetypes:
-- name: pullrequest
-  patterns:
-  - pattern: PULLREQ_EDITMSG
----
 name: autodoc
 remote: vim/vim:runtime
 glob: "**/autodoc.vim"
 # Needed by c, cmod, and pike
 filetypes: []
 ---
-name: html
-remote: vim/vim:runtime
-glob: "**/html.vim"
-filetypes:
-- name: html
-  linguist: HTML
----
-# TODO: change after https://github.com/othree/html5.vim/pull/106 is merged
 name: html5
-remote: sheerun/html5.vim
+remote: othree/html5.vim
 dependencies: html
 filetypes: []
 ---
@@ -5581,3 +5491,58 @@ filetypes:
   patterns:
   - pattern: '*.hjson'
     description: Hjson (https://hjson.github.io)
+---
+name: sway
+remote: jamespeapen/swayconfig.vim
+filetypes:
+- name: swayconfig
+  patterns:
+  - pattern: '*sway/config,*.swayconfig,*.sway.config,swayconfig'
+    description: Sway Configuration
+---
+name: just
+remote: NoahTheDuke/vim-just
+filetypes:
+- name: just
+  patterns:
+  - pattern: 'justfile,*.just'
+    description: 'Just a task runner (https://github.com/casey/just)'
+---
+name: nftables
+remote: nfnty/vim-nftables
+filetypes:
+- name: nftables
+  extensions:
+  - nft
+  patterns:
+  - pattern: '*/nftables.conf'
+    description: nftables configuration
+---
+name: openscad
+remote: sirtaj/vim-openscad
+filetypes:
+- name: openscad
+  patterns:
+  - pattern: '*.scad'
+    description: OpenSCAD 3D modeling language
+---
+name: mermaid
+remote: mracos/mermaid.vim@main
+filetypes:
+- name: mermaid
+  patterns:
+  - pattern: '*.mermaid,*.mm,*.mmd'
+    description: Mermaid (https://mermaid-js.github.io/)
+---
+name: org
+remote: axvr/org.vim
+filetypes:
+- name: org
+  patterns:
+  - pattern: '*.org'
+    description: GNU Emacs' Org mode
+---
+name: zinit
+remote: zdharma-continuum/zinit-vim-syntax@main
+# just adds to zsh filetype
+filetypes: []

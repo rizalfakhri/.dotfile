@@ -1,3 +1,4 @@
+scriptencoding utf-8
 let g:coc#_context = {'start': 0, 'preselect': -1,'candidates': []}
 let g:coc_user_config = get(g:, 'coc_user_config', {})
 let g:coc_global_extensions = get(g:, 'coc_global_extensions', [])
@@ -8,6 +9,7 @@ let s:is_vim = !has('nvim')
 let s:error_sign = get(g:, 'coc_status_error_sign', has('mac') ? '❌ ' : 'E')
 let s:warning_sign = get(g:, 'coc_status_warning_sign', has('mac') ? '⚠️ ' : 'W')
 let s:select_api = exists('*nvim_select_popupmenu_item')
+let s:complete_info_api = exists('*complete_info')
 let s:callbacks = {}
 
 function! coc#expandable() abort
@@ -49,16 +51,23 @@ endfunction
 function! coc#_complete() abort
   let items = get(g:coc#_context, 'candidates', [])
   let preselect = get(g:coc#_context, 'preselect', -1)
-  call complete(
-        \ g:coc#_context.start + 1,
-        \ items)
+  let startcol = g:coc#_context.start + 1
   if s:select_api && len(items) && preselect != -1
+    noa call complete(startcol, items)
     call nvim_select_popupmenu_item(preselect, v:false, v:false, {})
+    " use <cmd> specific key to preselect item at once
+    call feedkeys("\<Cmd>\<CR>" , 'i')
+  else
+    call complete(startcol, items)
   endif
   return ''
 endfunction
 
 function! coc#_do_complete(start, items, preselect)
+  " Refresh with selected item would cause unexpected CompleteDone
+  if s:complete_info_api && get(complete_info(['selected']), 'selected', -1) != -1 && &completeopt =~# 'noselect'
+    return
+  endif
   let g:coc#_context = {
         \ 'start': a:start,
         \ 'candidates': a:items,
@@ -116,10 +125,10 @@ endfunction
 function! coc#status()
   let info = get(b:, 'coc_diagnostic_info', {})
   let msgs = []
-  if get(info, 'error', 0)
+  if !empty(info) && get(info, 'error', 0)
     call add(msgs, s:error_sign . info['error'])
   endif
-  if get(info, 'warning', 0)
+  if !empty(info) && get(info, 'warning', 0)
     call add(msgs, s:warning_sign . info['warning'])
   endif
   return s:trim(join(msgs, ' ') . ' ' . get(g:, 'coc_status', ''))
@@ -188,5 +197,26 @@ function! coc#do_notify(id, method, result)
   let Fn = s:callbacks[key]
   if !empty(Fn)
     call Fn(a:result)
+  endif
+endfunction
+
+function! coc#complete_indent() abort
+  let l:curpos = getcurpos()
+  let l:indent_pre = indent('.')
+
+  let l:startofline = &startofline
+  let l:virtualedit = &virtualedit
+  set nostartofline
+  set virtualedit=all
+  normal! ==
+  let &startofline = l:startofline
+  let &virtualedit = l:virtualedit
+
+  let l:shift = indent('.') - l:indent_pre
+  let l:curpos[2] += l:shift
+  let l:curpos[4] += l:shift
+  call cursor(l:curpos[1:])
+  if l:shift != 0
+    call coc#_cancel()
   endif
 endfunction

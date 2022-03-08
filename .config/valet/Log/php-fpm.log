@@ -1497,3 +1497,4 @@ Stack trace:
 [15-Jan-2022 03:37:53 UTC] PHP Warning:  opendir(/Volumes/SSD/bb): failed to open dir: No such file or directory in /Users/rizalfakhri/.composer/vendor/laravel/valet/server.php on line 132
 [15-Jan-2022 03:37:59 UTC] PHP Warning:  opendir(/Volumes/SSD/bb): failed to open dir: No such file or directory in /Users/rizalfakhri/.composer/vendor/laravel/valet/server.php on line 132
 [15-Jan-2022 03:38:06 UTC] PHP Warning:  opendir(/Volumes/SSD/bb): failed to open dir: No such file or directory in /Users/rizalfakhri/.composer/vendor/laravel/valet/server.php on line 132
+[07-Mar-2022 10:03:41 Asia/Kuala_Lumpur] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 44044288 bytes) in /Volumes/SSD/bb/oaoa/vendor/laravel/framework/src/Illuminate/Support/Traits/EnumeratesValues.php on line 750

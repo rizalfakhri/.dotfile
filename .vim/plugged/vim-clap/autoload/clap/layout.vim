@@ -14,7 +14,7 @@ if !clap#preview#is_enabled()
             \ 'row': '25%',
             \ 'col': '15%',
             \ }
-elseif g:clap_preview_direction ==# 'LR'
+elseif clap#preview#direction() ==# 'LR'
   let s:default_layout = {
             \ 'width': '40%',
             \ 'height': '67%',
@@ -63,9 +63,40 @@ function! s:adjust_indicator_width() abort
   endif
 endfunction
 
+function! s:layout() abort
+  if !exists('s:layout')
+    if exists('g:clap_layout')
+      let s:layout = extend(copy(s:default_layout), g:clap_layout)
+    else
+      let s:layout = s:default_layout
+    endif
+  endif
+  return s:layout
+endfunction
+
+function! clap#layout#indicator_width() abort
+  let layout = s:layout()
+
+  if has_key(layout, 'relative') && layout.relative ==# 'editor'
+    let width = &columns
+  else
+    let width = winwidth(g:clap.start.winid)
+  endif
+
+  if clap#preview#direction() ==# 'LR'
+    let width = width / 2
+  endif
+
+  let indicator_width = width < 30 ? 5 : min([width / 5, 18])
+
+  let g:__clap_indicator_winwidth = indicator_width
+
+  return indicator_width
+endfunction
+
 if s:is_nvim
   function! s:user_layout() abort
-    let layout = extend(copy(s:default_layout), g:clap_layout)
+    let layout = s:layout()
     if has_key(layout, 'relative') && layout.relative ==# 'editor'
       let [width, height] = [&columns, &lines]
       let opts = {'relative': 'editor'}
@@ -74,7 +105,6 @@ if s:is_nvim
       let opts = {'relative': 'win', 'win': g:clap.start.winid}
       call s:adjust_indicator_width()
     endif
-
     return extend(opts, {
           \ 'width': s:calc(width, layout.width),
           \ 'height': s:calc(height, layout.height),
@@ -96,7 +126,7 @@ if s:is_nvim
   endfunction
 else
   function! s:user_layout() abort
-    let layout = extend(copy(s:default_layout), g:clap_layout)
+    let layout = s:layout()
     if has_key(layout, 'relative') && layout.relative ==# 'editor'
       let [row, col] = [0, 0]
       let width = &columns

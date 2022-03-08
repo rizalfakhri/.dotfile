@@ -427,18 +427,10 @@ def rule_to_code(rule)
     end.join("\n")
   end
 
-  if rule.has_key?("if_set")
+  if rule.has_key?("if")
     return <<~EOS
-      if #{rule["negative"] ? "!" : ""}#{rule["if_set"]}
-      #{indent(rule_to_code(except(rule, "if_set", "negative")), 2)}
-      endif
-    EOS
-  end
-
-  if rule.has_key?("if_exists")
-    return <<~EOS
-      if #{rule["negative"] ? "!" : ""}exists("#{rule["if_exists"]}")
-      #{indent(rule_to_code(except(rule, "if_exists", "negative")), 2)}
+      if #{rule["if"]}
+      #{indent(rule_to_code(except(rule, "if")), 2)}
       endif
     EOS
   end
@@ -499,6 +491,7 @@ def extract(packages)
 
   output = []
   packages.map do |package|
+    copied_something = false
     if !package["remote"]
       next
     end
@@ -524,12 +517,18 @@ def extract(packages)
             if package["extract_in_after"] == true
               target = "after/#{target}"
             end
+            copied_something = true
             copy_file(package["name"], "#{subtree}#{p}", target)
           end
         end
       elsif File.exist?(subpath)
+        copied_something = true
         copy_file(package["name"], subpath, subdir)
       end
+    end
+
+    if !copied_something
+      raise StandardError.new("No files in: #{package["name"]}")
     end
 
     if repo == "vim/vim"
@@ -671,7 +670,7 @@ def generate_ftdetect(packages, heuristics)
 
       for heuristic in filetype_heuristics.uniq
         extensions = heuristic["extensions"].map { |e| "*.#{e}" }
-        autocommands << "au BufNewFile,BufRead,BufWritePost #{extensions.join(",")} call polyglot#detect##{camelize(heuristic["extensions"].first)}()"
+        autocommands << "au! BufNewFile,BufRead,BufWritePost #{extensions.join(",")} call polyglot#detect##{camelize(heuristic["extensions"].first)}()"
       end
 
       if autocommands.size > 0 && filetype["description"]

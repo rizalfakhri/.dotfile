@@ -7,7 +7,6 @@ g:lexima_enable_newline_rules	lexima.txt	/*g:lexima_enable_newline_rules*
 g:lexima_enable_space_rules	lexima.txt	/*g:lexima_enable_space_rules*
 g:lexima_map_escape	lexima.txt	/*g:lexima_map_escape*
 g:lexima_no_default_rules	lexima.txt	/*g:lexima_no_default_rules*
-g:lexima_nvim_accept_pum_with_enter	lexima.txt	/*g:lexima_nvim_accept_pum_with_enter*
 lexima#add_rule()	lexima.txt	/*lexima#add_rule()*
 lexima#expand()	lexima.txt	/*lexima#expand()*
 lexima#insmode#escape()	lexima.txt	/*lexima#insmode#escape()*
@@ -25,6 +24,18 @@ lexima-newline-rules	lexima.txt	/*lexima-newline-rules*
 lexima-priorities	lexima.txt	/*lexima-priorities*
 lexima-repeatable-rule	lexima.txt	/*lexima-repeatable-rule*
 lexima-rules	lexima.txt	/*lexima-rules*
+lexima-rules-at	lexima.txt	/*lexima-rules-at*
+lexima-rules-char	lexima.txt	/*lexima-rules-char*
+lexima-rules-delete	lexima.txt	/*lexima-rules-delete*
+lexima-rules-except	lexima.txt	/*lexima-rules-except*
+lexima-rules-filetype	lexima.txt	/*lexima-rules-filetype*
+lexima-rules-input	lexima.txt	/*lexima-rules-input*
+lexima-rules-input_after	lexima.txt	/*lexima-rules-input_after*
+lexima-rules-leave	lexima.txt	/*lexima-rules-leave*
+lexima-rules-mode	lexima.txt	/*lexima-rules-mode*
+lexima-rules-priority	lexima.txt	/*lexima-rules-priority*
+lexima-rules-syntax	lexima.txt	/*lexima-rules-syntax*
+lexima-rules-with_submatch	lexima.txt	/*lexima-rules-with_submatch*
 lexima-space-rules	lexima.txt	/*lexima-space-rules*
 lexima-tips	lexima.txt	/*lexima-tips*
 lexima-todo	lexima.txt	/*lexima-todo*

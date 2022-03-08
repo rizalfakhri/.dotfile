@@ -30,7 +30,8 @@ function! matchup#motion#find_matching_pair(visual, down) " {{{1
     normal! gv
   endif
 
-  if a:down && l:count > g:matchup_motion_override_Npercent
+  if a:down && g:matchup_motion_override_Npercent < 100
+        \ && l:count > g:matchup_motion_override_Npercent
     " TODO: dv50% does not work properly
     if a:visual && l:is_oper
       normal! V
@@ -58,10 +59,11 @@ function! matchup#motion#find_matching_pair(visual, down) " {{{1
     if empty(l:delim) | return | endif
   endif
 
+  let l:matches = matchup#delim#get_matching(l:delim, 1)
+  if len(l:matches) <= (l:delim.side ==# 'mid' ? 2 : 1) | return | endif
+
   " loop count number of times
   for l:dummy in range(l:count1)
-    let l:matches = matchup#delim#get_matching(l:delim, 1)
-    if len(l:matches) <= (l:delim.side ==# 'mid' ? 2 : 1) | return | endif
     if !has_key(l:delim, 'links') | return | endif
     let l:delim = get(l:delim.links, a:down ? 'next' : 'prev', {})
     if empty(l:delim) | return | endif
@@ -194,7 +196,7 @@ function! matchup#motion#find_unmatched(visual, down, ...) " {{{1
     " this is an exclusive motion, ]%
     if l:delim.side ==# 'close'
       if l:exclusive
-        let l:new_pos[1] -= 1
+        let l:new_pos = matchup#pos#prev_eol(l:new_pos)[1:2]
       else
         let l:new_pos[1] += matchup#delim#end_offset(l:delim)
       endif
@@ -302,6 +304,59 @@ function! matchup#motion#jump_inside(visual) " {{{1
   " handle selection option 'exclusive' (motion only goes forwards)
   if a:visual && &selection ==# 'exclusive'
     let l:new_pos = matchup#pos#next_eol(l:new_pos)
+  endif
+
+  if !g:matchup_motion_keepjumps
+    normal! m`
+  endif
+  call matchup#pos#set_cursor(l:new_pos)
+endfunction
+
+" }}}1
+function! matchup#motion#jump_inside_prev(visual) abort " {{{1
+  let l:count = v:count1
+
+  let l:save_pos = matchup#pos#get_cursor()
+
+  call matchup#perf#timeout_start(750)
+
+  if a:visual
+    normal! gv
+  endif
+
+  for l:counter in range(l:count + 1)
+    if l:counter
+      let l:delim = matchup#delim#get_prev('all', 'open')
+    else
+      let l:delim = matchup#delim#get_current('all', 'open')
+      if empty(l:delim)
+        let l:delim = matchup#delim#get_prev('all', 'open')
+      endif
+    endif
+    if empty(l:delim)
+      call matchup#pos#set_cursor(l:save_pos)
+      return
+    endif
+
+    let l:new_pos = [l:delim.lnum, l:delim.cnum]
+    call matchup#pos#set_cursor(matchup#pos#prev(l:delim))
+    let l:new_pos[1] += matchup#delim#end_offset(l:delim)
+  endfor
+
+  call matchup#pos#set_cursor(l:save_pos)
+
+  " convert to [~, lnum, cnum, ~] format
+  let l:new_pos = matchup#pos#next(l:new_pos)
+
+  let l:is_oper = !empty(get(s:, 'v_operator', ''))
+
+  " handle selection option 'exclusive'
+  if l:is_oper && &selection ==# 'exclusive'
+    let l:new_pos = matchup#pos#next_eol(l:new_pos)
+    " normal! o
+    " call matchup#pos#set_cursor(matchup#pos#next_eol(
+    "       \ matchup#pos#get_cursor()))
+    " normal! o
   endif
 
   if !g:matchup_motion_keepjumps

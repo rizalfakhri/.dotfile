@@ -4,22 +4,22 @@ mod download;
 mod github;
 
 use anyhow::{anyhow, Context, Result};
-use structopt::StructOpt;
+use clap::Parser;
 
 /// This command is only invoked when user uses the prebuilt binary, more specifically, exe in
 /// vim-clap/bin/maple.
-#[derive(StructOpt, Debug, Clone)]
+#[derive(Parser, Debug, Clone)]
 pub struct Upgrade {
     /// Download if the local version mismatches the latest remote version.
-    #[structopt(long)]
+    #[clap(long)]
     pub download: bool,
     /// Disable the downloading progress_bar
-    #[structopt(long)]
+    #[clap(long)]
     pub no_progress_bar: bool,
 }
 
 impl Upgrade {
-    pub fn run(&self, local_tag: &str) -> Result<()> {
+    pub async fn run(&self, local_tag: &str) -> Result<()> {
         println!("Retrieving the latest remote release info...");
         let remote_release = github::latest_remote_release()?;
         let remote_tag = remote_release.tag_name;
@@ -31,7 +31,7 @@ impl Upgrade {
                     "New maple release {} is avaliable, downloading...",
                     remote_tag
                 );
-                self.download_prebuilt_binary(&remote_tag)?;
+                self.download_prebuilt_binary(&remote_tag).await?;
                 println!("Latest version {} download completed", remote_tag);
             } else {
                 println!(
@@ -46,9 +46,9 @@ impl Upgrade {
         Ok(())
     }
 
-    fn download_prebuilt_binary(&self, version: &str) -> Result<()> {
+    async fn download_prebuilt_binary(&self, version: &str) -> Result<()> {
         let bin_path = get_binary_path()?;
-        let temp_file = self.download_to_tempfile(version)?;
+        let temp_file = self.download_to_tempfile(version).await?;
 
         // Move the downloaded binary to bin/maple
         std::fs::rename(temp_file, bin_path)?;
@@ -56,14 +56,11 @@ impl Upgrade {
         Ok(())
     }
 
-    fn download_to_tempfile(&self, version: &str) -> Result<std::path::PathBuf> {
+    async fn download_to_tempfile(&self, version: &str) -> Result<std::path::PathBuf> {
         if self.no_progress_bar {
             download::download_prebuilt_binary_to_a_tempfile(version)
         } else {
-            let rt = tokio::runtime::Runtime::new()?;
-            rt.block_on(download::download_prebuilt_binary_to_a_tempfile_async(
-                version,
-            ))
+            download::download_prebuilt_binary_to_a_tempfile_async(version).await
         }
     }
 }

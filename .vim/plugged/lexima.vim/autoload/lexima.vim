@@ -85,6 +85,7 @@ let g:lexima#newline_rules = [
 \ {'char': '<CR>', 'at': '{\%#$', 'input_after': '<CR>}', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1\}'},
 \ {'char': '<CR>', 'at': '\[\%#]', 'input_after': '<CR>'},
 \ {'char': '<CR>', 'at': '\[\%#$', 'input_after': '<CR>]', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1\]'},
+\ {'char': '<CR>', 'at': '^```\(\S*\)\%#```', 'input': '<CR>', 'input_after': '<CR>'},
 \ ]
 
 let g:lexima#space_rules = [
@@ -164,7 +165,11 @@ function! s:regularize(rule)
     let reg_rule.syntax = [reg_rule.syntax]
   endif
   if !has_key(reg_rule, 'input')
-    let reg_rule.input = reg_rule.char
+    if has_key(reg_rule, 'leave')
+      let reg_rule.input = ''
+    else
+      let reg_rule.input = reg_rule.char
+    endif
   endif
   let reg_rule.char = lexima#string#to_upper_specialkey(reg_rule.char)
   return reg_rule

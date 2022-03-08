@@ -1,10 +1,18 @@
-# vim match-up
+<div align="center">
+<p>
+<img src='https://github.com/andymass/matchup.vim/wiki/images/teaser.jpg' width='250px' alt='and in this corner...' />
+</p>
+</div>
+
+<h1 align="center">
+  vim match-up :fist_right::fist_left:
+</h1>
 
 match-up is a plugin that lets you highlight, navigate, and operate on
 sets of matching text.  It extends vim's `%` key to language-specific
 words instead of just single characters.
 
-<img src='https://github.com/andymass/matchup.vim/wiki/images/teaser.jpg' width='300px' alt='and in this corner...'>
+[![Gitter](https://badges.gitter.im/vim-matchup/community.svg)](https://gitter.im/vim-matchup/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Screenshot
 
@@ -36,15 +44,21 @@ See [detailed feature documentation](#detailed-feature-documentation) for
 more information.  This plugin:
 
 - Extends vim's `%` motion to language-specific words.  The following vim
-  file type plugins currently provide support for match-up:
+  file type plugins currently provide special support for match-up:
 
-  > abaqus, ada, aspvbs, c, clojure, cobol, config, context, csc, csh,
-  > dtd, dtrace, eiffel, eruby, falcon, fortran, framescript, haml,
-  > hamster, hog, html, ishd, j, jsp, kconfig, liquid, lua, make, matlab,
-  > mf, mp, ocaml, pascal, pdf, perl, php, plaintex, postscr, ruby, sh,
-  > spec, sql, tex, vb, verilog, vhdl, vim, xhtml, xml, zimbu, zsh
+  > abaqus, ada, aspvbs, bash, c, cpp, chicken, clojure, cmake, cobol,
+  > context, csc, csh, dtd, dtrace, eiffel, eruby, falcon, fortran,
+  > framescript, haml, hamster, hog, html, ishd, j, javascript,
+  > javascriptreact, jsp, kconfig, liquid, lua, m3quake, make, matlab, mf,
+  > modula2, modula3, mp, nsis, ocaml, pascal, pdf, perl, php, plaintex,
+  > postscr, ruby, sh, spec, sql, tex (latex), typescriptreact, vb,
+  > verilog, vhdl, vim, xhtml, xml, zimbu, zsh
+
+  Other file types can be supported by installing additional filetype
+  plugins (not provided by match-up).
 
   Note: match-up uses the same `b:match_words` as matchit.
+
 - Adds motions `g%`, `[%`, `]%`, and `z%`.
 - Combines these motions into convenient text objects `i%` and `a%`.
 - Highlights symbols and words under the cursor which `%` can work on,
@@ -62,8 +76,9 @@ Plug 'andymass/vim-matchup'
 and then use `:PlugInstall`.  Or, you can use any other plugin manager such as
 [vundle](https://github.com/gmarik/vundle),
 [dein](https://github.com/Shougo/dein.vim),
-[neobundle](https://github.com/Shougo/neobundle.vim), or
-[pathogen](https://github.com/tpope/vim-pathogen).
+[neobundle](https://github.com/Shougo/neobundle.vim),
+[pathogen](https://github.com/tpope/vim-pathogen), or
+[packer](https://github.com/wbthomason/packer.nvim).
 
 match-up should automatically disable matchit and matchparen, but if you
 are still having trouble, try placing this near the top of your vimrc:
@@ -75,6 +90,45 @@ let g:loaded_matchit = 1
 See [Interoperability](#interoperability) for more information about working
 together with other plugins.
 
+### Tree-sitter integration
+
+_Note: Currently this feature is possible in neovim 0.5+ only._
+
+match-up now has experimental support for language syntax provided
+by tree-sitter.  The list of supported languages is available
+[here](https://github.com/andymass/vim-matchup/tree/master/after/queries).
+
+This feature requires manual opt-in in your init.vim and requires
+[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) to
+be installed.
+
+```vim
+Plug 'nvim-treesitter/nvim-treesitter'
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  matchup = {
+    enable = true,              -- mandatory, false will disable the whole extension
+    disable = { "c", "ruby" },  -- optional, list of language that will be disabled
+    -- [options]
+  },
+}
+EOF
+```
+
+Beside `enable` and `disable`, the following options are available, all
+defaulting to disabled:
+
+  - `disable_virtual_text`: do not use virtual text to highlight the
+  virtual end of a block, for languages without explicit end markers
+  (e.g., Python).
+  - `include_match_words`: additionally include traditional vim regex
+  matches for symbols.  For example, highlights `/* */` comments in C++
+  which are not supported in tree-sitter matching.
+
+Screenshot:
+
+<img src='https://user-images.githubusercontent.com/6655373/143594648-c178c4f0-24c3-4b81-a213-3e615dbd17c6.png' width='450px'>
+
 ## Features
 
 |         | feature                          | __match-up__   | matchit       | matchparen    |
@@ -83,25 +137,27 @@ together with other plugins.
 | ([a.2]) | jump to open & close words       | :thumbsup:     | :thumbsup:    | :x:           |
 | ([a.3]) | jump inside (`z%`)               | :thumbsup:     | :x:           | :x:           |
 | ([b.1]) | full set of text objects         | :thumbsup:     | :question:    | :x:           |
+| ([b.2]) | delete surrounding matched words | :thumbsup:     | :x:           | :x:           |
 | ([c.1]) | highlight `()`, `[]`, & `{}`     | :thumbsup:     | :x:           | :thumbsup:    |
-| ([c.2]) | highlight _all_ matches          | :thumbsup:     | :x:           | :x:           |
+| ([c.2]) | highlight _all_ matching words   | :thumbsup:     | :x:           | :x:           |
 | ([c.3]) | display matches off-screen       | :thumbsup:     | :x:           | :x:           |
 | ([c.4]) | show where you are (breadcrumbs) | :thumbsup:     | :x:           | :x:           |
-| ([d.1]) | modern, modular coding style     | :thumbsup:     | :x:           | :x:           |
+| ([d.1]) | (neovim) tree-sitter integration | :thumbsup:     | :x:           | :x:           |
 
 [a.1]: #a1-jump-between-matching-words
 [a.2]: #a2-jump-to-open-and-close-words
 [a.3]: #a3-jump-inside
 [b.1]: #b1-full-set-of-text-objects
+[b.2]: #surroundings
 [c.1]: #c1-highlight---and-
 [c.2]: #c2-highlight-all-matches
 [c.3]: #c3-display-matches-off-screen
 [c.4]: #c4-where-am-i
-[d.1]: #development
+[d.1]: #tree-sitter-integration
 [inclusive]: #inclusive-and-exclusive-motions
 [exclusive]: #inclusive-and-exclusive-motions
 
-Legend: :thumbsup: supported. :construction: TODO, planned, or in progress.
+Legend: :thumbsup: supported.
 :question: poorly implemented, broken, or uncertain.  :x: not possible.
 
 ### Detailed feature documentation
@@ -149,7 +205,9 @@ void some_func() {
 Since in C and C++, blocks are delimited using braces (`{` & `}`),
 match-up will recognize `{` as the open word and `}` as the close word.
 It will ignore the `if` and `else if` because they are not defined in
-vim's C file type plugin.
+vim's default C file type plugin.
+(Note: In neovim, this is optionally supported via
+[Tree-sitter](#tree-sitter-integration))
 
 On the other hand, match-up will recognize the `#if`, `#else`, `#endif`
 preprocessor directives.
@@ -271,7 +329,7 @@ print out.
 ### Inclusive and exclusive motions
 
 In vim, character motions following operators (such as `d` for delete
-and `c` for change) are either _inclusive_ or _exclusive_.  This means
+and `c` for change) are either [inclusive] or [exclusive].  This means
 they either include the ending position or not.  Here, "ending position"
 means the line and column closest to the end of the buffer of the region
 swept over by the motion.  match-up is designed so that `d]%` inside a set
@@ -307,7 +365,7 @@ pressing `d[%` will produce
 ```
 This is compatible with vim's `d[(` and `d[{`.
 
-Unlike `]%`, `%` is an _inclusive_ motion.  As a special case for the
+Unlike `]%`, `%` is an [inclusive] motion.  As a special case for the
 `d` (delete) operator, if `d%` leaves behind lines white-space, they will
 be deleted also.  In effect, it will be operating line-wise.  As an
 example, pressing `d%` will leave behind nothing.
@@ -392,7 +450,8 @@ let g:matchup_surround_enabled = 1
 ```
 default: 0
 
-To enable the experimental [transmute](#d1-parallel-transmutation)
+To enable the experimental
+[transmute](https://github.com/andymass/vim-matchup/blob/5a1978e46a0e721b5c5d113379c685ff7ec339e7/doc/matchup.txt#L311)
 module,
 ```vim
 let g:matchup_transmute_enabled = 1
@@ -511,7 +570,7 @@ following optional keys:
   Sets the method to use to show off-screen matches.
   Possible values are:
 
-  `'status'` (default): Replace the |status-line| for off-screen matches.
+  `'status'` (default): Replace the _status-line_ for off-screen matches.
 
   If a match is off of the screen, the line belonging to that match will be
   displayed syntax-highlighted in the status line along with the line number
@@ -519,8 +578,12 @@ following optional keys:
   an additional Δ symbol will be shown to indicate that the matching line is
   really above the cursor line.
 
-  `'status_manual'`: Compute the status-line but do not display it (future
-  extension).
+  `'popup'`: Show off-screen matches in a popup (vim) or
+  floating (neovim) window.
+
+  `'status_manual'`: Compute the string which would be displayed in the
+  status-line or popup, but do not display it.  The function
+  `MatchupStatusOffscreen()` can be used to get the text.
 
 - `scrolloff`:
   When enabled, off-screen matches will not be shown in the statusline while
@@ -600,13 +663,17 @@ enabled.
 
 In vim, `{count}%` goes to the `{count}` percentage in the file.
 match-up overrides this motion for small `{count}` (by default, anything
-less than 7).  To allow `{count}%` for `{count}` up to 11,
+less than 7).  To allow `{count}%` for `{count}` less than 12,
 ```vim
 g:matchup_motion_override_Npercent = 11
 ```
 To disable this feature, and restore vim's default `{count}%`,
 ```vim
 g:matchup_motion_override_Npercent = 0
+```
+To always enable this feature, use any value greater than 99,
+```vim
+g:matchup_motion_override_Npercent = 100
 ```
 default: 6
 
@@ -623,13 +690,9 @@ default: 1
 Modify the set of operators which may operate
 [line-wise](#line-wise-operatortext-object-combinations)
 ```vim
-let g:matchup_text_obj_linewise_operators' = ['d', 'y']
+let g:matchup_text_obj_linewise_operators = ['d', 'y']
 ```
 default: `['d', 'y']`
-
-### Module transmute
-
-_Options planned_.
 
 ## FAQ
 
@@ -737,7 +800,8 @@ have customized vimtex's delimiters.
 ### Surroundings
 
 match-up provides built-in support for [vim-surround]-style `ds%` and
-`cs%` operations.  If vim-surround is installed, you can use vim-surround
+`cs%` operations (`let g:matchup_surround_enabled = 1`).
+If vim-surround is installed, you can use vim-surround
 replacements such as `cs%)`.  `%` cannot be used as a replacement.
 An alternative plugin is [vim-sandwich], which allows more complex
 surround replacement rules but is not currently supported.
@@ -759,12 +823,17 @@ See for instance one of the following plugins for this;
 ### Matchit
 
 match-up tries to work around matchit.vim in all cases, but if
-you experience problems, read the following.
-matchit.vim should not be loaded.  If it is loaded, it should be loaded
-after match-up (in this case, matchit.vim will be disabled).  Note that
-some plugins, such as
-[vim-sensible](https://github.com/tpope/vim-sensible),
-load matchit.vim so these should also be initialized after match-up.
+you experience problems, read the following:
+
+- For vim, matchit.vim should not be loaded.  If it is loaded, it should
+  be loaded after match-up (in this case, matchit.vim will be disabled).
+  Note that some plugins, such as
+  [vim-sensible](https://github.com/tpope/vim-sensible), load matchit.vim
+  so these should also be initialized after match-up.
+
+- For neovim, matchit.vim is loaded by default.  This should not cause any
+  problems, but you may see a very slight start-up time improvement by
+  setting `let g:loaded_matchit = 1` in your `init.vim`.
 
 ### Matchparen emulation
 

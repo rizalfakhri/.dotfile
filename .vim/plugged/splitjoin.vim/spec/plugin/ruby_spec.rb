@@ -586,7 +586,7 @@ describe "ruby" do
         foo = { 'bar baz ': 1, "one two ": 2 }
       EOF
 
-      vim.search 'bar:'
+      vim.search 'bar'
       split
 
       assert_file_contents <<~EOF
@@ -1436,6 +1436,20 @@ describe "ruby" do
         }
       EOF
     end
+
+    specify "[edge case] block after a list of arguments" do
+      set_file_contents <<~EOF
+        function_call(one, two) { bar }
+      EOF
+
+      vim.search 'function_call'
+      split
+
+      # Unchanged
+      assert_file_contents <<~EOF
+        function_call(one, two) { bar }
+      EOF
+    end
   end
 
   describe "arrays" do
@@ -1733,6 +1747,29 @@ describe "ruby" do
 
       assert_file_contents <<~EOF
         one.two.three
+      EOF
+    end
+  end
+
+  describe "oneline method definitions" do
+    specify "with the cursor on the definition" do
+      set_file_contents <<~EOF
+        def foo(one, two) = bar
+      EOF
+
+      vim.search 'def'
+      split
+
+      assert_file_contents <<~EOF
+        def foo(one, two)
+          bar
+        end
+      EOF
+
+      join
+
+      assert_file_contents <<~EOF
+        def foo(one, two) = bar
       EOF
     end
   end

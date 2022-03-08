@@ -11,6 +11,8 @@ let g:clap#floating_win#display = {}
 let g:clap#floating_win#spinner = {}
 let g:clap#floating_win#preview = {}
 
+let s:has_nvim_0_5 = has('nvim-0.5')
+
 let s:shadow_bufnr = nvim_create_buf(v:false, v:true)
 
 let s:spinner_bufnr = nvim_create_buf(v:false, v:true)
@@ -80,6 +82,8 @@ function! g:clap#floating_win#display.open() abort
         \ '&cursorline': 0,
         \ '&signcolumn': 'yes',
         \ '&foldcolumn': 0,
+        \ 'autopairs_enabled': 0,
+        \ 'ale_enabled': 0,
         \ })
 endfunction
 
@@ -120,6 +124,9 @@ function! s:get_config_border_left() abort
   let opts.width = s:symbol_width
   let opts.height = 1
   let opts.focusable = v:false
+  if s:has_nvim_0_5
+    let opts.zindex = 1000
+  endif
   return opts
 endfunction
 
@@ -142,6 +149,9 @@ function! s:get_config_spinner() abort
   let opts.width = clap#spinner#width()
   let opts.height = 1
   let opts.focusable = v:false
+  if s:has_nvim_0_5
+    let opts.zindex = 1000
+  endif
   return opts
 endfunction
 
@@ -172,7 +182,7 @@ function! g:clap#floating_win#spinner.shrink() abort
 
       let opts = nvim_win_get_config(s:spinner_winid)
       let opts.col += opts.width
-      let opts.width = s:display_opts.width - opts.width - s:symbol_width * 2 - g:__clap_indicator_winwidth
+      let opts.width = s:display_opts.width - opts.width - s:symbol_width * 2 - s:indicator_width
       if opts.width < 0
         let opts.width = 1
       endif
@@ -185,13 +195,16 @@ endfunction
 function! s:get_config_input() abort
   let opts = nvim_win_get_config(s:spinner_winid)
   let opts.col += opts.width
-  let opts.width = s:display_opts.width - opts.width - s:symbol_width * 2 - g:__clap_indicator_winwidth
+  let opts.width = s:display_opts.width - opts.width - s:symbol_width * 2 - s:indicator_width
   " E5555: API call: 'width' key must be a positive Integer
   " Avoid E5555 here and it seems to be fine later.
   if opts.width < 0
     let opts.width = 1
   endif
   let opts.focusable = v:true
+  if s:has_nvim_0_5
+    let opts.zindex = 1000
+  endif
   return opts
 endfunction
 
@@ -218,10 +231,12 @@ function! g:clap#floating_win#input.open() abort
   if s:exists_deoplete
     call deoplete#custom#buffer_option('auto_complete', v:false)
   endif
+  call setwinvar(s:input_winid, 'airline_disable_statusline', 1)
   call setbufvar(s:input_bufnr, 'coc_suggest_disable', 1)
   " Disable the auto-pairs plugin
   call setbufvar(s:input_bufnr, 'coc_pairs_disabled', ['"', "'", '(', ')', '<', '>', '[', ']', '{', '}', '`'])
   call setbufvar(s:input_bufnr, 'autopairs_loaded', 1)
+  call setbufvar(s:input_bufnr, 'autopairs_enabled', 0)
   call setbufvar(s:input_bufnr, 'pear_tree_enabled', 0)
   call setwinvar(s:input_winid, '&spell', 0)
   let g:clap.input.winid = s:input_winid
@@ -254,9 +269,12 @@ endfunction
 function! s:get_config_indicator() abort
   let opts = nvim_win_get_config(s:input_winid)
   let opts.col += opts.width
-  let opts.width = g:__clap_indicator_winwidth
+  let opts.width = s:indicator_width
   let opts.focusable = v:false
   let opts.style = 'minimal'
+  if s:has_nvim_0_5
+    let opts.zindex = 1000
+  endif
   return opts
 endfunction
 
@@ -278,6 +296,9 @@ function! s:get_config_border_right() abort
   let opts.col += opts.width
   let opts.width = s:symbol_width
   let opts.focusable = v:false
+  if s:has_nvim_0_5
+    let opts.zindex = 1000
+  endif
   return opts
 endfunction
 
@@ -310,17 +331,27 @@ function! s:adjust_display_for_border_symbol() abort
 endfunction
 
 function! s:get_config_preview(height) abort
-  if g:clap_preview_direction ==# 'LR'
+  let preview_direction = clap#preview#direction() 
+  if preview_direction ==# 'LR'
     let opts = nvim_win_get_config(s:display_winid)
     let opts.row -= 1
     let opts.col += opts.width
     let opts.height += 1
-  else
+  else " preview_direction ==# 'UD'
     let opts = nvim_win_get_config(s:display_winid)
     let opts.row += opts.height
     let opts.height = a:height
   endif
   let opts.style = 'minimal'
+
+  if s:has_nvim_0_5 && g:clap_popup_border !=? 'nil'
+    let opts.border = g:clap_popup_border
+    if preview_direction ==# 'UD'
+      let opts.width -= 2
+    else " preview_direction ==# 'UD'
+      let opts.height -= 2
+    endif
+  endif
   return opts
 endfunction
 
@@ -345,7 +376,7 @@ function! s:create_preview_win(height) abort
 endfunction
 
 function! s:max_preview_size() abort
-  if g:clap_preview_direction ==# 'LR'
+  if clap#preview#direction() ==# 'LR'
     return s:display_opts.height
   else
     let max_size = &lines - s:display_opts.row - s:display_opts.height - &cmdheight
@@ -368,7 +399,7 @@ function! clap#floating_win#preview.show(lines) abort
   if !exists('s:preview_winid')
     call s:create_preview_win(height)
   else
-    if g:clap_preview_direction !=# 'LR'
+    if clap#preview#direction() !=# 'LR'
       let opts = nvim_win_get_config(s:preview_winid)
       if opts.height != height
         let opts.height = height
@@ -401,33 +432,50 @@ function! s:ensure_closed() abort
   silent! autocmd! ClapEnsureAllClosed
 endfunction
 
+function! s:open_shadow_before_indicator_win(yes) abort
+  if a:yes
+    if g:clap_enable_background_shadow
+      call s:open_shadow_win()
+    end
+    call s:open_indicator_win()
+  else
+    call s:open_indicator_win()
+    if g:clap_enable_background_shadow
+      call s:open_shadow_win()
+    end
+  endif
+endfunction
+
 function! clap#floating_win#open() abort
   let g:__clap_display_curlnum = 1
 
   let s:save_winheight = &winheight
   let &winheight = 1
 
+  let s:indicator_width = clap#layout#indicator_width()
+
   " The order matters.
   call g:clap#floating_win#display.open()
   call s:open_win_border_left()
   call g:clap#floating_win#spinner.open()
   call g:clap#floating_win#input.open()
-  if clap#preview#is_enabled() && g:clap_preview_direction ==# 'LR'
+  if clap#preview#is_enabled() && clap#preview#direction() ==# 'LR'
     call s:create_preview_win(s:display_opts.height)
   endif
+
   if g:clap_search_box_border_style ==# 'curve'
-    " Indicator win must be opened before shadow win.
-    " ref 567
-    call s:open_indicator_win()
-    if g:clap_enable_background_shadow
-      call s:open_shadow_win()
-    end
+    let open_shadow_first = v:false
+  elseif g:clap_search_box_border_style ==# 'nil'
+    let open_shadow_first = v:true
   else
-    if g:clap_enable_background_shadow
-      call s:open_shadow_win()
-    end
-    call s:open_indicator_win()
+    let open_shadow_first = v:false
   endif
+  " This tricky issue has been resolved with the newly added zindex in neovim.
+  "
+  " Indicator win must be opened before shadow win in some cases.
+  " ref https://github.com/liuchengxu/vim-clap/issues/567#issuecomment-717554261
+  call s:open_shadow_before_indicator_win(open_shadow_first)
+
   call s:open_win_border_right()
 
   " This seemingly does not look good.

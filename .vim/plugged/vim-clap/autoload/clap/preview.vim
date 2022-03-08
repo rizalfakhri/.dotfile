@@ -7,8 +7,21 @@ set cpoptions&vim
 let s:path_seperator = has('win32') ? '\' : '/'
 let s:default_size = 5
 
+function! clap#preview#direction() abort
+  if g:clap_preview_direction ==# 'AUTO'
+    return &columns < 80 ? 'UD' : 'LR'
+  else
+    return g:clap_preview_direction
+  endif
+endfunction
+
 function! s:peek_file(fname, fpath) abort
-  let lines = readfile(a:fpath, '', 2 * s:default_size)
+  if has_key(g:clap.preview, 'winid')
+    let size = max([2 * s:default_size, winheight(g:clap.preview.winid)])
+  else
+    let size = 2 * s:default_size
+  endif
+  let lines = readfile(a:fpath, '', size)
   call insert(lines, a:fpath)
   call g:clap.preview.show(lines)
   call g:clap.preview.set_syntax(clap#ext#into_filetype(a:fname))
@@ -102,6 +115,9 @@ endfunction
 
 function! clap#preview#get_range(origin_lnum) abort
   let size = clap#preview#size_of(g:clap.provider.id)
+  if clap#preview#direction() ==# 'LR'
+    let size = max([size, winheight(g:clap.display.winid) / 2])
+  endif
   return clap#preview#get_line_range(a:origin_lnum, size)
 endfunction
 
@@ -144,31 +160,53 @@ function! clap#preview#async_open_with_delay() abort
   let s:preview_timer = timer_start(s:preview_delay, { -> clap#impl#on_move#invoke_async()})
 endfunction
 
+function! clap#preview#clear() abort
+  let s:last_preview_line = ''
+endfunction
+
+function! clap#preview#maple_opts(extra) abort
+  let opts = {
+        \ 'fpath': fnamemodify(fnameescape(g:clap.display.getcurline()), ':p'),
+        \ 'display_width': winwidth(g:clap.display.winid),
+        \ 'display_height': winheight(g:clap.display.winid),
+        \ 'preview_direction': clap#preview#direction(),
+        \ }
+  if has_key(g:clap.preview, 'winid')
+    call extend(opts, {
+        \ 'preview_width': winwidth(g:clap.preview.winid),
+        \ 'preview_height': winheight(g:clap.preview.winid),
+        \ })
+  endif
+  return type(a:extra) == v:t_dict ? extend(opts, a:extra) : opts
+endfunction
+
 if has('nvim')
   let s:header_ns_id = nvim_create_namespace('clap_preview_header')
+
+  " lnum is 1-based.
+  function! s:add_highlight_at(lnum) abort
+    if nvim_buf_is_valid(g:clap.preview.bufnr)
+      call nvim_buf_add_highlight(g:clap.preview.bufnr, s:header_ns_id, 'Title', a:lnum - 1, 0, -1)
+    endif
+  endfunction
+
   " Sometimes the first line of preview window is used for the header.
   function! clap#preview#highlight_header() abort
-    " try
-      " let winid = win_getid()
-      " Do not use matchaddpos() as it needs to be executed in that window.
-      " call g:clap.preview.goto_win()
-      " call s:highlight_header()
-      if nvim_buf_is_valid(g:clap.preview.bufnr)
-        call nvim_buf_add_highlight(g:clap.preview.bufnr, s:header_ns_id, 'Title', 0, 0, -1)
-      endif
-    " finally
-      " noautocmd call win_gotoid(winid)
-    " endtry
+    call s:add_highlight_at(1)
   endfunction
 
   function! clap#preview#clear_header_highlight() abort
     call nvim_buf_clear_namespace(g:clap.preview.bufnr, s:header_ns_id, 0, -1)
   endfunction
 else
-  function! s:highlight_header() abort
+  function! s:add_highlight_at(lnum) abort
     if !exists('w:preview_header_id')
-      let w:preview_header_id = matchaddpos('Title', [1])
+      let w:preview_header_id = matchaddpos('Title', [a:lnum])
     endif
+  endfunction
+
+  function! s:highlight_header() abort
+    call s:add_highlight_at(1)
   endfunction
 
   function! s:clear_header_highlight() abort

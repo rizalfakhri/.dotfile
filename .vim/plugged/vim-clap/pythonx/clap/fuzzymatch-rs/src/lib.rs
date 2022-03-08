@@ -2,8 +2,11 @@ use std::collections::HashMap;
 
 use pyo3::{prelude::*, wrap_pyfunction};
 
-use filter::matcher::{Algo, Bonus, MatchType, Matcher};
-use printer::truncate_long_matched_lines;
+use filter::{
+    matcher::{Bonus, FuzzyAlgorithm, MatchType, Matcher},
+    FilteredItem, Query, SourceItem,
+};
+use printer::truncate_long_matched_lines_v0;
 
 /// Pass a Vector of lines to Vim for setting them in Vim with one single API call.
 type LinesInBatch = Vec<String>;
@@ -78,40 +81,43 @@ fn fuzzy_match(
 
     bonuses.push(Bonus::RecentFiles(recent_files.into()));
 
-    let matcher = Matcher::new_with_bonuses(
-        if query.contains(' ') {
-            Algo::SubString
-        } else {
-            Algo::Fzy
-        },
-        match_type,
-        bonuses,
-    );
+    let matcher = Matcher::with_bonuses(FuzzyAlgorithm::Fzy, match_type, bonuses);
 
+    let query: Query = query.into();
     let do_match = |line: &str| {
         if enable_icon {
             // " " is 4 bytes, but the offset of highlight is 2.
             matcher
-                .do_match(&line[4..].into(), query)
+                .match_query(&SourceItem::from(&line[4..]), &query)
                 .map(|(score, indices)| (score, indices.into_iter().map(|x| x + 4).collect()))
         } else {
-            matcher.do_match(&line.into(), query)
+            matcher.match_query(&SourceItem::from(line), &query)
         }
     };
 
     let mut ranked = candidates
         .into_iter()
-        .filter_map(|line| do_match(&line).map(|(score, indices)| (line.into(), score, indices)))
+        .filter_map(|line| {
+            do_match(&line).map(|(score, indices)| (Into::<SourceItem>::into(line), score, indices))
+        })
+        .map(Into::<FilteredItem>::into)
         .collect::<Vec<_>>();
 
-    ranked.sort_unstable_by(|(_, v1, _), (_, v2, _)| v2.partial_cmp(v1).unwrap());
+    ranked.sort_unstable_by(|v1, v2| v2.score.partial_cmp(&v1.score).unwrap());
 
     // 2 = chars(icon)
     let skipped = if enable_icon { Some(2) } else { None };
-    let (lines, truncated_map) = truncate_long_matched_lines(ranked, winwidth, skipped);
+    let truncated_map = truncate_long_matched_lines_v0(ranked.iter_mut(), winwidth, skipped);
 
-    let (filtered, indices): (Vec<_>, Vec<_>) =
-        lines.into_iter().map(|(text, _, ids)| (text, ids)).unzip();
+    let (filtered, indices): (Vec<_>, Vec<_>) = ranked
+        .into_iter()
+        .map(|filtered_item| {
+            (
+                filtered_item.display_text().to_owned(),
+                filtered_item.match_indices,
+            )
+        })
+        .unzip();
 
     Ok((
         indices,
@@ -131,51 +137,60 @@ fn fuzzymatch_rs(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[test]
-fn py_and_rs_subscore_should_work() {
-    use filter::matcher::substring::substr_indices as substr_scorer;
-    use pyo3::{prelude::*, types::PyModule};
-    use std::fs;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    let cur_dir = std::env::current_dir().unwrap();
-    let py_path = cur_dir.parent().unwrap().join("scorer.py");
-    let py_source_code = fs::read_to_string(py_path).unwrap();
+    #[test]
+    fn py_and_rs_subscore_should_work() {
+        use filter::matcher::substring::substr_indices as substr_scorer;
+        use pyo3::{prelude::*, types::PyModule};
+        use std::fs;
 
-    let gil = Python::acquire_gil();
-    let py = gil.python();
-    let py_scorer = PyModule::from_code(py, &py_source_code, "scorer.py", "scorer").unwrap();
+        let cur_dir = std::env::current_dir().unwrap();
+        let py_path = cur_dir.parent().unwrap().join("scorer.py");
+        let py_source_code = fs::read_to_string(py_path).unwrap();
 
-    let test_cases = vec![
-        ("su ou", "substr_scorer_should_work"),
-        ("su ork", "substr_scorer_should_work"),
-    ];
+        pyo3::prepare_freethreaded_python();
 
-    for (niddle, haystack) in test_cases.into_iter() {
-        let py_result: (i64, Vec<usize>) = py_scorer
-            .call1("substr_scorer", (niddle, haystack))
-            .unwrap()
-            .extract()
-            .map(|(score, positions): (f64, Vec<usize>)| (score as i64, positions))
-            .unwrap();
-        let rs_result = substr_scorer(haystack, niddle).unwrap();
-        assert_eq!(py_result, rs_result);
+        let gil = Python::acquire_gil();
+        let py = gil.python();
+        let py_scorer = PyModule::from_code(py, &py_source_code, "scorer.py", "scorer").unwrap();
+
+        let test_cases = vec![
+            ("su ou", "substr_scorer_should_work"),
+            ("su ork", "substr_scorer_should_work"),
+        ];
+
+        for (niddle, haystack) in test_cases.into_iter() {
+            let py_result: (i64, Vec<usize>) = py_scorer
+                .getattr("substr_scorer")
+                .unwrap()
+                .call1((niddle, haystack))
+                .unwrap()
+                .extract()
+                .map(|(score, positions): (f64, Vec<usize>)| (score as i64, positions))
+                .unwrap();
+            let rs_result = substr_scorer(haystack, niddle).unwrap();
+            assert_eq!(py_result, rs_result);
+        }
     }
-}
 
-#[test]
-fn test_skip_icon() {
-    let lines = vec![" .dependabot/config.yml".into(), " .editorconfig".into()];
-    let query = "con";
+    #[test]
+    fn test_skip_icon() {
+        let lines = vec![" .dependabot/config.yml".into(), " .editorconfig".into()];
+        let query = "con";
 
-    let context: HashMap<String, String> = vec![
-        ("winwidth", "62"),
-        ("enable_icon", "True"),
-        ("match_type", "Full"),
-        ("bonus_type", "FileName"),
-    ]
-    .into_iter()
-    .map(|(x, y)| (x.into(), y.into()))
-    .collect();
+        let context: HashMap<String, String> = vec![
+            ("winwidth", "62"),
+            ("enable_icon", "True"),
+            ("match_type", "Full"),
+            ("bonus_type", "FileName"),
+        ]
+        .into_iter()
+        .map(|(x, y)| (x.into(), y.into()))
+        .collect();
 
-    println!("ret: {:#?}", fuzzy_match(query, lines, vec![], context));
+        println!("ret: {:#?}", fuzzy_match(query, lines, vec![], context));
+    }
 }

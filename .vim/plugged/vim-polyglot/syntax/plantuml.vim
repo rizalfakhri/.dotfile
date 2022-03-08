@@ -49,9 +49,11 @@ syntax keyword plantumlKeyword split start stereotype stop title top up while
 " Not in 'java - jar plantuml.jar - language' results
 syntax keyword plantumlKeyword endlegend sprite then
 " gantt
-syntax keyword plantumlTypeKeyword project monday tuesday wednesday thursday friday saturday sunday
-syntax keyword plantumlKeyword starts ends start end closed day after colored lasts happens in at are to the and
-
+syntax keyword plantumlTypeKeyword monday tuesday wednesday thursday friday saturday sunday today
+syntax keyword plantumlTypeKeyword project Project labels Labels last first column
+syntax keyword plantumlKeyword starts ends start end closed after colored lasts happens in at are to the and
+syntax keyword plantumlKeyword printscale ganttscale projectscale daily weekly monthly quarterly yearly zoom
+syntax keyword plantumlKeyword day days week weeks today then complete displays same row pauses
 
 syntax keyword plantumlCommentTODO XXX TODO FIXME NOTE contained
 syntax match plantumlColor /#[0-9A-Fa-f]\{6\}\>/
@@ -99,7 +101,7 @@ syntax match plantumlNoteMultiLineStart /\%(^\s*[rh]\?\%(note\|legend\)\)\@<=\s\
 " Class
 syntax region plantumlClass
       \ start=/\%(\%(class\|interface\|object\)\s[^{]\+\)\@<=\zs{/
-      \ end=/^\s*}/ 
+      \ end=/^\s*}/
       \ contains=plantumlClassArrows,
       \          plantumlClassKeyword,
       \          @plantumlClassOp,
@@ -128,7 +130,7 @@ syntax match plantumlTag /<\/\?[bi]>/
 syntax region plantumlTag start=/<\/\?\%(back\|color\|del\|font\|img\|s\|size\|strike\|u\|w\)/ end=/>/
 
 " Labels with a colon
-syntax match plantumlColonLine /\S\@<=\s*\zs:.\+$/ contains=plantumlSpecialString
+syntax match plantumlColonLine /\S\@<=\s*\zs : .\+$/ contains=plantumlSpecialString
 
 " Stereotypes
 syntax match plantumlStereotype /<<[^-.]\+>>/ contains=plantumlSpecialString
@@ -156,19 +158,24 @@ let s:mindmapHilightLinks = [
       \ 'Function', 'Todo'
       \  ]
 
-let i = 1
-let contained = []
-while i < len(s:mindmapHilightLinks)
-  execute 'syntax match plantumlMindmap' . i . ' /^\([-+*]\)\1\{' . (i - 1) . '}_\?\s\+/ contained'
-  execute 'syntax match plantumlMindmap' . i . ' /^\s\{' . (i - 1) . '}\*_\?\s\+/ contained'
-  execute 'highlight default link plantumlMindmap' . i . ' ' . s:mindmapHilightLinks[i - 1]
-  call add(contained, 'plantumlMindmap' . i)
-  let i = i + 1
+let s:i = 1
+let s:contained = []
+let s:mindmap_color = '\(\[#[^\]]\+\]\)\?'
+let s:mindmap_removing_box = '_\?'
+let s:mindmap_options = join([s:mindmap_color, s:mindmap_removing_box], '')
+while s:i < len(s:mindmapHilightLinks)
+  execute 'syntax match plantumlMindmap' . s:i . ' /^\([-+*]\)\1\{' . (s:i - 1) . '}' . s:mindmap_options . '\(:\|\s\+\)/ contained'
+  execute 'syntax match plantumlMindmap' . s:i . ' /^\s\{' . (s:i - 1) . '}\*' . s:mindmap_options . '\(:\|\s\+\)/ contained'
+  execute 'highlight default link plantumlMindmap' . s:i . ' ' . s:mindmapHilightLinks[s:i - 1]
+  call add(s:contained, 'plantumlMindmap' . s:i)
+  let s:i = s:i + 1
 endwhile
 
-execute 'syntax region plantumlMindmap oneline start=/^\([-+*]\)\1*_\?\s/ end=/$/ contains=' . join(contained, ',')
+execute 'syntax region plantumlMindmap oneline start=/^\([-+*]\)\1*' . s:mindmap_options . '\s/ end=/$/ contains=' . join(s:contained, ',')
+" Multilines
+execute 'syntax region plantumlMindmap start=/^\([-+*]\)\1*' . s:mindmap_options . ':/ end=/;$/ contains=' . join(s:contained, ',')
 " Markdown syntax
-execute 'syntax region plantumlMindmap oneline start=/^\s*\*_\?\s/ end=/$/ contains=' . join(contained, ',')
+execute 'syntax region plantumlMindmap oneline start=/^\s*\*' . s:mindmap_options . '\s/ end=/$/ contains=' . join(s:contained, ',')
 
 
 " Skinparam keywords
@@ -256,6 +263,7 @@ syntax keyword plantumlSkinparamKeyword InterfaceStereotypeFontSize InterfaceSte
 syntax keyword plantumlSkinparamKeyword LegendBorderColor LegendBorderThickness LegendFontColor LegendFontName
 syntax keyword plantumlSkinparamKeyword LegendFontSize LegendFontStyle LexicalBackgroundColor LexicalBorderColor
 syntax keyword plantumlSkinparamKeyword LifelineStrategy Linetype MachineBackgroundColor MachineBorderColor
+syntax keyword plantumlSkinparamKeyword LineColor LineStyle LineThickness
 syntax keyword plantumlSkinparamKeyword MachineBorderThickness MachineFontColor MachineFontName MachineFontSize
 syntax keyword plantumlSkinparamKeyword MachineFontStyle MachineStereotypeFontColor MachineStereotypeFontName
 syntax keyword plantumlSkinparamKeyword MachineStereotypeFontSize MachineStereotypeFontStyle MaxAsciiMessageLength

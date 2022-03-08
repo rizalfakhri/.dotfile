@@ -6,6 +6,12 @@ set cpoptions&vim
 
 let s:job_id = -1
 
+let s:log_file = expand('~/vim_clap.error')
+
+function! s:log_error(...) abort
+  call writefile([strftime('%Y-%m-%d %H:%M:%S ').json_encode(a:000)], s:log_file, 'a')
+endfunction
+
 if has('nvim')
 
   let s:round_message = ''
@@ -43,7 +49,7 @@ if has('nvim')
       try
         call s:MessageHandler(trim(s:round_message))
       catch
-        call clap#helper#echo_error('Failed to handle message:'.v:exception.', th:'.v:throwpoint)
+        call clap#helper#echo_error('[daemon]Failed to handle message:'.v:exception.', throwpoint:'.v:throwpoint)
       finally
         let s:round_message = ''
       endtry
@@ -62,6 +68,7 @@ if has('nvim')
         return
       endif
       call clap#helper#echo_error('on_event:'.string(a:data))
+      " call s:log_error(a:data)
     endif
   endfunction
 
@@ -134,6 +141,7 @@ function! clap#job#daemon#start(MessageHandler) abort
       \   'enable_icon': g:clap_enable_icon ? v:true : v:false,
       \   'clap_preview_size': g:clap_preview_size,
       \ })
+  call clap#client#call('init_ext_map', v:null, {'autocmd_filetypedetect': execute('autocmd filetypedetect')})
   return
 endfunction
 

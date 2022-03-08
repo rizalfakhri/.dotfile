@@ -21,30 +21,73 @@ endfunction
 function! matchup#loader#init_buffer() abort " {{{1
   call matchup#perf#tic('loader_init_buffer')
 
+  let l:has_ts = 0
+  let [l:no_words, l:filt_words] = [0, 0]
+  if s:ts_may_be_supported && matchup#ts_engine#is_enabled(bufnr('%'))
+    let l:has_ts = 1
+    if matchup#ts_engine#get_option(bufnr('%'), 'include_match_words')
+      let l:filt_words = 1
+    else
+      let l:no_words = 1
+    endif
+  endif
+
+  let l:has_ts_hl = 0
+  if s:ts_may_be_supported && empty(&syntax)
+        \ && matchup#ts_engine#is_hl_enabled(bufnr('%'))
+    let l:has_ts_hl = 1
+
+    if matchup#ts_engine#get_option(
+          \ bufnr('%'), 'additional_vim_regex_highlighting')
+      set syntax=ON
+    endif
+  endif
+
   " initialize lists of delimiter pairs and regular expressions
   " this is the data obtained from parsing b:match_words
-  let b:matchup_delim_lists = s:init_delim_lists()
+  let b:matchup_delim_lists = s:init_delim_lists(l:no_words, l:filt_words)
 
   " this is the combined set of regular expressions used for matching
   " its structure is matchup_delim_re[type][open,close,both,mid,both_all]
   let b:matchup_delim_re = s:init_delim_regexes()
 
-  " process match_skip
-  let b:matchup_delim_skip = s:init_delim_skip()
+  " process b:match_skip
+  if l:has_ts_hl
+    let b:matchup_delim_skip
+          \ = "matchup#ts_syntax#skip_expr(s:effline('.'),s:effcol('.'))"
+  else
+    let b:matchup_delim_skip = s:init_delim_skip()
+  endif
 
-  " enable/disable for this buffer
-  let b:matchup_delim_enabled = !empty(b:matchup_delim_lists.all.regex)
-
+  " enable matching engines
   let b:matchup_active_engines = {}
-  if b:matchup_delim_enabled
+
+  if l:has_ts
+    for l:t in ['all', 'delim_all', 'delim_py']
+      let b:matchup_active_engines[l:t]
+            \ = get(b:matchup_active_engines, l:t, []) + ['tree_sitter']
+    endfor
+  endif
+
+  if !empty(b:matchup_delim_lists.all.regex)
     for l:t in ['all', 'delim_all', 'delim_tex']
       let b:matchup_active_engines[l:t]
             \ = get(b:matchup_active_engines, l:t, []) + ['classic']
     endfor
   endif
 
+  " enable/disable for this buffer
+  let b:matchup_delim_enabled = !empty(b:matchup_active_engines)
+
   call matchup#perf#toc('loader_init_buffer', 'done')
 endfunction
+
+function! matchup#loader#_treesitter_may_be_supported() abort
+  return s:ts_may_be_supported
+endfunction
+
+let s:ts_may_be_supported = has('nvim-0.5.0') && exists('*luaeval')
+      \ && luaeval('pcall(require, "treesitter-matchup")')
 
 " }}}1
 function! matchup#loader#bufwinenter() abort " {{{1
@@ -61,7 +104,8 @@ function! matchup#loader#refresh_match_words() abort " {{{1
 
     " protect the cursor from the match_words function
     let l:save_pos = matchup#pos#get_cursor()
-    execute 'let l:match_words = ' b:match_words
+    let l:match_words = ''
+    execute 'let l:match_words =' b:match_words
     if l:save_pos != matchup#pos#get_cursor()
       call matchup#pos#set_cursor(l:save_pos)
     endif
@@ -76,7 +120,7 @@ function! matchup#loader#refresh_match_words() abort " {{{1
       call matchup#perf#toc('refresh', 'cache_hit')
     else
       " re-parse match words
-      let b:matchup_delim_lists = s:init_delim_lists()
+      let b:matchup_delim_lists = s:init_delim_lists(0, 0)
       let b:matchup_delim_re = s:init_delim_regexes()
       let s:match_word_cache[l:match_words] = {
             \ 'delim_lists'  : b:matchup_delim_lists,
@@ -91,7 +135,7 @@ let s:match_word_cache = {}
 
 " }}}1
 
-function! s:init_delim_lists(...) abort " {{{1
+function! s:init_delim_lists(no_words, filter_words) abort " {{{1
   let l:lists = {
         \ 'delim_tex': {
         \   'regex': [],
@@ -119,20 +163,9 @@ function! s:init_delim_lists(...) abort " {{{1
   endif
 
   " parse matchpairs and b:match_words
-  let l:match_words = a:0 ? a:1 : get(b:, 'match_words', '')
+  let l:match_words = !a:no_words ? get(b:, 'match_words', '') : ''
   if !empty(l:match_words) && l:match_words !~# ':'
-    if a:0
-      echohl ErrorMsg
-      echo 'match-up: function b:match_words error'
-      echohl None
-      let l:match_words = ''
-    else
-      execute 'let l:match_words =' b:match_words
-      " echohl ErrorMsg
-      " echo 'match-up: function b:match_words not supported'
-      " echohl None
-      " let l:match_words = ''
-    endif
+    execute 'let l:match_words =' b:match_words
   endif
   let l:simple = empty(l:match_words)
 
@@ -146,6 +179,13 @@ function! s:init_delim_lists(...) abort " {{{1
   endif
 
   let l:sets = split(l:match_words, g:matchup#re#not_bslash.',')
+
+  if a:filter_words
+    call filter(l:sets, 'v:val =~? "^[^a-zA-Z]\\{3,18\\}$"')
+    if empty(l:sets)
+      return s:init_delim_lists_fast(l:match_words)
+    endif
+  endif
 
   " do not duplicate whole groups of match words
   let l:seen = {}
@@ -222,7 +262,7 @@ function! s:init_delim_lists(...) abort " {{{1
     endfor
 
     " for the 'open' pattern, create a series of replacements
-    " of the capture groups with \9, \8, ..., \1
+    " of the capture groups with corresponding \9, \8, ..., \1
     " this must be done deepest to shallowest
     let l:augments = {}
     let l:order = matchup#loader#capture_group_replacement_order(l:cg)

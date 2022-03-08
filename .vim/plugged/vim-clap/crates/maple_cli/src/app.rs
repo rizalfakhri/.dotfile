@@ -1,113 +1,126 @@
 use anyhow::Result;
-use structopt::{clap::AppSettings, StructOpt};
+use clap::{AppSettings, Parser};
 
-use icon::IconPainter;
+use filter::FilterContext;
+use icon::Icon;
 
-#[derive(StructOpt, Debug)]
+use crate::command;
+
+#[derive(Parser, Debug)]
 pub enum Cmd {
     /// Display the current version
-    #[structopt(name = "version")]
+    #[clap(name = "version")]
     Version,
     /// Start the stdio-based service, currently there is only filer support.
-    #[structopt(name = "rpc")]
-    RPC,
+    #[clap(name = "rpc")]
+    Rpc,
     /// Execute the grep command to avoid the escape issue
-    #[structopt(name = "grep")]
-    Grep(crate::cmd::grep::Grep),
+    #[clap(name = "grep")]
+    Grep(command::grep::Grep),
+    #[clap(name = "gtags")]
+    Gtags(command::gtags::Gtags),
     /// Execute the shell command.
-    #[structopt(name = "exec")]
-    Exec(crate::cmd::exec::Exec),
+    #[clap(name = "exec")]
+    Exec(command::exec::Exec),
+    /// Dumb jump.
+    #[clap(name = "dumb-jump")]
+    DumbJump(command::dumb_jump::DumbJump),
     /// Generate the project-wide tags using ctags.
-    #[structopt(name = "tags")]
-    Tags(crate::cmd::tags::Tags),
+    #[clap(name = "ctags", subcommand)]
+    Ctags(command::ctags::Ctags),
     /// Interact with the cache info.
-    #[structopt(name = "cache")]
-    Cache(crate::cmd::cache::Cache),
+    #[clap(name = "cache")]
+    Cache(command::cache::Cache),
     /// Fuzzy filter the input.
-    #[structopt(name = "filter")]
-    Filter(crate::cmd::filter::Filter),
+    #[clap(name = "filter")]
+    Filter(command::filter::Filter),
     /// Filter against current Vim buffer.
-    #[structopt(name = "blines")]
-    Blines(crate::cmd::blines::Blines),
+    #[clap(name = "blines")]
+    Blines(command::blines::Blines),
     /// Generate vim help tags.
-    #[structopt(name = "helptags")]
-    Helptags(crate::cmd::helptags::Helptags),
+    #[clap(name = "helptags")]
+    Helptags(command::helptags::Helptags),
     /// Start the forerunner job of grep.
-    #[structopt(name = "ripgrep-forerunner")]
-    RipGrepForerunner(crate::cmd::grep::RipGrepForerunner),
+    #[clap(name = "ripgrep-forerunner")]
+    RipGrepForerunner(command::grep::RipGrepForerunner),
     /// Retrive the latest remote release info.
-    #[structopt(name = "upgrade")]
+    #[clap(name = "upgrade")]
     Upgrade(upgrade::Upgrade),
 }
 
-#[derive(StructOpt, Debug)]
-#[structopt(
-  name = "maple",
-  no_version,
-  global_settings = &[AppSettings::DisableVersion]
-)]
+#[derive(Parser, Debug)]
+#[clap(name = "maple")]
+#[clap(global_setting(AppSettings::DisableVersionFlag))]
 pub struct Maple {
+    #[clap(flatten)]
+    pub params: Params,
+
+    /// Enable the logging system.
+    #[clap(long, parse(from_os_str))]
+    pub log: Option<std::path::PathBuf>,
+
+    #[clap(subcommand)]
+    pub command: Cmd,
+}
+
+#[derive(Parser, Debug)]
+pub struct Params {
     /// Print the top NUM of filtered items.
     ///
     /// The returned JSON has three fields:
     ///   - total: total number of initial filtered result set.
     ///   - lines: text lines used for displaying directly.
     ///   - indices: the indices of matched elements per line, used for the highlight purpose.
-    #[structopt(short = "n", long = "number", name = "NUM")]
+    #[clap(long, name = "NUM")]
     pub number: Option<usize>,
 
     /// Width of clap window.
-    #[structopt(short = "w", long = "winwidth")]
+    #[clap(long)]
     pub winwidth: Option<usize>,
 
     /// Prepend an icon for item of files and grep provider, valid only when --number is used.
-    #[structopt(short, long, possible_values = &IconPainter::variants(), case_insensitive = true)]
-    pub icon_painter: Option<IconPainter>,
+    #[clap(long, parse(from_str), default_value = "unknown")]
+    pub icon: Icon,
 
     /// Do not use the cached file for exec subcommand.
-    #[structopt(long = "no-cache")]
+    #[clap(long)]
     pub no_cache: bool,
+}
 
-    /// Enable the logging system.
-    #[structopt(long = "log", parse(from_os_str))]
-    pub log: Option<std::path::PathBuf>,
-
-    #[structopt(subcommand)]
-    pub command: Cmd,
+impl Params {
+    pub fn into_filter_context(self) -> FilterContext {
+        FilterContext::default()
+            .icon(self.icon)
+            .number(self.number)
+            .winwidth(self.winwidth)
+    }
 }
 
 impl Maple {
-    pub fn run(self) -> Result<()> {
+    pub async fn run(self) -> Result<()> {
         match self.command {
-            Cmd::Version | Cmd::Upgrade(_) => unreachable!(),
-            Cmd::Helptags(helptags) => helptags.run()?,
-            Cmd::Tags(tags) => tags.run(self.no_cache, self.icon_painter)?,
-            Cmd::Blines(blines) => {
-                blines.run(self.number, self.winwidth)?;
-            }
-            Cmd::RipGrepForerunner(rip_grep_forerunner) => {
-                rip_grep_forerunner.run(self.number, self.icon_painter, self.no_cache)?
-            }
+            Cmd::Version | Cmd::Upgrade(_) => unreachable!("Version and Upgrade are unusable"),
+            Cmd::Exec(exec) => exec.run(self.params)?,
+            Cmd::Grep(grep) => grep.run(self.params)?,
+            Cmd::Ctags(ctags) => ctags.run(self.params)?,
+            Cmd::Gtags(gtags) => gtags.run(self.params)?,
             Cmd::Cache(cache) => cache.run()?,
-            Cmd::Filter(filter) => {
-                filter.run(self.number, self.winwidth, self.icon_painter)?;
-            }
-            Cmd::Exec(exec) => {
-                exec.run(self.number, self.icon_painter, self.no_cache)?;
-            }
-            Cmd::Grep(grep) => {
-                grep.run(self.number, self.winwidth, self.icon_painter, self.no_cache)?;
-            }
-            Cmd::RPC => {
+            Cmd::Blines(blines) => blines.run(self.params)?,
+            Cmd::Filter(filter) => filter.run(self.params)?,
+            Cmd::Helptags(helptags) => helptags.run()?,
+            Cmd::DumbJump(dumb_jump) => dumb_jump.run().await?,
+            Cmd::RipGrepForerunner(rip_grep_forerunner) => rip_grep_forerunner.run(self.params)?,
+            Cmd::Rpc => {
                 if let Some(ref log_path) = self.log {
                     crate::logger::init(log_path)?;
                 } else if let Ok(log_path) = std::env::var("VIM_CLAP_LOG_PATH") {
                     crate::logger::init(log_path)?;
                 }
 
-                stdio_server::run_forever(std::io::BufReader::new(std::io::stdin()));
+                crate::stdio_server::run_forever(std::io::BufReader::new(std::io::stdin()));
+                // crate::stdio_server::start()?;
             }
-        }
+        };
         Ok(())
     }
 }

@@ -3,9 +3,9 @@
 namespace Phpactor\Tests\Unit\Extension\ClassMover\Command\Logger;
 
 use PHPUnit\Framework\TestCase;
+use Phpactor\TextDocument\TextDocumentBuilder;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Phpactor\Extension\ClassMover\Command\Logger\SymfonyConsoleMoveLogger;
-use Phpactor\ClassMover\Domain\SourceCode;
 use Phpactor\Filesystem\Domain\FilePath;
 use Phpactor\ClassMover\FoundReferences;
 use Phpactor\ClassMover\Domain\Reference\NamespaceReference;
@@ -31,7 +31,7 @@ class SymfonyConsoleMoveLoggerTest extends TestCase
     public function testReplacing(): void
     {
         $references = new FoundReferences(
-            SourceCode::fromString(
+            TextDocumentBuilder::create(
                 <<<'EOT'
                     <?php
 
@@ -55,7 +55,7 @@ class SymfonyConsoleMoveLoggerTest extends TestCase
                         }
                     }
                     EOT
-            ),
+            )->build(),
             FullyQualifiedName::fromString('Acme'),
             NamespacedClassReferences::fromNamespaceAndClassRefs(
                 NamespaceReference::fromNameAndPosition(Namespace_::fromString('Foobar'), Position::fromStartAndEnd(10, 20)),

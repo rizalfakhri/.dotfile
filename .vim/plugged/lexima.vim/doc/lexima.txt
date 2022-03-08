@@ -1,6 +1,6 @@
-*lexima.txt*	Auto close parentheses and repeat by dot dot dot...
+*lexima.txt*	Auto close paentheses and repeat by dot dot dot...
 
-Version : 1.2
+Version : 2.0
 Author  : cohama / cohama@live.jp
 License : MIT license  {{{
     Permission is hereby granted, free of charge, to any person obtaining
@@ -114,8 +114,6 @@ BASIC RULES					*lexima-basic-rules*
 	'''|'''       '             ''''''|
 	------------------------------------
 	"""|"""       "             """"""|
-	------------------------------------
-	```|```       `             ``````|
 	------------------------------------
 	(|)           <BS>          |
 	------------------------------------
@@ -239,20 +237,17 @@ g:lexima_enable_endwise_rules			*g:lexima_enable_endwise_rules*
 	If it is 1, |lexima-endwise-rules| are enabled by default.
 	default value: 1
 
-g:lexima_nvim_accept_pum_with_enter		*g:lexima_nvim_accept_pum_with_enter*
-	Deprecated. Use g:lexima_accept_pum_with_enter instead.
-
 g:lexima_accept_pum_with_enter			*g:lexima_accept_pum_with_enter*
 	If it is 1, enables <cr> to be used to accept completions when the
 	|popup-menu| is visible.
 	default value: 0 in vim, and 1 in neovim
 >
-	" Don't insert new line if popup menu is visibel
+	" Don't insert new line if popup menu is visible
 	let g:lexima_accept_pum_with_enter = 1
 
 	or
 
-	" Always insert new line regardless if popup menu is visibel
+	" Always insert new line regardless if popup menu is visible
 	let g:lexima_accept_pum_with_enter = 0
 
 g:lexima_ctrlh_as_backspace			*g:lexima_ctrlh_as_backspace*
@@ -323,28 +318,29 @@ lexima.vim provides highly customizable interface.
 You can define your own rule by using |lexima#add_rule()|.
 A rule is described as a dictionary having the following keys.
 
-char (String) (Required)
+char (String) (Required)			*lexima-rules-char*
 	Define the key to map.
 
-at (Regex) (Optional)
+at (Regex) (Optional)				*lexima-rules-at*
 	The rule is applied when this regular expression matches around the
 	cursor position.
 	'\%#' can be used to represent the cursor position. (See |/\%#|)
 	If omitted, the rule is always applied.
 
-except (Regex) (Optional)
+except (Regex) (Optional)			*lexima-rules-except*
 	Like "at", but the rule is not applied when this regular expression
 	matches around the cursor position.
 
-input (String) (Optional)
+input (String) (Optional)			*lexima-rules-input*
 	Specify a string to be input when the rule is applied.
-	If omitted, "char" is used.
+	If omitted, "" used when "leave" specified simultaneously
+	otherwise "char" is used.
 
-input_after (String) (Optional)
+input_after (String) (Optional)			*lexima-rules-input_after*
 	Similar to "input" but this string is inserted after the cursor.
 	This is useful to input closing character such as ), }, ].
 
-mode (String) (Optional)
+mode (String) (Optional)			*lexima-rules-mode*
 	Specify whether the rule is enabled on Insert mode and/or Command-line
 	mode.
 	"mode" is String containing some following characters.
@@ -355,7 +351,7 @@ mode (String) (Optional)
 	  "c": enabled on Command line mode (same as ":/?")
 	If omitted, "i" is used (only Insert mode).
 
-leave (Number/String) (Optional)
+leave (Number/String) (Optional)		*lexima-rules-leave*
 	Specify the count to move the cursor to the right.
 	However, it is only when there exists characters that is input
 	automatically by lexima.vim within the same Insert mode session.
@@ -376,8 +372,16 @@ leave (Number/String) (Optional)
 >
 	call lexima#add_rule({'char': ')', 'at': '\%# )', 'leave': 2})
 	call lexima#add_rule({'char': ')', 'at': '\%# )', 'leave': ')'})
+<
+	From v2.0, you can use both "leave", "delete" and "input" at the same time.
+	lexima.vim processes "delete" first, then "leave", and finally "input".
+	For example, 
+>
+	call lexima#add_rule({'char': ';', 'at': '\%#)', 'leave': ')', 'input': ';'})
+<
+	performs like foo(bar|) => foo(bar);| by pressing ;
 
-delete (Number/String) (Optional)
+delete (Number/String) (Optional)		*lexima-rules-delete*
 	Specify the count to delete the characters at the right of the cursor.
 	For instance, how many <Del> is input.
 	This is useful to make a dot-repeatable rule.
@@ -388,13 +392,15 @@ delete (Number/String) (Optional)
 <
 	Above two rules are similar but the second one is dot-repeatable.
 
-filetype (String/List) (Optional)
+	From v2.0, "delete" also can be used with "leave" and "input".
+
+filetype (String/List) (Optional)		*lexima-rules-filetype*
 	Specify the list of the filetype where the rule is enabled.
 	If you want to specify only one filetype, you can specify the String
 	value.
 	If omitted, the rule is enabled on any filetype.
 
-syntax (String/List) (Optional)
+syntax (String/List) (Optional)			*lexima-rules-syntax*
 	Specify the list of the highlight group name where the rule is enabled.
 	For example,
       >
@@ -406,10 +412,30 @@ syntax (String/List) (Optional)
 	all of above three rules are effective.
 	This key in available only for Insert mode.
 
-priority (Number) (Optional)
+priority (Number) (Optional)			*lexima-rules-priority*
 	Specify the priority of the rule. Bigger value has the higher
 	priority. For more details, see |lexima-priorities|.
 	If omitted, the priority is treated as 0
+
+
+with_submatch (Number/Boolean) (Optional)	*lexima-rules-with_submatch*
+	If set as truthy, you can include backreferences which
+	reference capture groups in "at" and use submatch pattern in "input"
+	and "input_after".
+	This is useful to input closing characters that include a substring
+	of the opening characters, such as "</div>".
+	Note if this set, "input" and "input_after" work as replace
+	expression, which can use |sub-replace-special| such as "\1", but be
+	careful about using backslash.
+	For example,
+>
+	call lexima#add_rule({'char': '>',
+			    \ 'at': '<\(\w\+\)\%#>',
+			    \ 'leave': '>',
+			    \ 'input_after': '</\1>',
+			    \ 'with_submatch': 1})
+<
+	This rule performs <div|> => <div>|</div> with pressing ">".
 
 
 ------------------------------------------------------------------------------
@@ -474,11 +500,23 @@ TODO						*lexima-todo*
 ==============================================================================
 CHANGELOG					*lexima-changelog*
 
+v2.0	Does not break undo until input <CR>.
+	"leave" and "delete" can be used with "input".
+	(See |lexima-rules-leave|, |lexima-rules-delete|)
+	Breaking Change: "leave" also counts <CR>. (Older version does not. This was a bug.)
+	Add |lexima-rules-with_submatch|.
+	Fix "at" pattern check in cmdline mode.
+
+v1.3	Add |g:lexima_accept_pum_with_enter|.
+	(g:lexima_nvim_accept_pum_with_enter is deprecated.)
+	Add backtick newline rule.
+	Fix delete problem.
+
 v1.2	Add |lexima-space-rules|.
 	Add "except" key in |lexima-rule|
 	Add |lexima#expand()| function.
 	Add Elixir endwise rule.
-	Impove rule finding perfomance.
+	Improve rule finding performance.
 	Fix abbreviation problem.
 	Fix conflict problem with auto-completion plugin e.g. neocomplete
 

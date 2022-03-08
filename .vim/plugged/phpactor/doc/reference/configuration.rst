@@ -267,6 +267,36 @@ Strategy to use when ordering completion results for classes and functions:
 **Default**: ``"proximity"``
 
 
+.. _param_completion_worse.snippets:
+
+
+``completion_worse.snippets``
+"""""""""""""""""""""""""""""
+
+
+
+
+Enable or disable completion snippets
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.experimantal:
+
+
+``completion_worse.experimantal``
+"""""""""""""""""""""""""""""""""
+
+
+
+
+Enable experimental functionality
+
+
+**Default**: ``false``
+
+
 .. _CompletionExtension:
 
 
@@ -999,6 +1029,33 @@ Specify which diagnostic providers should be active (default to all)
 **Default**: ``null``
 
 
+.. _param_language_server,file_events:
+
+
+``language_server,file_events``
+"""""""""""""""""""""""""""""""
+
+
+
+
+Register to recieve file events
+
+
+**Default**: ``true``
+
+
+.. _param_language_server.file_event_globs:
+
+
+``language_server.file_event_globs``
+""""""""""""""""""""""""""""""""""""
+
+
+
+
+**Default**: ``["**\/*.php"]``
+
+
 .. _LanguageServerCompletionExtension:
 
 
@@ -1065,6 +1122,28 @@ Minimum interval to update the workspace index as documents are updated (in mill
 **Default**: ``100``
 
 
+.. _LanguageServerHoverExtension:
+
+
+LanguageServerHoverExtension
+----------------------------
+
+
+.. _param_language_server_hover.template_paths:
+
+
+``language_server_hover.template_paths``
+""""""""""""""""""""""""""""""""""""""""
+
+
+
+
+Paths in which to look for templates for hover information.
+
+
+**Default**: ``["%project_config%\/templates\/markdown","%config%\/templates\/markdown"]``
+
+
 .. _LanguageServerCodeTransformExtension:
 
 
@@ -1082,6 +1161,21 @@ LanguageServerCodeTransformExtension
 
 
 Show hints for non-imported global classes and functions
+
+
+**Default**: ``false``
+
+
+.. _param_language_server_code_transform.import_name.report_non_existing_names:
+
+
+``language_server_code_transform.import_name.report_non_existing_names``
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+
+Show an error if a diagnostic name cannot be resolved - can produce false positives
 
 
 **Default**: ``false``
@@ -1260,7 +1354,25 @@ BehatExtension
 
 
 
+Path to the main behat.yml (including the filename behat.yml)
+
+
 **Default**: ``"%project_root%\/behat.yml"``
+
+
+.. _param_behat.symfony.di_xml_path:
+
+
+``behat.symfony.di_xml_path``
+"""""""""""""""""""""""""""""
+
+
+
+
+If using Symfony, set this path to the XML container dump to find contexts which are defined as services
+
+
+**Default**: ``null``
 
 
 .. _LanguageServerPhpstanExtension:
@@ -1292,23 +1404,4 @@ LanguageServerPhpstanExtension
 
 
 **Default**: ``null``
-
-
-.. _PhpSpecExtension:
-
-
-PhpSpecExtension
-----------------
-
-
-.. _param_phpspec.spec_prefix:
-
-
-``phpspec.spec_prefix``
-"""""""""""""""""""""""
-
-
-
-
-**Default**: ``"spec"``
 

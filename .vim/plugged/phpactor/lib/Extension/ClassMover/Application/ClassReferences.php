@@ -5,13 +5,13 @@ namespace Phpactor\Extension\ClassMover\Application;
 use Phpactor\Filesystem\Domain\Filesystem;
 use Phpactor\Phpactor;
 use Phpactor\Extension\Core\Application\Helper\ClassFileNormalizer;
-use Phpactor\ClassMover\Domain\SourceCode;
 use Phpactor\ClassMover\Domain\ClassFinder;
 use Phpactor\ClassMover\Domain\ClassReplacer;
 use Phpactor\ClassMover\Domain\Name\FullyQualifiedName;
 use Phpactor\ClassMover\Domain\Reference\NamespacedClassReferences;
 use Phpactor\ClassMover\Domain\Reference\ClassReference;
 use Phpactor\Filesystem\Domain\FilesystemRegistry;
+use Phpactor\TextDocument\TextDocumentBuilder;
 
 class ClassReferences
 {
@@ -84,7 +84,7 @@ class ClassReferences
     public function replaceInSource(string $source, $className, $replace): string
     {
         $referenceList = $this->refFinder
-            ->findIn(SourceCode::fromString($source))
+            ->findIn(TextDocumentBuilder::create($source)->build())
             ->filterForName(FullyQualifiedName::fromString($className));
         $updatedSource = $this->replaceReferencesInCode($source, $referenceList, $className, $replace);
 
@@ -96,7 +96,7 @@ class ClassReferences
         $code = $filesystem->getContents($filePath);
 
         $referenceList = $this->refFinder
-            ->findIn(SourceCode::fromString($code))
+            ->findIn(TextDocumentBuilder::create($code)->build())
             ->filterForName(FullyQualifiedName::fromString($className));
 
         $result = [
@@ -121,7 +121,7 @@ class ClassReferences
 
         if ($updatedSource && $replace) {
             $newReferenceList = $this->refFinder
-                ->findIn(SourceCode::fromString((string) $updatedSource))
+                ->findIn(TextDocumentBuilder::create((string) $updatedSource)->build())
                 ->filterForName(FullyQualifiedName::fromString($replace));
 
             $result['replacements'] = $this->serializeReferenceList((string) $updatedSource, $newReferenceList);
@@ -177,12 +177,12 @@ class ClassReferences
         return [$number, 0, ''];
     }
 
-    private function replaceReferencesInCode(string $code, NamespacedClassReferences $list, string $class, string $replace): SourceCode
+    private function replaceReferencesInCode(string $code, NamespacedClassReferences $list, string $class, string $replace): string
     {
         $class = FullyQualifiedName::fromString($class);
         $replace = FullyQualifiedName::fromString($replace);
-        $code = SourceCode::fromString($code);
+        $code = TextDocumentBuilder::create($code)->build();
 
-        return $this->refReplacer->replaceReferences($code, $list, $class, $replace);
+        return $this->refReplacer->replaceReferences($code, $list, $class, $replace)->apply($code);
     }
 }

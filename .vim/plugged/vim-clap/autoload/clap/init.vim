@@ -43,9 +43,6 @@ function! s:init_fuzzy_match_hl_groups() abort
           \ [50  , '#00ffd7'] ,
           \ [51  , '#00ffff'] ,
           \ [87  , '#5fffff'] ,
-          \ [123 , '#87ffff'] ,
-          \ [159 , '#afffff'] ,
-          \ [195 , '#d7ffff'] ,
           \ ]
   endif
 
@@ -66,6 +63,11 @@ function! clap#init#() abort
   " Spawn the daemon process eagerly
   if clap#maple#is_available()
     call clap#job#daemon#start(function('clap#client#handle'))
+
+    augroup ClapRecentFiles
+      autocmd!
+      autocmd BufAdd,BufEnter * call clap#client#notify_recent_file()
+    augroup END
   endif
 endfunction
 

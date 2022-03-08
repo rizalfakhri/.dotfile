@@ -2,7 +2,7 @@
 name = "printer"
 version = "0.1.0"
 authors = ["Liu-Cheng Xu <xuliuchengxlc@gmail.com>"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 publish = false
 homepage = "https://github.com/liuchengxu/vim-clap"
@@ -10,9 +10,10 @@ homepage = "https://github.com/liuchengxu/vim-clap"
 [dependencies]
 serde = { package = "serde", version = "1.0",  features = ["derive"] }
 serde_json = "1.0"
+unicode-width = "0.1.4"
 
 icon = { path = "../icon" }
-source_item = { path = "../source_item" }
+types = { path = "../types" }
 utility = { path = "../utility" }
 
 [target.'cfg(not(windows))'.dev-dependencies]

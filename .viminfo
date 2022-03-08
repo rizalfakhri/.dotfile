@@ -11,1850 +11,454 @@
 # hlsearch on (H) or off (h):
 ~h
 # Last Search Pattern:
-~MSle0~/pending_com
+~MSle0~/alias
 
 # Last Substitute String:
 $
 
 # Command Line History (newest to oldest):
 :wq
-|2,0,1599186836,,"wq"
+|2,0,1646771365,,"wq"
 :q
-|2,0,1599020175,,"q"
+|2,0,1646771353,,"q"
 :w
-|2,0,1599019856,,"w"
-:W
-|2,0,1599019019,,"W"
-:Ack "statusMapper"
-|2,0,1599015396,,"Ack \"statusMapper\""
-:Ack 'statusMapper'
-|2,0,1599015121,,"Ack 'statusMapper'"
-:q!
-|2,0,1599015078,,"q!"
-:Q
-|2,0,1599015076,,"Q"
+|2,0,1645140500,,"w"
+:e resou
+|2,0,1644791655,,"e resou"
 :vs
-|2,0,1594586980,,"vs"
-:Vs
-|2,0,1594583175,,"Vs"
-:'<,'>vs
-|2,0,1594583175,,"'<,'>vs"
-:sp
-|2,0,1592763782,,"sp"
-:!
-|2,0,1592372976,,"!"
-:e app/Services/Utils/StubGenerator.php
-|2,0,1592372944,,"e app/Services/Utils/StubGenerator.php"
-:! mkdir -p app/Services/Utils
-|2,0,1592372931,,"! mkdir -p app/Services/Utils"
-:! mkdir app/Services/Utils
-|2,0,1592372917,,"! mkdir app/Services/Utils"
-:e app/ServiceGateway.php
-|2,0,1592372911,,"e app/ServiceGateway.php"
-:e ~/bb/hrms-backend/app/Services/Utils/StubGenerator.php
-|2,0,1592372901,,"e ~/bb/hrms-backend/app/Services/Utils/StubGenerator.php"
-:e app/
-|2,0,1592372894,,"e app/"
-:e ~/bb/hrms-backend/app/Services/Stubg`
-|2,0,1592372887,,"e ~/bb/hrms-backend/app/Services/Stubg`"
-:e app/Stubs/Pipeline.stub
-|2,0,1592372778,,"e app/Stubs/Pipeline.stub"
-:! mkdir app/Stubs
-|2,0,1592372768,,"! mkdir app/Stubs"
-:e app`
-|2,0,1592372764,,"e app`"
-:e ~/bb/hrms-backend/app/Stubs/Pipeline.stub
-|2,0,1592372758,,"e ~/bb/hrms-backend/app/Stubs/Pipeline.stub"
-:e ~/bb/hrms-backend/app/Console/Commands/GeneratePipeline.php
-|2,0,1592372720,,"e ~/bb/hrms-backend/app/Console/Commands/GeneratePipeline.php"
-:e resources/views/layouts/app.blade.php
-|2,0,1591089677,,"e resources/views/layouts/app.blade.php"
-:v
-|2,0,1590272703,,"v"
-:Ack "pdf.endpoint"
-|2,0,1589953800,,"Ack \"pdf.endpoint\""
-:Ack "
-|2,0,1589953785,,"Ack \""
-:Ack "config('pdf"
-|2,0,1589953772,,"Ack \"config('pdf\""
-:Ack config('pdf
-|2,0,1589953763,,"Ack config('pdf"
-:Ack print
-|2,0,1589953743,,"Ack print"
-:a
-|2,0,1589512996,,"a"
-:w:
-|2,0,1587446605,,"w:"
-:FZF
-|2,0,1585803704,,"FZF"
-:Files
-|2,0,1585803671,,"Files"
-:e ~/.vimrc
-|2,0,1585803610,,"e ~/.vimrc"
-:s
-|2,0,1585803963,,"s"
-:so %
-|2,0,1585803927,,"so %"
-:NnnPicker
-|2,0,1585802820,,"NnnPicker"
-:PlugInstall
-|2,0,1585802802,,"PlugInstall"
-:e da`
-|2,0,1585758790,,"e da`"
-:e
-|2,0,1585758501,,"e"
-:Q!
-|2,0,1585758291,,"Q!"
-:e app/Traits/HasSerialBroker.php
-|2,0,1585755451,,"e app/Traits/HasSerialBroker.php"
-:! mkdir app/Traits
-|2,0,1585755430,,"! mkdir app/Traits"
-:e app/Registries/SerialBrokerRegistry.php
-|2,0,1585731240,,"e app/Registries/SerialBrokerRegistry.php"
-:! mkdir app/Registries
-|2,0,1585731231,,"! mkdir app/Registries"
-:e 
-|2,0,1585731226,,"e "
-:e app/Services/SerialBroker.php
-|2,0,1585730899,,"e app/Services/SerialBroker.php"
+|2,0,1644791652,,"vs"
+:q!
+|2,0,1642308447,,"q!"
 
 # Search String History (newest to oldest):
 ? \s\+$
-|2,1,1599186836,,"\\s\\+$"
-?/pending_com
-|2,1,1599019859,47,"pending_com"
-?/pending com
-|2,1,1599019850,47,"pending com"
-?/pendin 
-|2,1,1599019848,47,"pendin "
-?/total re
-|2,1,1599019462,47,"total re"
-?/total reve
-|2,1,1599019458,47,"total reve"
-?/by trans
-|2,1,1599019421,47,"by trans"
-??b
-|2,1,1599019419,63,"b"
-?/dd
-|2,1,1599019404,47,"dd"
-?/dd(
-|2,1,1599019362,47,"dd("
-?/number_forma
-|2,1,1599019319,47,"number_forma"
-?/transmission
-|2,1,1599019264,47,"transmission"
-?/trnasmissio`
-|2,1,1599019261,47,"trnasmissio`"
-? })
-|2,1,1599017298,,"})"
-?/colocationrevenue
-|2,1,1599016908,47,"colocationrevenue"
-?/colocation
-|2,1,1599016891,47,"colocation"
-?/this.sections =
-|2,1,1599016157,47,"this.sections ="
-?/port pending
-|2,1,1599016005,47,"port pending"
-?/map
-|2,1,1599015944,47,"map"
-?/whereIn
-|2,1,1599015543,47,"whereIn"
-?/addmetadata
-|2,1,1599015460,47,"addmetadata"
-?/status
-|2,1,1599015458,47,"status"
-?/statuses
-|2,1,1599014881,47,"statuses"
-?/wherein
-|2,1,1599011927,47,"wherein"
-?/statu
-|2,1,1599010569,47,"statu"
-?/info
-|2,1,1594587730,47,"info"
-?/fillable
-|2,1,1594586877,47,"fillable"
-?/provider
-|2,1,1592763713,47,"provider"
-?/pasrovid
-|2,1,1592763711,47,"pasrovid"
-?/e
-|2,1,1592763387,47,"e"
-?/data
-|2,1,1592763344,47,"data"
-?/all vali
-|2,1,1592763197,47,"all vali"
-?/validate
-|2,1,1592763002,47,"validate"
-?/stor(
-|2,1,1592762507,47,"stor("
-?/show(
-|2,1,1592762452,47,"show("
-?/s
-|2,1,1592762448,47,"s"
-?/expense
-|2,1,1592762041,47,"expense"
-?/c
-|2,1,1592762040,47,"c"
-?/body
-|2,1,1591089632,47,"body"
-?/addbalan
-|2,1,1590275594,47,"addbalan"
-?/lock
-|2,1,1590274803,47,"lock"
-?/save deta
-|2,1,1590270949,47,"save deta"
-?/select
-|2,1,1590171334,47,"select"
-?/select acc
-|2,1,1590170352,47,"select acc"
-?/see
-|2,1,1590170350,47,"see"
-?/duration
-|2,1,1590170144,47,"duration"
-?/instanceo
-|2,1,1590164201,47,"instanceo"
-?/server
-|2,1,1590164127,47,"server"
-?/address
-|2,1,1590164068,47,"address"
-?/adad
-|2,1,1590163935,47,"adad"
+|2,1,1646771365,,"\\s\\+$"
+?/alias
+|2,1,1642308736,47,"alias"
+?/fonrt
+|2,1,1642308428,47,"fonrt"
+?/border
+|2,1,1642308323,47,"border"
+?/lime
+|2,1,1642291948,47,"lime"
+?/json
+|2,1,1642291939,47,"json"
 
 # Expression History (newest to oldest):
 
 # Input Line History (newest to oldest):
-@/Users/rizalfakhri/bb/crm/app/Services/Stubs/SerialBroker.stub
-|2,3,1585730461,,"/Users/rizalfakhri/bb/crm/app/Services/Stubs/SerialBroker.stub"
-@/Users/rizalfakhri/bb/crm/app/Services/Stubs/SerialBroker.php
-|2,3,1585729851,,"/Users/rizalfakhri/bb/crm/app/Services/Stubs/SerialBroker.php"
-@/Users/rizalfakhri/bb/crm/database/migrations/2020_03_31_132613_create_departments_table.php
-|2,3,1585663914,,"/Users/rizalfakhri/bb/crm/database/migrations/2020_03_31_132613_create_departments_table.php"
-@/Users/rizalfakhri/bb/crm/database/migrations/2020_03_31_132700_create_company_contacts_table.php
-|2,3,1585663722,,"/Users/rizalfakhri/bb/crm/database/migrations/2020_03_31_132700_create_company_contacts_table.php"
-@/Users/rizalfakhri/bb/crm/database/migrations/2020_03_31_130700_create_company_contacts_table.php
-|2,3,1585663676,,"/Users/rizalfakhri/bb/crm/database/migrations/2020_03_31_130700_create_company_contacts_table.php"
-@[{y(es)},n(o),a(ll),q(uit)] y
-|2,3,1585659942,,"[{y(es)},n(o),a(ll),q(uit)] y"
-@/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_29_125732_create_leave_lieu_requests_table.php
-|2,3,1585458454,,"/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_29_125732_create_leave_lieu_requests_table.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Models/LeaveLieuRequest.php
-|2,3,1585458299,,"/Users/rizalfakhri/bb/hrms-backend/app/Models/LeaveLieuRequest.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Contracts/CalendarEventWithVenue.php
-|2,3,1585224767,,"/Users/rizalfakhri/bb/hrms-backend/app/Contracts/CalendarEventWithVenue.php"
-@/Users/rizalfakhri/bb/hrms-backend/resources/views/emails/approvals/claim/claim-request-approval.blade.php
-|2,3,1585103694,,"/Users/rizalfakhri/bb/hrms-backend/resources/views/emails/approvals/claim/claim-request-approval.blade.php"
-@/Users/rizalfakhri/bb/hrms-backend/resources/views/approvals/approval-request-approved.blade.php
-|2,3,1585037399,,"/Users/rizalfakhri/bb/hrms-backend/resources/views/approvals/approval-request-approved.blade.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Services/ApprovalProcedures/TravelAdvanceApprovalProcedure.php
-|2,3,1585030904,,"/Users/rizalfakhri/bb/hrms-backend/app/Services/ApprovalProcedures/TravelAdvanceApprovalProcedure.php"
-@/Users/rizalfakhri/bb/hrms-backend/config/approval-procedure.php
-|2,3,1584979329,,"/Users/rizalfakhri/bb/hrms-backend/config/approval-procedure.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Stubs/ApprovalProcedure.stub
-|2,3,1584979164,,"/Users/rizalfakhri/bb/hrms-backend/app/Stubs/ApprovalProcedure.stub"
-@/Users/rizalfakhri/bb/hrms-backend/app/Console/Commands/GenerateApprovalProcedure.php
-|2,3,1584978820,,"/Users/rizalfakhri/bb/hrms-backend/app/Console/Commands/GenerateApprovalProcedure.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Registries/ApprovalProcedureRegistry.php
-|2,3,1584978734,,"/Users/rizalfakhri/bb/hrms-backend/app/Registries/ApprovalProcedureRegistry.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Contracts/ApprovalProcedure.php
-|2,3,1584978419,,"/Users/rizalfakhri/bb/hrms-backend/app/Contracts/ApprovalProcedure.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Registries/ClaimApprovalProcedureRegistry.php
-|2,3,1584947333,,"/Users/rizalfakhri/bb/hrms-backend/app/Registries/ClaimApprovalProcedureRegistry.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Contracts/ClaimableDate.php
-|2,3,1584782704,,"/Users/rizalfakhri/bb/hrms-backend/app/Contracts/ClaimableDate.php"
-@/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_20_052316_create_flight_classes_table.php
-|2,3,1584670404,,"/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_20_052316_create_flight_classes_table.php"
-@/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_20_052237_create_visa_types_table.php
-|2,3,1584670280,,"/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_20_052237_create_visa_types_table.php"
-@/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_20_052213_create_traveller_visas_table.php
-|2,3,1584669740,,"/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_20_052213_create_traveller_visas_table.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Models/CashAdvanceRequest.php
-|2,3,1584645351,,"/Users/rizalfakhri/bb/hrms-backend/app/Models/CashAdvanceRequest.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Transformers/AttachmentTransformer.php
-|2,3,1584626238,,"/Users/rizalfakhri/bb/hrms-backend/app/Transformers/AttachmentTransformer.php"
-@/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_19_104122_create_cash_advance_requests_table.php
-|2,3,1584586693,,"/Users/rizalfakhri/bb/hrms-backend/database/migrations/2020_03_19_104122_create_cash_advance_requests_table.php"
-@/Users/rizalfakhri/bb/hrms-backend/resources/views/leave-approval/leave-already-approved.blade.php
-|2,3,1584433735,,"/Users/rizalfakhri/bb/hrms-backend/resources/views/leave-approval/leave-already-approved.blade.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Listeners/User/Leave/Approval/GenerateInitialLeaveApproval.php
-|2,3,1584424119,,"/Users/rizalfakhri/bb/hrms-backend/app/Listeners/User/Leave/Approval/GenerateInitialLeaveApproval.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Transformers/ApprovalTypeApproverTransformer.php
-|2,3,1584029352,,"/Users/rizalfakhri/bb/hrms-backend/app/Transformers/ApprovalTypeApproverTransformer.php"
-@/Users/rizalfakhri/bb/hrms-backend/app/Services/MoneyFacade.php
-|2,3,1583910141,,"/Users/rizalfakhri/bb/hrms-backend/app/Services/MoneyFacade.php"
-@/Users/rizalfakhri/Code/covid/nginx/conf.d/app.conf
-|2,3,1583560015,,"/Users/rizalfakhri/Code/covid/nginx/conf.d/app.conf"
-@/Users/rizalfakhri/bb/auth-server/app/Http/Controllers/API/Hierarchy/HierarchyController.php
-|2,3,1583306889,,"/Users/rizalfakhri/bb/auth-server/app/Http/Controllers/API/Hierarchy/HierarchyController.php"
-@[{y(es)},n(o),a(ll),q(uit)] 
-|2,3,1583215513,,"[{y(es)},n(o),a(ll),q(uit)] "
-@/Users/rizalfakhri/bb/auth-server/app/Services/Pipeline/Company/RegisterAndAttachCompanyContacts.php
-|2,3,1583207717,,"/Users/rizalfakhri/bb/auth-server/app/Services/Pipeline/Company/RegisterAndAttachCompanyContacts.php"
-@/Users/rizalfakhri/bb/auth-server/database/migrations/2020_01_02_013639_create_company_types_table.php
-|2,3,1583114641,,"/Users/rizalfakhri/bb/auth-server/database/migrations/2020_01_02_013639_create_company_types_table.php"
-@econ
-|2,3,1582879160,,"econ"
-@ec
-|2,3,1582879151,,"ec"
-@/Users/rizalfakhri/bb/packages/auth-server-sdk/packages/boneybone/auth-server-sdk/src/app/Exceptions/MissingPermissionException.php
-|2,3,1582797311,,"/Users/rizalfakhri/bb/packages/auth-server-sdk/packages/boneybone/auth-server-sdk/src/app/Exceptions/MissingPermissionException.php"
-@/Users/rizalfakhri/bb/auth-server/database/migrations/2020_02_22_023200_create_employment_types_table.php
-|2,3,1582685878,,"/Users/rizalfakhri/bb/auth-server/database/migrations/2020_02_22_023200_create_employment_types_table.php"
-@/Users/rizalfakhri/bb/auth-server/database/migrations/2020_02_25_093505_add_designation_id_and_hierarchy_id_to_users_table.php
-|2,3,1582685868,,"/Users/rizalfakhri/bb/auth-server/database/migrations/2020_02_25_093505_add_designation_id_and_hierarchy_id_to_users_table.php"
-@/Users/rizalfakhri/bb/auth-server/database/migrations/2020_02_24_023200_create_employment_types_table.php
-|2,3,1582685850,,"/Users/rizalfakhri/bb/auth-server/database/migrations/2020_02_24_023200_create_employment_types_table.php"
-@/Users/rizalfakhri/bb/auth-server/app/Models
-|2,3,1582684396,,"/Users/rizalfakhri/bb/auth-server/app/Models"
-@/Users/rizalfakhri/bb/auth-server/resources/views/errors/401.blade.php
-|2,3,1582012521,,"/Users/rizalfakhri/bb/auth-server/resources/views/errors/401.blade.php"
-@/Users/rizalfakhri/bb/auth-server/app/ClientPermission.php
-|2,3,1581933286,,"/Users/rizalfakhri/bb/auth-server/app/ClientPermission.php"
-@/Users/rizalfakhri/bb/auth-server/database/migrations/2020_02_17_094023_create_client_permissions_table.php
-|2,3,1581933272,,"/Users/rizalfakhri/bb/auth-server/database/migrations/2020_02_17_094023_create_client_permissions_table.php"
-@/Users/rizalfakhri/bb/auth-server/app/Console/Commands/AssignClientsIntoRoles.php
-|2,3,1581926780,,"/Users/rizalfakhri/bb/auth-server/app/Console/Commands/AssignClientsIntoRoles.php"
-@/Users/rizalfakhri/bb/auth-server/app/Http/Controllers/Auth/AuthorizationController.php
-|2,3,1581919985,,"/Users/rizalfakhri/bb/auth-server/app/Http/Controllers/Auth/AuthorizationController.php"
-@/Users/rizalfakhri/bb/auth-server/app/Http/Controllers/Auth/AuthorizeController.php
-|2,3,1581919980,,"/Users/rizalfakhri/bb/auth-server/app/Http/Controllers/Auth/AuthorizeController.php"
-@/Users/rizalfakhri/Code/th/app/Transformers/NoticeBoardsTransformer.php
-|2,3,1579143798,,"/Users/rizalfakhri/Code/th/app/Transformers/NoticeBoardsTransformer.php"
-@/Users/rizalfakhri/Code/mbp/app/Stubs/WhatsappProvider.stub
-|2,3,1578304391,,"/Users/rizalfakhri/Code/mbp/app/Stubs/WhatsappProvider.stub"
-@/Users/rizalfakhri/Code/th/app/Concerns/DateFilter.php
-|2,3,1578046663,,"/Users/rizalfakhri/Code/th/app/Concerns/DateFilter.php"
 
 # Debug Line History (newest to oldest):
 
 # Registers:
-"0	LINE	0
-	        $section->addMetadata(
-	            'Co-location Charges', sprintf("RM%s", number_format($colocationCharges,2))
-	        );
-|3,0,0,1,3,0,1599019383,"        $section->addMetadata(","            'Co-location Charges', sprintf(\"RM%s\", number_format($colocationCharges,2))","        );"
-""1	LINE	0
+"0	CHAR	0
+	GenerateCompletionFormDetailForOrders
+|3,0,0,0,1,0,1644791748,"GenerateCompletionFormDetailForOrders"
+""1	CHAR	0
 	
-|3,1,1,1,1,0,1599019854,""
+	# Please enter the commit message for your changes. Lines starting
+	# with '#' will be ignored, and an empty message aborts the commit.
+|3,1,1,0,3,0,1646771363,"","# Please enter the commit message for your changes. Lines starting","# with '#' will be ignored, and an empty message aborts the commit."
 "2	LINE	0
-	            $section->addMetadata(
-	                'Port Pending Commisioning', $filteredPorts->whereIn('order_status', $this->statusMapper['pending_commisioning'])->count()
-	            );
-|3,0,2,1,3,0,1599019853,"            $section->addMetadata(","                'Port Pending Commisioning', $filteredPorts->whereIn('order_status', $this->statusMapper['pending_commisioning'])->count()","            );"
+	127.0.0.1   player.eu.open.sidetechnology.co
+|3,0,2,1,1,0,1645140567,"127.0.0.1   player.eu.open.sidetechnology.co"
 "3	LINE	0
-	
-|3,0,3,1,1,0,1599019379,""
+	- :vs
+|3,0,3,1,1,0,1644791651,"- :vs"
 "4	LINE	0
-	        dd($transmissionRevenue);
-|3,0,4,1,1,0,1599019378,"        dd($transmissionRevenue);"
+	
+|3,0,4,1,1,0,1644785641,""
 "5	LINE	0
-	
-|3,0,5,1,1,0,1599019375,""
+	feat: 
+|3,0,5,1,1,0,1644785640,"feat: "
 "6	LINE	0
-	            //dd($orderDetails['sg']['trunk']['otc'], $orderDetails['sg']['trunk']['months'], $orderDetails['trunk_bandwidth']['price']);
-|3,0,6,1,1,0,1599019375,"            //dd($orderDetails['sg']['trunk']['otc'], $orderDetails['sg']['trunk']['months'], $orderDetails['trunk_bandwidth']['price']);"
-"7	LINE	0
+	fix
+|3,0,6,1,1,0,1644780727,"fix"
+"7	CHAR	0
+	x: 
 	
-|3,0,7,1,1,0,1599019348,""
+	# Please enter the commit message for your changes. Lines starting
+|3,0,7,0,3,0,1644780725,"x: ","","# Please enter the commit message for your changes. Lines starting"
 "8	LINE	0
-	            return 
-|3,0,8,1,1,0,1599019168,"            return "
+	
+|3,0,8,1,1,0,1642580632,""
 "9	LINE	0
-	            dd($order);
-|3,0,9,1,1,0,1599019165,"            dd($order);"
-"c	CHAR	0
-	491
-<kjaContact]€kb\Contact;jjkj:wkjha as ContactInterjjkja€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kbjjkj:wkjGkkkjjko$contact = app(Contancr€kb€kb€kbc:€kbt::classjjkjla;jjkj:wkjo$tc€kb€kbcnt€kb€kbontact->setPhone($ph€kb€kbrequest->phone)nu€kb€kbjjkjhanumb€kb€kb€kb_€kb€kb_numberjjkjla;jjkj:wkkjojjkjukjjo#con€kb€kb€kb€kb$contan €kbt€kb€kb€kbact->setNAME(€kb€kb€kb€kbanem€kb€kb€kbme($request->namejjkjla;jjkj:wkj:wkjodD$€kbd(€kb€kb€kbd($contacjjkjla;jjkjhatjjkja€kbjjkjhatjjkj:w
-|3,0,12,0,1,0,1577774437,>491
-|<"kjaContact]€kb\\Contact;jjkj:wkjha as ContactInterjjkja€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kb€kbjjkj:wkjGkkkjjko$contact = app(Contancr€kb€kb€kbc:€kbt::classjjkjla;jjkj:wkjo$tc€kb€kbcnt€kb€kbontact->setPhone($ph€kb€kbrequest->phone)nu€kb€kbjjkjhanumb€kb€kb€kb_€kb€kb_numberjjkjla;jjkj:wkkjojjkjukjjo#con€kb€kb€kb€kb$contan €kbt€kb€kb€kbact->setNAME(€kb€kb€kb€kbanem€kb€kb€kbme($request->namejjkjla;jjkj:wkj:wkjodD$€kbd(€kb€kb€kbd($contacjjkjla;jjkjhatjjkja€kbjjkjhatjjkj:w"
-"k	CHAR	0
-	291
-<j:qkjk/travellerk:q:Explorekjjjjjjjjkkkkkkjjjkkkkjjjjjjjjj/travveler€kb€kb€kb€kbe€kbe€kb€kbellerkjjbR€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kb€kb13kj:wkj:qkjlkjjcreate_trave:Explr€kb€ýakjjjj:Explorer€ýakjjjj
-|3,0,20,0,1,0,1584669795,"j:qkjk/travellerk:q:Explorekjjjjjjjjkkkkkkjjjkkkkjjjjjjjjj/travveler€kb€kb€kb€kbe€kbe€kb€kbellerkjjbR€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kl€kb€kb13kj:wkj:qkjlkjjcreate_trave:Explr€kb€ýakjjjj:Explorer€ýakjjjj"
-"q	CHAR	0
-	:Q
-|3,0,26,0,1,0,1582684423,":Q"
-"v	CHAR	0
-	;
-|3,0,31,0,1,0,1599016882,";"
+	window:
+	  # Spread additional padding evenly around the terminal content.
+	  dynamic_padding: true
+|3,0,9,1,3,0,1642308444,"window:","  # Spread additional padding evenly around the terminal content.","  dynamic_padding: true"
 "-	CHAR	0
-	Co-location Charges
-|3,0,36,0,1,0,1599019424,"Co-location Charges"
+	feat
+|3,0,36,0,1,0,1646639775,"feat"
+
+# global variables:
 
 # File marks:
-'0  1  0  ~/bb/allo-installer/.git/MERGE_MSG
-|4,48,1,0,1599186836,"~/bb/allo-installer/.git/MERGE_MSG"
-'1  1  0  ~/bb/allo-installer/.git/MERGE_MSG
-|4,49,1,0,1599186770,"~/bb/allo-installer/.git/MERGE_MSG"
-'2  27  82  ~/bb/open-access/resources/js/components/reporting/PortView.vue
-|4,50,27,82,1599020175,"~/bb/open-access/resources/js/components/reporting/PortView.vue"
-'3  1  0  ~/bb/open-access/.git/MERGE_MSG
-|4,51,1,0,1598513777,"~/bb/open-access/.git/MERGE_MSG"
-'4  1  0  ~/bb/open-access/.git/MERGE_MSG
-|4,52,1,0,1598263785,"~/bb/open-access/.git/MERGE_MSG"
-'5  1  0  ~/bb/open-access/.git/MERGE_MSG
-|4,53,1,0,1598240445,"~/bb/open-access/.git/MERGE_MSG"
-'6  1  0  ~/bb/open-access/.git/MERGE_MSG
-|4,54,1,0,1598240445,"~/bb/open-access/.git/MERGE_MSG"
-'7  1  0  ~/bb/open-access/.git/MERGE_MSG
-|4,55,1,0,1597381588,"~/bb/open-access/.git/MERGE_MSG"
-'8  1  0  ~/bb/open-access/.git/MERGE_MSG
-|4,56,1,0,1597381588,"~/bb/open-access/.git/MERGE_MSG"
-'9  1  0  ~/bb/open-access/.git/MERGE_MSG
-|4,57,1,0,1597381588,"~/bb/open-access/.git/MERGE_MSG"
+'0  2  0  ~/.local/share/yadm/repo.git/COMMIT_EDITMSG
+|4,48,2,0,1646771365,"~/.local/share/yadm/repo.git/COMMIT_EDITMSG"
+'1  2  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,49,2,0,1646639789,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+'2  3  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,50,3,0,1646625717,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+'3  2  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,51,2,0,1646625717,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+'4  5  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,52,5,0,1646174659,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+'5  4  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,53,4,0,1646174659,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+'6  4  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,54,4,0,1646174659,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+'7  3  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,55,3,0,1646174659,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+'8  9  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,56,9,6,1646165704,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+'9  8  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,57,8,6,1646165704,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
 
 # Jumplist (newest first):
--'  1  0  ~/bb/allo-installer/.git/MERGE_MSG
-|4,39,1,0,1599186836,"~/bb/allo-installer/.git/MERGE_MSG"
--'  1  0  ~/bb/allo-installer/.git/MERGE_MSG
-|4,39,1,0,1599186836,"~/bb/allo-installer/.git/MERGE_MSG"
--'  1  0  ~/bb/allo-installer/.git/MERGE_MSG
-|4,39,1,0,1599186770,"~/bb/allo-installer/.git/MERGE_MSG"
--'  1  0  ~/bb/allo-installer/.git/MERGE_MSG
-|4,39,1,0,1599186770,"~/bb/allo-installer/.git/MERGE_MSG"
--'  27  82  ~/bb/open-access/resources/js/components/reporting/PortView.vue
-|4,39,27,82,1599020175,"~/bb/open-access/resources/js/components/reporting/PortView.vue"
--'  27  82  ~/bb/open-access/resources/js/components/reporting/PortView.vue
-|4,39,27,82,1599020175,"~/bb/open-access/resources/js/components/reporting/PortView.vue"
--'  27  82  ~/bb/open-access/resources/js/components/reporting/PortView.vue
-|4,39,27,82,1599020175,"~/bb/open-access/resources/js/components/reporting/PortView.vue"
--'  27  82  ~/bb/open-access/resources/js/components/reporting/PortView.vue
-|4,39,27,82,1599020175,"~/bb/open-access/resources/js/components/reporting/PortView.vue"
--'  27  82  ~/bb/open-access/resources/js/components/reporting/PortView.vue
-|4,39,27,82,1599020175,"~/bb/open-access/resources/js/components/reporting/PortView.vue"
--'  27  82  ~/bb/open-access/resources/js/components/reporting/PortView.vue
-|4,39,27,82,1599020175,"~/bb/open-access/resources/js/components/reporting/PortView.vue"
--'  27  82  ~/bb/open-access/resources/js/components/reporting/PortView.vue
-|4,39,27,82,1599020175,"~/bb/open-access/resources/js/components/reporting/PortView.vue"
--'  27  82  ~/bb/open-access/resources/js/components/reporting/PortView.vue
-|4,39,27,82,1599020175,"~/bb/open-access/resources/js/components/reporting/PortView.vue"
--'  52  9  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,52,9,1599015584,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  52  9  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,52,9,1599015584,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  52  9  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,52,9,1599015584,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  52  9  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,52,9,1599015584,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  52  9  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,52,9,1599015584,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  52  9  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,52,9,1599015584,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  52  9  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,52,9,1599015584,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  52  9  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,52,9,1599015584,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  176  8  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,176,8,1599015568,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  176  8  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,176,8,1599015568,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  176  8  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,176,8,1599015568,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  176  8  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,176,8,1599015568,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  176  8  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,176,8,1599015568,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  176  8  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,176,8,1599015568,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  176  8  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,176,8,1599015568,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  176  8  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,176,8,1599015568,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  220  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,220,0,1599015543,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  220  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,220,0,1599015543,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  220  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,220,0,1599015543,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  220  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,220,0,1599015543,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  220  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,220,0,1599015543,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  220  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,220,0,1599015543,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  220  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,220,0,1599015543,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  220  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,220,0,1599015543,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  186  0  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,186,0,1599015538,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  186  0  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,186,0,1599015538,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  186  0  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,186,0,1599015538,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  186  0  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,186,0,1599015538,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  186  0  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,186,0,1599015538,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  186  0  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,186,0,1599015538,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  186  0  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,186,0,1599015538,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  186  0  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,186,0,1599015538,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  115  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,115,18,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  99  29  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,99,29,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  115  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,115,18,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  99  29  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,99,29,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  115  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,115,18,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  99  29  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,99,29,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  115  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,115,18,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  99  29  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,99,29,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  115  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,115,18,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  99  29  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,99,29,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  115  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,115,18,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  99  29  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,99,29,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  115  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,115,18,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  99  29  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,99,29,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  115  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,115,18,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  99  29  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,99,29,1599015460,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  92  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,92,18,1599015458,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  92  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,92,18,1599015458,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  92  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,92,18,1599015458,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  92  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,92,18,1599015458,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  92  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,92,18,1599015458,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  92  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,92,18,1599015458,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  92  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,92,18,1599015458,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  92  18  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,92,18,1599015458,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  219  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,219,0,1599015453,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  219  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,219,0,1599015453,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  219  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,219,0,1599015453,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  219  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,219,0,1599015453,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  219  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,219,0,1599015453,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  219  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,219,0,1599015453,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  219  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,219,0,1599015453,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  219  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,219,0,1599015453,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  42  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,42,0,1599015438,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  42  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,42,0,1599015438,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  42  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,42,0,1599015438,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  42  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,42,0,1599015438,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  42  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,42,0,1599015438,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  42  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,42,0,1599015438,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  42  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,42,0,1599015438,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  42  0  ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-|4,39,42,0,1599015438,"~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php"
--'  67  20  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,67,20,1599015419,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  67  20  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,67,20,1599015419,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  67  20  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,67,20,1599015419,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  67  20  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,67,20,1599015419,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  67  20  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,67,20,1599015419,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  67  20  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,67,20,1599015419,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  67  20  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,67,20,1599015419,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  67  20  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,67,20,1599015419,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  14  2  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,14,2,1599010414,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  14  2  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,14,2,1599010414,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  14  2  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,14,2,1599010414,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  14  2  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,14,2,1599010414,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  14  2  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,14,2,1599010414,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  14  2  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,14,2,1599010414,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
--'  14  2  ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-|4,39,14,2,1599010414,"~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php"
+-'  2  0  ~/.local/share/yadm/repo.git/COMMIT_EDITMSG
+|4,39,2,0,1646771365,"~/.local/share/yadm/repo.git/COMMIT_EDITMSG"
+-'  1988  0  ~/.local/share/yadm/repo.git/COMMIT_EDITMSG
+|4,39,1988,0,1646771354,"~/.local/share/yadm/repo.git/COMMIT_EDITMSG"
+-'  1217  0  ~/.local/share/yadm/repo.git/COMMIT_EDITMSG
+|4,39,1217,0,1646771343,"~/.local/share/yadm/repo.git/COMMIT_EDITMSG"
+-'  1  0  ~/.local/share/yadm/repo.git/COMMIT_EDITMSG
+|4,39,1,0,1646771330,"~/.local/share/yadm/repo.git/COMMIT_EDITMSG"
+-'  2  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,2,0,1646639789,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  2  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,2,0,1646639789,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  3  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,3,0,1646639766,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  3  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,3,0,1646639766,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  2  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,2,0,1646625717,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  2  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,2,0,1646625717,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  5  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,5,0,1646625691,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  4  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,4,0,1646625691,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  5  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,5,0,1646625691,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  4  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,4,0,1646625691,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  4  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,4,0,1646174659,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  3  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,3,0,1646174659,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  4  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,4,0,1646174659,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  3  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,3,0,1646174659,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  9  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,9,6,1646174637,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  8  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,8,6,1646174637,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  8  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,8,6,1646174637,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  7  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,7,6,1646174637,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  9  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,9,6,1646174637,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  8  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,8,6,1646174637,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  8  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,8,6,1646174637,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  7  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,7,6,1646174637,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  7  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,7,6,1646165704,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  7  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,7,6,1646165704,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  6  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,6,6,1646165704,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  7  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,7,6,1646165704,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  7  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,7,6,1646165704,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  6  6  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,6,6,1646165704,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  14  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,14,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  13  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,13,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  12  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,12,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  13  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,13,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  12  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,12,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  12  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,12,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  11  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,11,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  14  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,14,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  13  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,13,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  12  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,12,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  13  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,13,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  12  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,12,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  12  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,12,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  11  0  /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+|4,39,11,0,1646165619,"/Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  10  0  /private/etc/hosts
+|4,39,10,0,1645140568,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
+-'  11  43  /private/etc/hosts
+|4,39,11,43,1645140566,"/private/etc/hosts"
 
 # History of marks within files (newest to oldest):
 
-> ~/bb/allo-installer/.git/MERGE_MSG
-	*	1599186835	0
-	"	1	0
-
-> ~/bb/open-access/resources/js/components/reporting/PortView.vue
-	*	1599020174	0
-	"	27	82
-	^	27	83
-	.	27	82
-	+	26	0
-	+	27	0
-	+	26	104
-	+	27	104
-	+	28	83
-	+	29	0
-	+	27	74
-	+	23	0
-	+	24	0
-	+	25	80
-	+	26	65
-	+	25	63
-	+	27	82
-
-> ~/bb/open-access/app/Services/FilterPipeline/RevenueOverviewPipe.php
-	*	1599020162	0
-	"	246	8
-	^	245	162
-	.	245	161
-	+	211	15
-	+	183	0
-	+	217	0
-	+	221	0
-	+	221	10
-	+	217	58
-	+	221	0
-	+	220	40
-	+	218	43
-	+	219	0
-	+	220	84
-	+	220	85
-	+	220	101
-	+	220	105
-	+	221	0
-	+	230	30
-	+	230	0
-	+	268	0
-	+	222	0
-	+	223	0
-	+	229	0
-	+	229	10
-	+	229	22
-	+	220	109
-	+	220	123
-	+	220	124
-	+	220	140
-	+	220	143
-	+	229	0
-	+	224	43
-	+	226	0
-	+	227	0
-	+	228	13
-	+	227	81
-	+	227	83
-	+	227	84
-	+	227	0
-	+	227	91
-	+	227	109
-	+	227	110
-	+	227	126
-	+	227	128
-	+	227	129
-	+	227	140
-	+	230	32
-	+	227	140
-	+	225	134
-	+	230	0
-	+	227	97
-	+	227	0
-	+	227	135
-	+	225	0
-	+	230	0
-	+	264	0
-	+	263	0
-	+	265	85
-	+	245	161
-
-> ~/bb/open-access/app/Services/FilterPipeline/PortOverviewPipe.php
-	*	1599020160	0
-	"	41	9
-	^	42	12
-	.	186	0
-	+	67	0
-	+	67	28
-	+	67	21
-	+	67	0
-	+	67	18
-	+	67	0
-	+	67	17
-	+	182	0
-	+	183	0
-	+	184	125
-	+	186	0
-	+	186	125
-	+	188	106
-	+	23	0
-	+	42	12
-	+	186	0
-
-> ~/bb/open-access/app/Services/FilterPipeline/SectionList/PortListBreakdown.php
-	*	1599019459	0
-	"	208	0
-	^	217	119
-	.	217	118
-	+	184	0
-	+	183	0
-	+	34	12
-	+	81	0
-	+	81	9
-	+	81	0
-	+	81	22
-	+	81	10
-	+	81	0
-	+	81	24
-	+	81	0
-	+	81	49
-	+	81	0
-	+	38	0
-	+	220	0
-	+	45	24
-	+	57	13
-	+	68	33
-	+	70	36
-	+	71	6
-	+	72	0
-	+	73	0
-	+	80	5
-	+	73	16
-	+	59	0
-	+	60	0
-	+	61	9
-	+	60	31
-	+	70	0
-	+	73	31
-	+	75	53
-	+	76	57
-	+	77	37
-	+	78	33
-	+	79	27
-	+	74	56
-	+	217	87
-	+	217	88
-	+	217	118
-
-> ~/bb/open-access/resources/js/components/reporting/RevenueView.vue
-	*	1599019459	0
-	"	167	36
-	^	228	103
-	.	228	102
-	+	237	0
-	+	237	100
-	+	237	101
-	+	237	84
-	+	237	85
-	+	237	54
-	+	237	0
-	+	237	50
-	+	237	0
-	+	237	107
-	+	237	106
-	+	237	107
-	+	237	0
-	+	546	55
-	+	228	102
-
-> ~/bb/open-access/ControlP
-	*	1599016886	0
-	"	1	0
-	.	1	0
-	+	1	0
-
-> ~/bb/open-access/NERD_tree_1
-	*	1599015077	0
-	"	31	0
-	.	1	0
-	+	1	0
-
-> ~/bb/open-access/app/Services/FilterPipeline/PortListOverview.php
-	*	1599010531	0
-	"	23	0
-
-> ~/bb/open-access/resources/views/reporting/include/menu.blade.php
-	*	1599010404	0
-	"	5	1
-	.	1	0
-	+	5	0
-	+	1	0
-
-> ~/bb/open-access/.git/MERGE_MSG
-	*	1598513776	0
-	"	1	0
-
-> ~/Project/Script/softether-support/softether-public-installer/.git/MERGE_MSG
-	*	1597305120	0
-	"	1	0
-
-> ~/Project/Script/softether-support/softether-public-installer/init
-	*	1597304881	0
-	"	12	0
-
-> ~/bb/allo-billing-v3/.git/MERGE_MSG
-	*	1595259455	0
-	"	1	0
-
-> ~/bb/invoice-api/app/Libs/Invoices/CreateInvoice.php
-	*	1594622104	0
-	"	64	8
-
-> ~/bb/invoice-api/app/Console/Commands/GenerateScheduledInvoiceDraft.php
-	*	1594622103	0
-	"	56	63
-	^	55	93
-	.	55	0
-	+	54	92
-	+	54	93
-	+	54	103
-	+	54	104
-	+	54	0
-	+	54	103
-	+	54	105
-	+	54	115
-	+	54	116
-	+	54	90
-	+	54	50
-	+	55	90
-	+	57	0
-	+	116	0
-	+	61	51
-	+	56	62
-	+	61	61
-	+	75	0
-	+	65	0
-	+	68	67
-	+	67	0
-	+	74	0
-	+	75	11
-	+	74	43
-	+	75	11
-	+	75	37
-	+	75	131
-	+	75	132
-	+	75	133
-	+	116	38
-	+	13	0
-	+	116	39
-	+	13	0
-	+	116	0
-	+	76	47
-	+	77	60
-	+	78	57
-	+	79	32
-	+	83	0
-	+	84	57
-	+	85	51
-	+	85	60
-	+	86	62
-	+	87	64
-	+	70	42
-	+	71	52
-	+	87	76
-	+	88	76
-	+	89	80
-	+	90	80
-	+	88	44
-	+	87	45
-	+	86	44
-	+	90	0
-	+	91	55
-	+	92	39
-	+	72	50
-	+	96	51
-	+	97	0
-	+	98	0
-	+	111	0
-	+	98	50
-	+	98	59
-	+	99	63
-	+	100	68
-	+	101	68
-	+	111	0
-	+	102	67
-	+	103	64
-	+	104	60
-	+	105	62
-	+	106	64
-	+	107	67
-	+	108	40
-	+	59	64
-	+	63	71
-	+	81	79
-	+	95	0
-	+	94	94
-	+	110	100
-	+	111	0
-	+	110	136
-	+	110	149
-	+	113	115
-	+	115	57
-	+	12	45
-	+	75	121
-	+	75	122
-	+	75	123
-	+	63	72
-	+	64	0
-	+	75	100
-	+	81	25
-	+	94	25
-	+	110	29
-	+	113	22
-	+	55	0
-
-> ~/bb/invoice-api/app/Models/InvoiceDraft.php
-	*	1594587156	0
-	"	45	0
-	^	44	57
-	.	44	56
-	+	43	0
-	+	44	54
-	+	45	0
-	+	44	56
-
-> ~/bb/invoice-api/ControlP
-	*	1594587154	0
-	"	10	0
+> ~/.local/share/yadm/repo.git/COMMIT_EDITMSG
+	*	1646771365	0
+	"	2	0
 	.	2	0
-	+	1	0
+	+	1	16
 	+	2	0
 
-> ~/bb/invoice-api/app/Models/InvoiceSummary.php
-	*	1594586984	0
-	"	4	0
-
-> ~/bb/invoice-api/app/Models/Invoices.php
-	*	1594586877	0
-	"	3	0
-
-> ~/bb/invoice-api/app/Listeners/InvoiceDraft/UpdateInvoiceDraftSummaryOnItemAdded.php
-	*	1594586670	0
-	"	56	0
-	^	54	79
-	.	54	79
-	+	57	0
-	+	33	44
-	+	34	52
-	+	33	25
-	+	57	0
-	+	56	0
-	+	56	9
-	+	56	0
-	+	45	77
-	+	52	57
-	+	52	64
-	+	16	0
-	+	14	0
-	+	13	42
+> /Volumes/SSD/bb/oaoa/.git/COMMIT_EDITMSG
+	*	1646639789	0
+	"	2	0
+	^	1	29
+	.	1	28
+	+	1	61
+	+	54	0
 	+	52	0
-	+	52	55
-	+	52	65
-	+	52	144
-	+	52	99
-	+	45	73
-	+	43	34
+	+	43	20
+	+	44	0
+	+	45	70
+	+	46	11
+	+	49	9
+	+	51	100
+	+	1	31
+	+	42	0
+	+	1	64
+	+	35	41
+	+	36	71
+	+	37	55
+	+	38	99
+	+	39	5
+	+	38	72
+	+	39	48
 	+	40	0
 	+	38	0
-	+	52	101
-	+	38	0
-	+	38	9
-	+	38	0
-	+	35	53
-	+	34	28
-	+	33	28
-	+	38	0
-	+	37	64
-	+	6	0
-	+	37	74
-	+	45	27
-	+	52	27
-	+	52	86
-	+	38	0
-	+	38	11
-	+	38	21
-	+	38	0
-	+	45	77
-	+	36	0
-	+	36	11
-	+	36	26
-	+	36	10
-	+	36	11
-	+	36	0
-	+	44	0
-	+	52	0
-	+	47	63
-	+	56	0
-	+	47	64
-	+	50	9
-	+	48	0
-	+	47	23
-	+	50	9
-	+	52	23
-	+	52	0
-	+	47	60
-	+	52	65
-	+	56	0
-	+	53	40
-	+	55	0
-	+	54	79
-
-> ~/bb/invoice-api/app/Http/Controllers/ProjectInvoiceDraftItemController.php
-	*	1594586306	0
-	"	100	68
-	^	100	69
-	.	100	68
-	+	145	0
-	+	110	0
-	+	105	0
-	+	106	0
-	+	107	13
-	+	106	70
-	+	100	68
-
-> ~/bb/invoice-api/app/Events/InvoiceDraft/InvoiceDraftItemAdded.php
-	*	1594585375	0
-	"	20	0
-	^	19	43
-	.	19	42
-	+	27	93
-	+	31	0
-	+	29	43
-	+	30	51
-	+	29	31
-	+	20	0
-	+	19	42
-
-> ~/bb/invoice-api/app/Providers/EventServiceProvider.php
-	*	1594585326	0
-	"	47	54
-	^	47	55
-	.	47	54
-	+	19	0
-	+	20	0
-	+	21	1
-	+	20	25
-	+	22	0
-	+	23	0
-	+	24	1
-	+	23	39
-	+	46	0
-	+	47	0
-	+	48	0
-	+	47	54
-
-> ~/bb/invoice-api/app/Listeners/Projects/GenerateProjectInvoiceDraft.php
-	*	1594583302	0
-	"	94	0
-
-> ~/bb/invoice-api/app/Models/Project.php
-	*	1594583180	0
-	"	7	0
-
-> ~/bb/hrms-backend-2/app/Http/Controllers/API/User/UserClaimExpensesController.php
-	*	1592764018	0
-	"	171	0
-	.	88	0
-	+	148	57
-	+	149	0
-	+	88	0
-	+	89	0
-	+	88	0
-	+	89	0
-	+	88	0
-
-> ~/bb/hrms-backend-2/app/Models/ClaimExpense.php
-	*	1592764017	0
-	"	31	26
-	^	31	27
-	.	31	26
-	+	30	0
-	+	31	0
+	+	1	69
+	+	31	39
 	+	32	0
-	+	31	26
-
-> ~/bb/hrms-backend-2/app/Http/Controllers/API/User/UserClaimExpenseInputsController.php
-	*	1592764017	0
-	"	75	0
-	^	75	0
-	.	70	0
-	+	26	0
-	+	31	72
-	+	34	0
-	+	33	41
-	+	83	0
-	+	33	41
-	+	45	26
-	+	40	47
-	+	41	48
-	+	42	50
-	+	83	0
-	+	47	0
-	+	49	0
-	+	52	10
-	+	49	32
-	+	50	41
-	+	51	39
-	+	49	26
-	+	83	0
-	+	25	0
-	+	16	36
-	+	18	62
-	+	19	18
-	+	20	6
-	+	21	79
-	+	23	65
-	+	83	0
-	+	60	0
-	+	62	20
-	+	47	15
-	+	47	0
-	+	49	13
-	+	50	14
-	+	51	14
-	+	48	0
-	+	49	0
-	+	58	0
-	+	53	0
-	+	54	21
-	+	57	0
-	+	54	62
-	+	55	0
-	+	56	0
-	+	55	30
-	+	56	23
-	+	55	67
-	+	56	48
-	+	54	0
-	+	60	0
-	+	59	0
-	+	62	0
-	+	61	0
-	+	62	0
-	+	65	52
-	+	66	0
-	+	80	35
-	+	5	7
-	+	11	0
-	+	64	0
-	+	7	27
-	+	8	0
-	+	9	0
-	+	80	0
-	+	81	0
-	+	80	0
-	+	68	41
-	+	70	46
-	+	70	0
-	+	70	38
-	+	6	26
-	+	81	48
-	+	75	0
-	+	76	0
-	+	10	43
-	+	81	50
-	+	70	0
-	+	71	32
-	+	73	0
-	+	72	37
-	+	69	22
-	+	70	49
-	+	69	0
-	+	70	0
-
-> ~/bb/hrms-backend-2/database/migrations/2020_06_22_015025_add_display_name_field_into_claim_expense_inputs_table.php
-	*	1592764016	0
-	"	6	0
-	^	29	47
-	.	29	46
-	+	18	0
-	+	17	0
-	+	17	81
+	+	1	58
 	+	30	0
-	+	29	46
-
-> ~/bb/hrms-backend-2/app/Transformers/ClaimExpenseInputTransformer.php
-	*	1592764015	0
-	"	37	32
-	^	37	33
-	.	37	32
-	+	18	0
+	+	17	12
+	+	18	7
+	+	19	4
+	+	20	10
+	+	21	6
+	+	22	9
+	+	23	14
+	+	24	13
+	+	25	15
+	+	27	64
+	+	28	9
 	+	36	0
-	+	35	8
-	+	33	35
-	+	35	49
-	+	5	0
-	+	35	62
-	+	38	0
-	+	37	32
-
-> ~/bb/hrms-backend-2/app/Transformers/ClaimExpenseTransformer.php
-	*	1592764015	0
-	"	68	84
-	^	68	85
-	.	68	84
-	+	17	56
-	+	65	0
-	+	66	0
-	+	69	0
-	+	66	70
-	+	68	83
-	+	68	84
-
-> ~/bb/hrms-backend-2/app/Models/ClaimExpenseInput.php
-	*	1592764014	0
-	"	12	32
-	^	12	33
-	.	12	32
-	+	6	44
-	+	28	0
-	+	10	19
-	+	28	0
-	+	27	0
-	+	26	0
-	+	15	51
-	+	17	27
-	+	18	6
-	+	19	0
-	+	20	0
-	+	21	5
-	+	20	47
-	+	23	0
-	+	24	0
-	+	25	0
-	+	24	52
-	+	20	63
-	+	12	32
-
-> ~/bb/hrms-backend-2/ControlP
-	*	1592763991	0
-	"	6	0
-	.	2	0
-	+	1	0
-	+	2	0
-
-> ~/bb/hrms-backend-2/app/Observers/UserClaimExpenseInputObserver.php
-	*	1592763803	0
-	"	11	0
-	.	11	0
-	+	7	0
-	+	6	32
+	+	28	68
+	+	29	41
 	+	18	0
-	+	10	0
-	+	12	0
-	+	16	0
-	+	10	14
-	+	16	0
-	+	10	0
-	+	16	0
-	+	19	0
-	+	18	0
-	+	17	0
-	+	12	0
-	+	13	21
+	+	1	28
+	+	12	68
+	+	13	30
 	+	14	0
-	+	13	50
-	+	13	0
-	+	11	0
-	+	15	8
-	+	7	0
-	+	5	26
-	+	15	0
-	+	11	0
-
-> ~/bb/hrms-backend-2/app/Providers/ClaimExpensesServiceProvider.php
-	*	1592763801	0
-	"	25	0
-	^	28	73
-	.	28	72
-	+	29	0
-	+	28	63
-	+	28	72
-
-> ~/bb/hrms-backend-2/config/app.php
-	*	1592763793	0
-	"	205	20
-	^	205	21
-	.	205	20
-	+	205	20
-
-> ~/bb/hrms-backend-2/app/Http/Controllers/API/User/UserIdentityController.php
-	*	1592763004	0
-	"	79	12
-
-> ~/bb/hrms-backend-2/app/Http/Controllers/API/User/UserEmploymentHistoryController.php
-	*	1592762976	0
-	"	121	0
-
-> ~/bb/hrms-backend-2/NERD_tree_1
-	*	1592762911	0
-	"	20	0
-	.	1	0
 	+	1	0
+	+	5	0
+	+	1	40
+	+	5	0
+	+	1	51
+	+	7	65
+	+	9	6
+	+	5	0
+	+	1	49
+	+	4	0
+	+	1	20
+	+	4	0
+	+	1	41
+	+	3	0
+	+	1	15
+	+	1	28
 
-> ~/bb/hrms-backend-2/app/Http/Requests/CreateUserAddressRequest.php
-	*	1592762910	0
-	"	4	0
+> /private/etc/hosts
+	*	1645140567	0
+	"	10	0
+	.	11	0
+	+	10	0
+	+	11	0
 
-> ~/bb/hrms-backend-2/routes/api.php
-	*	1592762303	0
-	"	68	45
-	^	68	46
-	.	68	46
-	+	70	0
-	+	68	50
-	+	70	0
-	+	68	94
-	+	69	0
-	+	68	46
-
-> ~/bb/hrms-backend-2/database/migrations/2020_06_19_165602_create_claim_expense_inputs_table.php
-	*	1592761922	0
-	"	3	0
-
-> ~/Code/t/composer.
-	*	1592402562	0
+> /Volumes/SSD/bb/oaoa/.git/MERGE_MSG
+	*	1645051901	0
 	"	1	0
 
-> ~/bb/hrms-backend/app/Console/Commands/GeneratePipeline.php
-	*	1592372979	0
-	"	3	0
+> /Volumes/SSD/bb/allo-installer/.git/COMMIT_EDITMSG
+	*	1644780740	0
+	"	3	60
+	^	3	61
+	.	3	60
+	+	1	20
+	+	4	0
+	+	2	0
+	+	4	2
+	+	4	0
+	+	3	60
 
-> ~/bb/hrms-backend/app/Services/Utils/StubGenerator.php
-	*	1592372979	0
-	"	3	0
+> /Volumes/SSD/bb/allo-installer/.git/MERGE_MSG
+	*	1643213425	0
+	"	1	0
 
-> ~/bb/open-access/app/Console/Commands/GenerateReportFilterPipe.php
-	*	1592372978	0
-	"	10	6
-	^	6	37
-	.	6	36
-	+	15	43
-	+	22	62
-	+	41	0
-	+	58	39
-	+	50	40
-	+	15	54
-	+	6	36
-
-> ~/bb/open-access/app/Services/FilterPipeline/FilterByRSP.php
-	*	1592372978	0
-	"	6	0
-
-> ~/bb/open-access/app/Services/Utils/StubGenerator.php
-	*	1592372947	0
-	"	2	0
-	.	1	0
-	+	1	0
-
-> ~/bb/hrms-backend/app/Stubs/Pipeline.stub
-	*	1592372894	0
-	"	2	0
-
-> ~/bb/open-access/app/Stubs/Pipeline.stub
-	*	1592372789	0
-	"	10	16
-	^	10	17
-	.	1	0
-	+	1	0
-
-> ~/bb/hrms-backend-2/app/Models/UserIdentity.php
-	*	1592158816	0
-	"	15	5
-	^	8	32
-	.	8	32
-	+	3	19
-	+	21	0
-	+	14	51
-	+	16	27
-	+	17	6
-	+	21	0
-	+	18	0
-	+	19	0
-	+	20	5
-	+	19	58
-	+	6	44
-	+	12	0
-	+	11	19
-	+	8	32
-
-> ~/bb/hrms-backend-2/app/Models/User.php
-	*	1592158772	0
-	"	11	0
-
-> ~/Code/jibil/resources/views/livewire/create-forum.blade.php
-	*	1591090233	0
-	"	5	0
-	^	4	0
+> ~/.gitconfig
+	*	1642340309	0
+	"	5	25
+	^	5	26
 	.	5	0
-	+	3	0
-	+	3	21
-	+	12	10
-	+	12	7
-	+	12	0
-	+	3	0
-	+	2	29
-	+	12	0
-	+	12	41
-	+	12	15
-	+	12	0
-	+	12	12
-	+	11	0
-	+	12	0
-	+	12	62
-	+	12	4
-	+	12	21
-	+	12	0
-	+	12	13
-	+	2	0
-	+	12	13
-	+	12	0
-	+	2	0
-	+	12	0
-	+	1	0
+	+	5	0
 	+	4	0
 	+	5	0
 
-> ~/Code/jibil/resources/views/forum/create.blade.php
-	*	1591090226	0
-	"	6	36
-	^	2	37
-	.	2	36
-	+	13	0
-	+	12	44
-	+	2	36
+> ~/.zshrc
+	*	1642308747	0
+	"	5	14
+	^	5	15
+	.	5	14
+	+	14	37
+	+	5	14
 
-> ~/Code/jibil/resources/views/layouts/app.blade.php
-	*	1591090179	0
-	"	154	4
-	^	150	0
-	.	153	0
-	+	18	0
-	+	160	0
-	+	159	0
-	+	160	0
-	+	150	0
-	+	151	0
-	+	152	0
-	+	153	0
-	+	154	0
-	+	151	0
-	+	154	0
-	+	152	0
-	+	153	0
+> ~/.config/alacritty/alacritty.yml
+	*	1642308446	0
+	"	12	0
+	.	12	0
+	+	12	0
 
-> ~/Code/jibil/resources/views/forum/js/create.blade.php
-	*	1591090152	0
-	"	3	0
-	.	2	0
-	+	2	0
-
-> ~/Code/jibil/ControlP
-	*	1591090143	0
-	"	2	0
-	.	2	0
-	+	1	0
-	+	2	0
-
-> ~/Code/jibil/resources/views/forum-comment/js/create.blade.php
-	*	1591090138	0
-	"	1	0
-
-> ~/Code/jibil/NERD_tree_1
-	*	1591089645	0
-	"	33	0
-	.	1	0
-	+	1	0
-
-> ~/Code/jibil/gitblah-lVWZ
-	*	1591070226	0
-	"	2	9
-	^	1	10
-	.	1	9
-	+	1	9
-
-> ~/Code/jibil/gitblah-RVGt
-	*	1591070203	0
-	"	1	12
-	^	1	7
-	.	1	6
-	+	2	9
-	+	1	9
-	+	2	9
-	+	1	6
-
-> ~/Code/jibil/gitblah-aOEc
-	*	1591070148	0
-	"	2	4
-
-> ~/Project/Script/softether/.git/MERGE_MSG
-	*	1590434276	0
-	"	1	0
-
-> ~/Project/Script/softether/modules_statuses.json
-	*	1590336614	0
-	"	3	0
-
-> ~/Project/Script/softether/ControlP
-	*	1590336612	0
-	"	3	0
-	.	2	0
-	+	1	0
-	+	2	0
-
-> ~/Project/Script/softether/Modules/Softether/Jobs/ChangeSoftetherAccountPassword.php
-	*	1590277127	0
-	"	15	0
-	^	49	49
-	.	49	48
-	+	50	0
-	+	49	48
-
-> ~/Project/Script/softether/Modules/Softether/Http/Livewire/SoftetherServerSetting.php
-	*	1590277127	0
-	"	70	29
-	^	70	30
-	.	9	0
-	+	51	0
-	+	72	0
-	+	73	0
-	+	72	0
-	+	61	11
-	+	60	22
-	+	61	0
-	+	61	80
-	+	63	22
-	+	63	0
-	+	60	0
-	+	53	0
-	+	54	0
-	+	58	10
-	+	54	58
-	+	55	62
-	+	56	50
-	+	54	27
-	+	57	50
-	+	62	37
-	+	62	81
-	+	65	0
-	+	65	80
-	+	66	39
-	+	7	0
-	+	68	0
-	+	69	59
-	+	59	0
-	+	60	0
-	+	60	56
-	+	51	25
-	+	60	47
-	+	54	38
-	+	55	38
-	+	56	38
-	+	20	21
-	+	38	41
-	+	60	35
-	+	38	44
-	+	20	65
-	+	35	22
-	+	36	34
-	+	37	25
-	+	36	35
-	+	60	0
-	+	61	57
-	+	65	61
-	+	69	41
-	+	70	81
-	+	70	73
-	+	66	81
-	+	66	73
-	+	62	97
-	+	66	101
-	+	70	29
-	+	9	0
-
-> ~/Project/Script/softether/Modules/Softether/Jobs/UpdateSoftetherHubPassword.php
-	*	1590277126	0
-	"	56	0
-	^	33	64
-	.	6	0
-	+	17	0
-	+	5	0
-	+	33	83
-	+	36	50
-	+	20	75
-	+	66	0
-	+	66	121
-	+	69	33
-	+	70	47
-	+	66	0
-	+	33	46
-	+	13	0
-	+	35	49
-	+	33	63
-	+	13	0
-	+	6	0
-
-> ~/Project/Script/softether/Modules/Softether/Jobs/UpdateSoftetherAdminPassword.php
-	*	1590277126	0
-	"	5	0
-	^	69	49
-	.	68	0
-	+	5	0
-	+	17	0
-	+	66	116
-	+	69	48
-	+	68	0
-
-> ~/Project/Script/softether/Modules/Softether/Resources/views/livewire/softether-server-setting.blade.php
-	*	1590277125	0
-	"	225	45
-	^	227	95
-	.	227	94
-	+	216	85
-	+	216	97
-	+	216	92
-	+	221	62
-	+	227	94
-
-> ~/Project/Script/softether/Modules/Softether/Jobs/UpdateSoftetherPsk.php
-	*	1590277125	0
-	"	73	26
-	^	73	27
-	.	73	27
-	+	17	0
-	+	5	0
-	+	66	168
-	+	68	60
-	+	69	49
-	+	71	0
-	+	70	44
-	+	66	14
-	+	73	11
-	+	73	27
-
-> ~/Project/Script/softether/Modules/Softether/Http/Livewire/CreateSoftetherAccount.php
-	*	1590276936	0
-	"	119	0
-
-> ~/Project/Script/softether/Modules/ResellerModule/Livewire/ResellerTable.php
-	*	1590275675	0
-	"	85	8
-	.	85	0
-	+	85	0
-
-> ~/Project/Script/softether/Modules/Softether/Jobs/UnlockSoftetherAccount.php
-	*	1590272668	0
-	"	15	27
-	^	15	28
-	.	15	28
-	+	15	28
-
-> ~/Project/Script/softether/Modules/Softether/Jobs/LockSoftetherAccount.php
-	*	1590272661	0
-	"	15	25
-	^	15	38
-	.	15	26
-	+	15	26
-
-> ~/Project/Script/softether/Modules/ResellerModule/Resources/views/livewire/edit-reseller.blade.php
-	*	1590173411	0
-	"	112	0
-	.	1	0
-	+	1	0
-
-> ~/Project/Script/softether/app/Listeners/Server/GenerateServerMenu.php
-	*	1590173407	0
-	"	56	8
-	.	55	0
-	+	57	0
-	+	54	0
-	+	55	0
-	+	56	0
-	+	57	0
-	+	55	0
-
-> ~/Project/Script/softether/Modules/Softether/Resources/views/livewire/softether-download-center.blade.php
-	*	1590170883	0
-	"	39	50
-	^	39	67
-	.	39	0
-	+	31	80
-	+	31	89
-	+	31	92
-	+	31	100
-	+	31	103
-	+	31	110
-	+	31	111
-	+	39	36
-	+	31	67
-	+	39	0
-
-> ~/Project/Script/softether/NERD_tree_1
-	*	1590169684	0
-	"	29	0
-	.	1	0
-	+	1	0
-
-> ~/Project/Script/softether/Modules/Softether/composer.json
-	*	1590169683	0
-	"	7	36
-	^	7	37
-	.	7	36
-	+	2	20
-	+	6	45
-	+	7	36
-
-> ~/Project/Script/softether/Modules/Softether/Http/Livewire/ShowSoftetherAccountDetails.php
-	*	1590164280	0
-	"	127	40
-	^	127	41
-	.	127	40
-	+	158	0
-	+	121	0
-	+	124	0
-	+	125	56
-	+	126	45
-	+	127	40
-
-> ~/Project/Script/softether/Modules/Softether/Http/Livewire/SoftetherAccountSetting.php
-	*	1590164227	0
-	"	32	4
-	^	32	43
-	.	32	43
-	+	32	43
-
-> ~/Project/Script/softether/Modules/Softether/Jobs/SynchronizeSoftetherAccountDetails.php
-	*	1590164205	0
-	"	57	0
-	.	57	0
+> ~/.config/yabai/yabairc
+	*	1642308325	0
+	"	59	24
+	.	62	0
 	+	62	0
-	+	62	38
-	+	5	0
-	+	62	0
-	+	57	0
 
-> ~/Project/Script/softether/Modules/Softether/Http/Controllers/AccountController.php
-	*	1590164194	0
-	"	57	0
+> ~/.config/karabiner/karabiner.json
+	*	1642291939	0
+	"	601	0
 
-> ~/Project/Script/softether/Modules/Softether/Resources/views/livewire/softether-account-actions.blade.php
-	*	1590164193	0
-	"	15	0
-	^	8	19
-	.	8	18
-	+	72	0
-	+	74	0
-	+	75	0
-	+	49	0
-	+	3	0
-	+	14	0
-	+	13	43
-	+	9	32
-	+	3	5
-	+	14	6
-	+	5	25
-	+	11	0
-	+	10	72
-	+	8	18
-
-> ~/Project/Script/softether/Modules/Softether/Resources/views/livewire/softether-account-list.blade.php
-	*	1590164192	0
-	"	21	0
-
-> ~/Project/Script/softether/Modules/Softether/Http/Livewire/EditSoftetherAccount.php
-	*	1590164191	0
-	"	5	22
-	^	3	27
-	.	3	26
-	+	3	26
-
-> ~/Project/Script/softether/Modules/Softether/Jobs/ChangeSoftetherAccountPasswordlessAuthentication.php
-	*	1590164190	0
-	"	49	18
-	^	52	19
-	.	52	18
-	+	54	0
-	+	49	0
-	+	50	51
-	+	53	0
-	+	50	69
-	+	52	18
-
-> ~/Project/Script/softether/Modules/Softether/Resources/views/livewire/softether-account-setting.blade.php
-	*	1590164084	0
-	"	52	71
-	^	52	72
-	.	52	71
-	+	52	71
-
-> ~/Project/Script/softether/Modules/Softether/Http/Livewire/SoftetherDownloadCenter.php
-	*	1590164059	0
-	"	24	87
-	^	24	40
-	.	24	40
-	+	24	40
-
-> ~/Project/Script/softether/Modules/Softether/Resources/views/livewire/show-softether-account-details.blade.php
-	*	1590163907	0
+> ~/.config/karabiner/k
+	*	1642291929	0
 	"	1	0
 
-> ~/Project/Script/softether/Modules/Softether/Routes/web.php
-	*	1590163558	0
-	"	16	0
-
-> ~/bb/allo-billing-v3/app/Http/Controllers/InvoiceController.php
-	*	1589956729	0
-	"	264	0
-	^	95	26
-	.	95	25
-	+	95	25
-
-> ~/bb/allo-billing-v3/NERD_tree_1
-	*	1589956728	0
-	"	20	0
+> ~/NERD_tree_1
+	*	1642291924	0
+	"	1	0
 	.	1	0
 	+	1	0
-
-> ~/bb/allo-billing-v3/config/pdf.php
-	*	1589953794	0
-	"	2	0
-
-> ~/bb/allo-billing-v3/database/migrations/2019_03_12_162532_operator_add_permission.php
-	*	1589953785	0
-	"	5	35
-
-> ~/bb/allo-billing-v3/app/Http/Controllers/InvoiceAPIController.php
-	*	1589953740	0
-	"	471	0
-
-> ~/bb/allo-billing-v3/ControlP
-	*	1589953735	0
-	"	4	0
-	.	2	0
-	+	1	0
-	+	2	0
-
-> ~/bb/allo-billing-v3/app/Http/Controllers/API/InvoiceController.php
-	*	1589953731	0
-	"	35	29

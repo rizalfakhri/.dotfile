@@ -51,8 +51,6 @@ let g:clap_disable_optional_async = get(g:, 'clap_disable_optional_async', v:fal
 let g:clap_no_matches_msg = get(g:, 'clap_no_matches_msg', 'NO MATCHES FOUND')
 let g:__clap_no_matches_pattern = '^'.g:clap_no_matches_msg.'$'
 
-let g:__clap_indicator_winwidth = 18
-
 let s:default_symbols = {
       \ 'arrow' : ["\ue0b2", "\ue0b0"],
       \ 'curve' : ["\ue0b6", "\ue0b4"],
@@ -77,7 +75,7 @@ let g:clap_open_preview = get(g:, 'clap_open_preview', 'always')
 let g:clap_open_action = get(g:, 'clap_open_action', s:default_action)
 let g:clap_enable_icon = get(g:, 'clap_enable_icon', exists('g:loaded_webdevicons') || get(g:, 'spacevim_nerd_fonts', 0))
 let g:clap_preview_size = get(g:, 'clap_preview_size', 5)
-let g:clap_preview_direction = get(g:, 'clap_preview_direction', &columns < 80 ? 'UD' : 'LR')
+let g:clap_preview_direction = get(g:, 'clap_preview_direction', 'AUTO')
 let g:clap_enable_background_shadow = get(g:, 'clap_enable_background_shadow', v:true)
 let g:clap_background_shadow_blend = get(g:, 'clap_background_shadow_blend', 50)
 let g:clap_insert_mode_only = get(g:, 'clap_insert_mode_only', v:false)
@@ -85,7 +83,10 @@ let g:clap_providers_relaunch_code = get(g:, 'clap_providers_relaunch_code', '@@
 let g:clap_disable_matches_indicator = get(g:, 'clap_disable_matches_indicator', v:false)
 let g:clap_multi_selection_warning_silent = get(g:, 'clap_multi_selection_warning_silent', 0)
 
-let g:clap_popup_border = get(g:, 'clap_popup_border', 'rounded')
+" Do not use this unless you know what you are doing!!!
+let g:__clap_development = get(g:, '__clap_development', v:false)
+
+let g:clap_popup_border = get(g:, 'clap_popup_border', has('nvim') ? 'single' : 'rounded')
 
 function! clap#builtin_providers() abort
   if !exists('s:builtin_providers')
@@ -103,7 +104,7 @@ function! s:inject_default_impl_is_ok(provider_info) abort
   " If sync provider
   if has_key(provider_info, 'source')
     if !has_key(provider_info, 'on_typed')
-      let provider_info.on_typed = function('clap#impl#on_typed')
+      let provider_info.on_typed = function('clap#impl#on_typed#')
     endif
     if !has_key(provider_info, 'filter')
       let provider_info.filter = function('clap#filter#sync')
@@ -160,7 +161,6 @@ function! clap#_exit() abort
   noautocmd call g:clap.close_win()
   call g:clap.preview.clear()
 
-  let g:clap.is_busy = 0
   let g:clap.display.cache = []
   let g:clap.display.initial_size = -1
   " Reset this for vim issue. Ref #223
@@ -287,6 +287,8 @@ function! clap#for(provider_id_or_alias) abort
 
   call clap#selection#init()
 
+  silent doautocmd <nomodeline> User ClapOnInitialize
+
   " This flag is used to slience the autocmd events for NeoVim, e.g., on_typed.
   " Vim doesn't have these issues as it uses noautocmd in most cases.
   "
@@ -306,7 +308,12 @@ endif
 
 function! s:parse_opts(args) abort
   let idx = 0
+  let g:clap.provider.args = []
   for arg in a:args
+    if arg ==# '--'
+      let g:clap.context.query = join(a:args[idx+1 :], ' ')
+      break
+    endif
     if arg =~? '^++\w*=\w*'
       let matched = matchlist(arg, '^++\(\w*\)=\(\S*\)')
       let [k, v] = [matched[1], matched[2]]
@@ -319,7 +326,7 @@ function! s:parse_opts(args) abort
       let opt = arg[1:]
       let g:clap.context[opt] = v:true
     else
-      break
+      call add(g:clap.provider.args, arg)
     endif
     let idx += 1
   endfor
@@ -330,7 +337,6 @@ function! s:parse_opts(args) abort
       let g:clap.context.query = clap#util#expand(g:clap.context.query)
     endif
   endif
-  let g:clap.provider.args = a:args[idx :]
 endfunction
 
 function! clap#(bang, ...) abort

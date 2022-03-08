@@ -9,7 +9,7 @@ settings.
 
 ```vim
 Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
+  \ 'do': 'yarn install --frozen-lockfile --production',
   \ 'branch': 'release/0.x'
   \ }
 ```
@@ -42,15 +42,15 @@ yarn|npm installed globally.
 ```vim
 " post install (yarn install | npm install) then load plugin only for editing supported files
 Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+  \ 'do': 'yarn install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
 ```
 
 or simply enable for all formats by:
 
 ```vim
 " post install (yarn install | npm install) then load plugin only for editing supported files
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
 ```
 
 For those using [vim-pathogen](https://github.com/tpope/vim-pathogen), you can run the following in a terminal:
@@ -60,9 +60,15 @@ cd ~/.vim/bundle
 git clone https://github.com/prettier/vim-prettier
 ```
 
+If using [dein](https://github.com/Shougo/dein.vim), add the following to your dein config:
+
+```vim
+call dein#add('prettier/vim-prettier', {'build': 'npm install'})
+```
+
 If using other vim plugin managers or doing manual setup make sure to have
 `prettier` installed globally or go to your vim-prettier directory and either do
-`npm install` or `yarn install`
+`npm install` or `yarn install --frozen-lockfile`
 
 ### Prettier Executable resolution
 
@@ -112,7 +118,7 @@ If your are on vim 8+ you can also trigger async formatting by:
 
 You can send to prettier your entire buffer but ensure that it formats only your selection.
 
-**note: ** differs from `:PrettierFragment` by sending the entire buffer to prettier, allowing identation level to be preserved, but it requires the whole file to be valid.
+**note:** differs from `:PrettierFragment` by sending the entire buffer to prettier, allowing identation level to be preserved, but it requires the whole file to be valid.
 
 ```vim
 :PrettierPartial
@@ -120,7 +126,7 @@ You can send to prettier your entire buffer but ensure that it formats only your
 
 You can send to prettier your current selection as a fragment of same type as the file being edited.
 
-**note: ** differs from `:PrettierFragment` by sending only the current selection to prettier, this allows for faster formatting but wont preserve indentation.
+**note:** differs from `:PrettierPartial` by sending only the current selection to prettier, this allows for faster formatting but wont preserve indentation.
 
 ```vim
 :PrettierFragment
@@ -170,6 +176,13 @@ Allow auto formatting for files without "@format" or "@prettier" tag
 let g:prettier#autoformat_require_pragma = 0
 ```
 
+**NOTE** The previous two options can be used together for autoformatting files on save without `@format` or `@prettier` tags
+
+```vim
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_require_pragma = 0
+```
+
 Toggle the `g:prettier#autoformat` setting based on whether a config file can be found in the current directory or any parent directory. Note that this will override the `g:prettier#autoformat` setting!
 
 ```vim
@@ -213,13 +226,13 @@ By default we auto focus on the quickfix when there are errors but can also be d
 let g:prettier#quickfix_auto_focus = 0
 ```
 
-To running vim-prettier not only before saving, but also after changing text or leaving insert mode:
+To run vim-prettier not only before saving, but also after changing text or leaving insert mode:
 
 ```vim
 " when running at every change you may want to disable quickfix
 let g:prettier#quickfix_enabled = 0
 
-autocmd TextChanged,InsertLeave *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+autocmd TextChanged,InsertLeave *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
 ```
 
 ### Overwrite default prettier configuration

@@ -15,27 +15,11 @@ function! s:sync_run_with_delay() abort
 endfunction
 
 if clap#maple#is_available()
-  function! s:handle_on_move_result(result, error) abort
+  function! clap#impl#on_move#handler(result, error) abort
     if a:error isnot v:null
       return
     endif
-    if has_key(a:result, 'lines')
-      try
-        call g:clap.preview.show(a:result.lines)
-      catch
-        return
-      endtry
-      if has_key(a:result, 'syntax')
-        call g:clap.preview.set_syntax(a:result.syntax)
-      elseif has_key(a:result, 'fname')
-        call g:clap.preview.set_syntax(clap#ext#into_filetype(a:result.fname))
-      endif
-      call clap#preview#highlight_header()
-
-      if has_key(a:result, 'hi_lnum')
-        call g:clap.preview.add_highlight(a:result.hi_lnum+1)
-      endif
-    endif
+    call clap#state#process_preview_result(a:result)
   endfunction
 
   function! s:dispatch_on_move_impl() abort
@@ -47,7 +31,7 @@ if clap#maple#is_available()
   endfunction
 
   function! clap#impl#on_move#async() abort
-    call clap#client#call_on_move('on_move', function('s:handle_on_move_result'))
+    call clap#client#call_on_move('on_move', function('clap#impl#on_move#handler'))
   endfunction
 else
   function! s:dispatch_on_move_impl() abort
@@ -55,6 +39,9 @@ else
   endfunction
 
   function! clap#impl#on_move#async() abort
+  endfunction
+
+  function! clap#impl#on_move#handler(_result, _error) abort
   endfunction
 endif
 

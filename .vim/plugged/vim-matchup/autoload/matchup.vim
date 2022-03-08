@@ -4,10 +4,12 @@
 " Email:      a@normed.space
 "
 
+scriptencoding utf-8
+
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! matchup#init()
+function! matchup#init() abort
   call matchup#perf#tic('loading')
 
   call s:init_options()
@@ -41,6 +43,8 @@ function! s:init_options()
   call s:init_option('matchup_matchparen_nomode', '')
   call s:init_option('matchup_matchparen_hi_surround_always', 0)
   call s:init_option('matchup_matchparen_hi_background', 0)
+  call s:init_option('matchup_matchparen_start_sign', '▶')
+  call s:init_option('matchup_matchparen_end_sign', '◀')
 
   call s:init_option('matchup_matchparen_timeout',
         \ get(g:, 'matchparen_timeout', 300))
@@ -75,9 +79,8 @@ function! s:init_options()
 endfunction
 
 function! s:init_option(option, default)
-  let l:option = 'g:' . a:option
-  if !exists(l:option)
-    let {l:option} = a:default
+  if !has_key(g:, a:option)
+    let g:[a:option] = a:default
   endif
 endfunction
 
@@ -96,6 +99,7 @@ function! s:init_modules()
   call s:misc_init_module()
   call s:surround_init_module()
   call s:where_init_module()
+  call s:treesitter_init_module()
 endfunction
 
 function! s:init_oldstyle_ops() " {{{1
@@ -162,6 +166,8 @@ endfunction
 
 " }}}1
 
+let s:ignore_key = len(expand("\<ignore>")) > 0 ? '<ignore>' : ''
+
 function! s:init_default_mappings()
   if !get(g:,'matchup_mappings_enabled', 1) | return | endif
 
@@ -169,6 +175,13 @@ function! s:init_default_mappings()
     if !hasmapto(a:rhs, a:mode)
           \ && ((a:0 > 0) || (maparg(a:lhs, a:mode) ==# ''))
       silent execute a:mode . 'map <silent> ' a:lhs a:rhs
+    endif
+  endfunction
+
+  function! s:omap(mode, lhs, rhs, ...)  " issues/199
+    if !hasmapto(a:rhs, a:mode)
+          \ && ((a:0 > 0) || (maparg(a:lhs, a:mode) ==# ''))
+      silent execute a:mode . 'map <silent> ' a:lhs s:ignore_key . a:rhs
     endif
   endfunction
 
@@ -194,8 +207,8 @@ function! s:init_default_mappings()
     call s:map('x', 'z%', '<plug>(matchup-z%)')
 
     if !s:old_style_ops
-      call s:map('o', '%', '<plug>(matchup-%)')
-      call s:map('o', 'g%', '<plug>(matchup-g%)')
+      call s:omap('o', '%', '<plug>(matchup-%)')
+      call s:omap('o', 'g%', '<plug>(matchup-g%)')
       call s:map('o', ']%', '<plug>(matchup-]%)')
       call s:map('o', '[%', '<plug>(matchup-[%)')
       call s:map('o', 'z%', '<plug>(matchup-z%)')
@@ -281,6 +294,16 @@ function! s:motion_init_module() " {{{1
   onoremap <silent> <plug>(matchup-z%)
         \ :<c-u>call matchup#motion#op('z%')<cr>
 
+  " 'opposite' of z%
+  nnoremap <silent> <plug>(matchup-Z%)
+        \ :<c-u>call matchup#motion#jump_inside_prev(0)<cr>
+
+  xnoremap <silent> <sid>(matchup-Z%)
+        \ :<c-u>call matchup#motion#jump_inside_prev(1)<cr>
+  xmap     <silent> <plug>(matchup-Z%) <sid>(matchup-Z%)
+  onoremap <silent> <plug>(matchup-Z%)
+        \ :<c-u>call matchup#motion#op('Z%')<cr>
+
   inoremap <silent> <plug>(matchup-c_g%)
         \ <c-\><c-o>:call matchup#motion#insert_mode()<cr>
 
@@ -293,7 +316,7 @@ function! s:snr()
 endfunction
 let s:sid = printf("\<SNR>%d_", s:snr())
 
-function! matchup#motion_sid()
+function! matchup#motion_sid() abort
   return s:sid
 endfunction
 
@@ -357,8 +380,25 @@ function! s:where_init_module() " {{{1
 endfunction
 
 " }}}1
+function! s:treesitter_init_module() " {{{1
+  if !matchup#loader#_treesitter_may_be_supported()
+    return
+  endif
+
+  lua require'treesitter-matchup'.init()
+
+  augroup matchup_filetype_query
+    au!
+    autocmd FileType query
+          \ augroup MatchupTreesitter|augroup END
+          \|autocmd! MatchupTreesitter BufWritePost <buffer>
+          \ call v:lua.require('treesitter-matchup.third-party.query')
+          \.invalidate_query_file(expand('%:p'))
+  augroup END
+endfunction
+
+"}}}1
 
 let &cpo = s:save_cpo
 
 " vim: fdm=marker sw=2
-

@@ -31,21 +31,20 @@ function! s:maps_source() abort
   let s:map_reg = empty(v:register) ? '' : ('"'.v:register)
   let s:map_op  = mode ==# 'o' ? v:operator : ''
 
-  let cout = execute('verbose '.mode.'map')
+  let cout = clap#api#win_execute(g:clap.start.winid, 'verbose '.mode.'map')
   let list = []
   let curr = ''
   for line in split(cout, "\n")
     if line =~# "^\t"
       let src = '  '.join(reverse(reverse(split(split(line)[-1], '/'))[0:2]), '/')
-      call add(list, printf('%s %s', curr, src))
+      let list[-1] = printf('%s %s', curr, src)
       let curr = ''
     else
       let curr = line[3:]
+      call add(list, printf('%s', curr))
     endif
   endfor
-  if !empty(curr)
-    call add(list, curr)
-  endif
+
   return sort(s:align_pairs(list))
 endfunction
 

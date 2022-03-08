@@ -24,8 +24,9 @@ background = ''
 prevent = False
 currentWin = False
 startWin = False
+changedWin = False
 buffers = {}
-activeWindow = str(vim.current.window.number)
+activeWindow = util.eval_and_return('win_getid('+str(vim.current.window.number)+')')
 activeBuffer = str(vim.current.buffer.number)
 
 
@@ -36,6 +37,7 @@ def update(nextState = None):
   start = time.time()
   if FADE.prevent:
     return
+  FADE.changedWin = False
 
   currentWindows = FADE.windows
   currentBuffers = FADE.buffers
@@ -149,7 +151,7 @@ def update(nextState = None):
 
     if state.wrap != wrap:
       state.wrap = wrap
-      if not hasActiveWindow:
+      if not hasActiveBuffer:
         fade[winid] = state
 
     if diff and GLOBALS.group_diff:
@@ -293,16 +295,29 @@ def update(nextState = None):
   # if (time.time() - start) * 1000 > 10:
     # print('update',(time.time() - start) * 1000)
 
+def gotoWin(winid):
+  currentWin = FADE.currentWin
+  if currentWin != winid:
+    FADE.currentWin = winid
+    if FADE.changedWin == False:
+      FADE.changedWin = True
+      vim.command('noautocmd set winwidth=1 | noautocmd call win_gotoid('+winid+')')
+    else:
+      vim.command('noautocmd call win_gotoid('+winid+')')
+
 def returnToWin():
+  cmd = ('| let g:vimade_cmd="noautocmd vert resize ".winwidth(".") |  noautocmd set winwidth=' + GLOBALS.win_width + ' | execute g:vimade_cmd') if FADE.changedWin else ''
+  FADE.changedWin = False
+
   if FADE.currentWin != FADE.startWin:
-    vim.command('noautocmd call win_gotoid('+FADE.startWin+')')
-    FADE.currentWin = False
-    FADE.startWin = False
+    vim.command('noautocmd call win_gotoid('+FADE.startWin+')' + cmd)
+  elif cmd != '':
+    vim.command(cmd[1:])
 
 def unfadeAllSigns():
   currentBuffers = buffers
   if len(currentBuffers):
-    signs.unfade_bufs(currentBuffers.values())
+    signs.unfade_bufs(list(currentBuffers.values()))
 
 def unfadeAll():
   FADE.startWin = FADE.currentWin = util.eval_and_return('win_getid('+str(vim.current.window.number)+')')
@@ -333,9 +348,7 @@ def softInvalidateBuffer(bufnr):
 def unfadeWin(winState, clear_syntax = False):
   matches = winState.matches
   winid = str(winState.id)
-  if FADE.currentWin != winid:
-    FADE.currentWin = winid
-    vim.command('noautocmd call win_gotoid('+winid+')')
+  gotoWin(winid)
   syntax = clear_syntax if clear_syntax else winState.syntax
   if syntax in FADE.buffers[winState.buffer].coords:
     coords = FADE.buffers[winState.buffer].coords[syntax]
@@ -378,9 +391,7 @@ def fadeWin(winState):
   to_eval = []
   texts = []
 
-  if FADE.currentWin != winid:
-    FADE.currentWin = winid
-    vim.command('noautocmd call win_gotoid('+winid+')')
+  gotoWin(winid)
 
   lookup = util.eval_and_return('winsaveview()')
   startRow = topline = int(lookup['topline'])
@@ -409,7 +420,8 @@ def fadeWin(winState):
 
   vim.command('let g:vimade_visrows=vimade#GetVisibleRows('+str(startRow)+','+str(endRow)+')')
   visible_rows = vim.vars['vimade_visrows']
-  buf = buf[visible_rows[0][0]-1:visible_rows[len(visible_rows)-1][0]]
+  if len(visible_rows):
+    buf = buf[visible_rows[0][0]-1:visible_rows[len(visible_rows)-1][0]]
   texts = []
   winState.visible_rows = {} 
 
@@ -611,9 +623,7 @@ def fadeWin(winState):
 
 def fadeBase(winState):
   winid = winState.id
-  if FADE.currentWin != winid:
-    FADE.currentWin = winid
-    vim.command('noautocmd call win_gotoid('+winid+')')
+  gotoWin(winid)
   i = 0
   hl = ''
   for base in GLOBALS.basegroups:
@@ -631,9 +641,7 @@ def fadeBase(winState):
 
 def unfadeBase(winState):
   winid = winState.id
-  if FADE.currentWin != winid:
-    FADE.currentWin = winid
-    vim.command('noautocmd call win_gotoid('+winid+')')
+  gotoWin(winid)
   vim.command('setlocal winhl=' + winState.last_winhl)
 
   # print(str(len(to_eval))+ ' ' + str((time.time() - startTime) * 1000))

@@ -1,6 +1,59 @@
 Changelog
 =========
 
+## master
+
+Features:
+
+  - [language-server] Import all names refactoring - @dantleech
+  - [language-server] Extract expression - @BladeMF
+  - [language-server] Extract method generation - @BladeMF
+  - [language-server] Initial support for method generation - @BladeMF
+  - [langauge-server] Support for renaming files (LSP 3.16) - @dantleech
+  - [language-server] Ability to use client file events where available - @dantleech
+  - [completion] Experimental support snippets for built-in functions - @weeman1337
+  - [completion] Experimental support snippets for class constructos - @weeman1337
+  - [completion] Added `experimental` flag
+  - [completion] Added flag to enable / disable snippets entirely
+  - [language-server] Ensure workspace is indexed before finding references - @dantleech
+  - [language-server] Support for renaming class names (short only) - @dantleech
+  - [language-server] Rename class members and variables - @BladeMF, @dantleech
+  - [language-server] Basic support for workspace symbols.
+  - [language-server] Added basic PHP linting by default.
+
+Improvements:
+
+  - [completion] Improve diagnostic message for #1245 - @dantleech
+  - [language-server] Allow hover template paths to be customized - @BladeMF
+  - [language-server] Show warning in client if extra config keys present - @dantleech
+  - [code-transform] Improved performance for unresolvable class name finder - @dantleech
+  - [code-transform] Improved information in name-not-found exception -
+    @weeman1337
+  - [language-server] Do not show "class not found" diagnostics by default - @dantleech
+  - [worse-reflection, etc] Update to latest tolerant parser lib to support PHP 8.1 syntax
+
+Bug fixes:
+
+  - [worse-reflection] Fix handling of non-decimal integers - @Slamdunk
+  - [worse-reflection] Fix variable detection in closures - @BladeMF
+  - [completion] Fix snippet method completion #1172 - @BladeMF
+  - [worse-reflection] Fix PHP8.0 deprecation warnings - @gregoire
+  - [completion] Tests fail due to jetbrain stubs changes - @weeman1337
+  - [worse-reference-finder] Do not know how to create class from type "NULL" #1246 - @dantleech
+  - [worse-reflection] Property context class not propagated
+
+## 2021-03-21 (0.17.1)
+
+Features:
+
+  - [completion] Support Attribute Completion
+
+Bug fixes:
+
+  - [language-server] Diagnostics do not tolerate NULL document version on save #1220
+  - [worse-reflection] Unhandled exception thrown when variable name is "NULL"
+  - [language-server] Unhandled exception when function not found on hover
+
 ## 2021-02-06 (0.17.0)
 
 Features:

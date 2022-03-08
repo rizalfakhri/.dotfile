@@ -8,9 +8,12 @@
 
 if !exists('g:loaded_matchup')
       \ || !exists('g:loaded_matchit')
-      \ || !exists(":MatchDebug")
+      \ || !exists(':MatchDebug')
   finish
 endif
+
+function! matchup#unmatchit#()
+endfunction
 
 unlet g:loaded_matchit
 
@@ -23,4 +26,3 @@ silent! unmap a%
 silent! unmap g%
 
 " vim: fdm=marker sw=2
-

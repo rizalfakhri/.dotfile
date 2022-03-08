@@ -7,7 +7,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! matchup#text_obj#delimited(is_inner, visual, type) " {{{1
+function! matchup#text_obj#delimited(is_inner, visual, type) abort " {{{1
   let l:v_motion_force = matchup#motion_force()
 
   " get the current selection, move to the _start_ the of range
@@ -68,8 +68,10 @@ function! matchup#text_obj#delimited(is_inner, visual, type) " {{{1
         call feedkeys("\<c-\>\<c-n>\<esc>", 'n')
 
         " and undo the text vim enters if necessary
+        " vint: -ProhibitUnnecessaryDoubleQuote
         call feedkeys(":call matchup#text_obj#undo("
               \ .undotree().seq_cur.")\<cr>:\<c-c>", 'n')
+        " vint: +ProhibitUnnecessaryDoubleQuote
       endif
       return
     endif
@@ -123,6 +125,16 @@ function! matchup#text_obj#delimited(is_inner, visual, type) " {{{1
       let [l:l1, l:c1] = matchup#pos#next(l:l1, l:c1)[1:2]
       let l:sol = (l:c2 <= 1)
       let [l:l2, l:c2] = matchup#pos#prev(l:l2, l:c2)[1:2]
+
+      " make *i% more like *it for html
+      " don't include next <
+      if matchup#quirks#ishtmllike()
+            \ && !matchup#util#matchpref('classic_textobj', 0)
+            \ && l:close.match =~? '^/\w\+\s*>\=$'
+            \ && !(a:visual
+            \      && matchup#pos#equal([l:l1, l:c1], [l:l2, l:c2]))
+        let [l:l2, l:c2] = matchup#pos#prev(l:l2, l:c2)[1:2]
+      endif
 
       " don't select only indent at close
       while matchup#util#in_indent(l:l2, l:c2)
@@ -199,8 +211,17 @@ function! matchup#text_obj#delimited(is_inner, visual, type) " {{{1
     else
       let l:c2 += matchup#delim#end_offset(l:close)
 
+      " make *a% more like *at for html
+      " capture starting <
+      if matchup#quirks#ishtmllike()
+            \ && !matchup#util#matchpref('classic_textobj', 0)
+            \ && l:close.match =~? '^/\w\+\s*>\=$'
+        let l:c1 -= 1
+      endif
+
       " special case for delete operator
       if !a:visual && v:operator ==# 'd'
+            \ && l:line_count > 1
             \ && strpart(getline(l:l2), l:c2) =~# '^\s*$'
             \ && strpart(getline(l:l2), 0, l:c1-1) =~# '^\s*$'
         let l:c1 = 1
@@ -256,7 +277,7 @@ function! matchup#text_obj#undo(seq)
 endfunction
 
 " }}}1
-function! matchup#text_obj#double_click() " {{{1
+function! matchup#text_obj#double_click() abort " {{{1
   let [l:open, l:close] = [{}, {}]
 
   call matchup#perf#timeout_start(0)

@@ -1,5 +1,8 @@
 let g:vimade_eval_ret = []
 
+function! vimade#Empty()
+endfunction
+
 function! vimade#CreateGlobals()
   if !exists('g:vimade_running')
 
@@ -38,7 +41,11 @@ function! vimade#GetFeatures()
     let g:vimade_features.has_gui = has('gui')
     let g:vimade_features.has_nvim = has('nvim')
     let g:vimade_features.has_vimr = has('gui_vimr')
-    let g:vimade_features.has_python = has('python')
+    try
+      let g:vimade_features.has_python = has('python')
+    catch
+      let g:vimade_features.has_python = 0
+    endtry
     let g:vimade_features.has_python3 = has('python3')
     let g:vimade_features.has_gui_version = !has('nvim') && (execute('version')=~"GUI version")
     "sign group/priority test
@@ -193,7 +200,7 @@ function! vimade#GetDefaults()
     ""@setting vimade.basegroups
     "Neovim only setting that specifies the basegroups/built-in highlight groups that will be faded using winhl when switching windows
 
-    let g:vimade_defaults.basegroups = ['Folded', 'Search', 'SignColumn', 'LineNr', 'CursorLine', 'CursorLineNr', 'DiffAdd', 'DiffChange', 'DiffDelete', 'DiffText', 'FoldColumn', 'Whitespace', 'NonText', 'SpecialKey', 'Conceal']
+    let g:vimade_defaults.basegroups = ['Folded', 'Search', 'SignColumn', 'LineNr', 'CursorLine', 'CursorLineNr', 'DiffAdd', 'DiffChange', 'DiffDelete', 'DiffText', 'FoldColumn', 'Whitespace', 'NonText', 'SpecialKey', 'Conceal', 'EndOfBuffer']
 
     ""@setting vimade.enablebasegroups
     "Neovim only setting.  Enabled by default and allows basegroups/built-in highlight fading using winhl.  This allows fading of built-in highlights such as Folded, Search, etc.
@@ -306,6 +313,11 @@ function! vimade#OverrideVertSplit()
   hi! link VertSplit vimade_0
 endfunction
 
+function! vimade#OverrideEndOfBuffer()
+  hi! clear EndOfBuffer
+  hi! link EndOfBuffer vimade_0
+endfunction
+
 function! vimade#OverrideNonText()
   hi! clear NonText
   hi! link NonText vimade_0
@@ -317,6 +329,7 @@ function! vimade#OverrideAll()
   call vimade#OverrideLineNr()
   call vimade#OverrideVertSplit()
   call vimade#OverrideNonText()
+  call vimade#OverrideEndOfBuffer()
 endfunction
 
 function! vimade#Pause()
@@ -469,7 +482,7 @@ function! vimade#UpdateEvents()
       au FocusLost * call vimade#FocusLost()
       au BufEnter * call vimade#CheckWindows()
       au OptionSet diff call vimade#CheckWindows()
-      au ColorScheme * call vimade#CheckWindows()
+      au ColorScheme * call vimade#Redraw()
       au FileChangedShellPost * call vimade#softInvalidateBuffer(expand("<abuf>"))
       if g:vimade.usecursorhold
         au CursorHold * call vimade#Tick(0)
@@ -598,6 +611,10 @@ function! vimade#StopTimer()
 endfunction
 
 function! vimade#Init()
+  let l:already_running = 0
+  if exists('g:vimade_init')
+    let l:already_running = 1
+  endif
   let g:vimade_init = 1
   call vimade#CreateGlobals()
   call vimade#GetFeatures()
@@ -612,7 +629,11 @@ function! vimade#Init()
   endif
 
   "check immediately
-  call vimade#CheckWindows()
+  if l:already_running == 0
+    call vimade#CheckWindows()
+  else
+    call vimade#Redraw()
+  endif
   call vimade#StartTimer()
 
   "run the timer once during startup
@@ -624,3 +645,5 @@ function! vimade#Init()
     endtry
   endif
 endfunction
+
+call vimade#Init()

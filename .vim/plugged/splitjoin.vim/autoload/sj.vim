@@ -418,12 +418,14 @@ function! sj#SearchSkip(pattern, skip, ...)
   let stopline = (a:0 >= 2) ? a:2 : 0
   let timeout  = (a:0 >= 3) ? a:3 : 0
 
+  " Note: Native search() seems to hit a bug with one of the HTML tests
+  " (because of \zs?)
   if skip == ''
     " no skip, can delegate to native search()
     return search(pattern, flags, stopline, timeout)
-  elseif has('patch-8.2.915')
-    " the native search() function can do this now:
-    return search(pattern, flags, stopline, timeout, skip)
+  " elseif has('patch-8.2.915')
+  "   " the native search() function can do this now:
+  "   return search(pattern, flags, stopline, timeout, skip)
   endif
 
   " search for the pattern, skipping a match if necessary
@@ -679,4 +681,92 @@ function! sj#ParseJsonObjectBody(from, to)
   let parser = sj#argparser#js#Construct(a:from, a:to, getline('.'))
   call parser.Process()
   return parser.args
+endfunction
+
+" Jumps over nested brackets until it reaches the given pattern.
+"
+" Special handling for "<" for Rust (for now), but this only matters if it's
+" provided in the `a:opening_brackets`
+"
+function! sj#JumpBracketsTill(end_pattern, brackets)
+  let opening_brackets = a:brackets['opening']
+  let closing_brackets = a:brackets['closing']
+
+  try
+    " ensure we can't go to the next line:
+    let saved_whichwrap = &whichwrap
+    set whichwrap-=l
+    " ensure we can go to the very end of the line
+    let saved_virtualedit = &virtualedit
+    set virtualedit=onemore
+
+    let remainder_of_line = s:RemainderOfLine()
+    while remainder_of_line !~ '^'.a:end_pattern
+          \ && remainder_of_line !~ '^\s*$'
+      let [opening_bracket_match, offset] = s:BracketMatch(remainder_of_line, opening_brackets)
+      let [closing_bracket_match, _]      = s:BracketMatch(remainder_of_line, closing_brackets)
+
+      if opening_bracket_match < 0 && closing_bracket_match >= 0
+        let closing_bracket = closing_brackets[closing_bracket_match]
+
+        if closing_bracket == '>'
+          " an unmatched > in this context means comparison, so do nothing
+        else
+          " there's an extra closing bracket from outside the list, bail out
+          break
+        endif
+      elseif opening_bracket_match >= 0
+        " then try to jump to the closing bracket
+        let opening_bracket = opening_brackets[opening_bracket_match]
+        let closing_bracket = closing_brackets[opening_bracket_match]
+
+        " first, go to the opening bracket
+        if offset > 0
+          exe "normal! ".offset."l"
+        end
+
+        if opening_bracket == closing_bracket
+          " same bracket (quote), search for it, unless it's escaped
+          call search('\\\@<!\V'.closing_bracket, 'W', line('.'))
+        else
+          " different closing, use searchpair
+          call searchpair('\V'.opening_bracket, '', '\V'.closing_bracket, 'W', '', line('.'))
+        endif
+      endif
+
+      normal! l
+      let remainder_of_line = s:RemainderOfLine()
+      if remainder_of_line =~ '^$'
+        " we have no more content, the current column is the end of the expression
+        return col('.')
+      endif
+    endwhile
+
+    " we're past the final column of the expression, so return the previous
+    " one:
+    return col('.') - 1
+  finally
+    let &whichwrap = saved_whichwrap
+    let &virtualedit = saved_virtualedit
+  endtry
+endfunction
+
+function! s:RemainderOfLine()
+  return strpart(getline('.'), col('.') - 1)
+endfunction
+
+function! s:BracketMatch(text, brackets)
+  let index  = 0
+  let offset = match(a:text, '^\s*\zs')
+  let text   = strpart(a:text, offset)
+
+  for char in split(a:brackets, '\zs')
+    if text[0] ==# char
+      return [index, offset]
+    else
+      let index += 1
+    endif
+  endfor
+
+  return [-1, 0]
 endfunction

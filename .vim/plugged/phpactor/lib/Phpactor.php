@@ -2,14 +2,18 @@
 
 namespace Phpactor;
 
+use Phpactor\ClassMover\Extension\ClassMoverExtension as MainClassMoverExtension;
 use Phpactor\Container\Container;
 use Phpactor\Extension\Debug\DebugExtension;
 use Phpactor\Extension\LanguageServerBridge\LanguageServerBridgeExtension;
 use Phpactor\Extension\LanguageServerCodeTransform\LanguageServerCodeTransformExtension;
 use Phpactor\Extension\LanguageServerCompletion\LanguageServerCompletionExtension;
+use Phpactor\Extension\LanguageServerDiagnostics\LanguageServerDiagnosticsExtension;
 use Phpactor\Extension\LanguageServerHover\LanguageServerHoverExtension;
 use Phpactor\Extension\LanguageServerIndexer\LanguageServerIndexerExtension;
 use Phpactor\Extension\LanguageServerReferenceFinder\LanguageServerReferenceFinderExtension;
+use Phpactor\Extension\LanguageServerRename\LanguageServerRenameExtension;
+use Phpactor\Extension\LanguageServerRename\LanguageServerRenameWorseExtension;
 use Phpactor\Extension\LanguageServerSymbolProvider\LanguageServerSymbolProviderExtension;
 use Phpactor\Extension\LanguageServerSelectionRange\LanguageServerSelectionRangeExtension;
 use Phpactor\Extension\LanguageServerWorseReflection\LanguageServerWorseReflectionExtension;
@@ -50,6 +54,7 @@ use Composer\XdebugHandler\XdebugHandler;
 use Phpactor\ConfigLoader\ConfigLoaderBuilder;
 use Phpactor\Extension\ReferenceFinderRpc\ReferenceFinderRpcExtension;
 use Phpactor\Extension\ReferenceFinder\ReferenceFinderExtension;
+use function sprintf;
 
 class Phpactor
 {
@@ -101,6 +106,7 @@ class Phpactor
             ClassToFileExtraExtension::class,
             ClassToFileExtension::class,
             ClassMoverExtension::class,
+            MainClassMoverExtension::class,
             CodeTransformExtension::class,
             CodeTransformExtraExtension::class,
             CompletionExtraExtension::class,
@@ -134,6 +140,9 @@ class Phpactor
             LanguageServerSymbolProviderExtension::class,
             LanguageServerSelectionRangeExtension::class,
             LanguageServerExtraExtension::class,
+            LanguageServerDiagnosticsExtension::class,
+            LanguageServerRenameExtension::class,
+            LanguageServerRenameWorseExtension::class,
             IndexerExtension::class,
         ];
 
@@ -182,6 +191,9 @@ class Phpactor
         }
         $masterSchema->setDefaults([
             PhpactorContainer::PARAM_EXTENSION_CLASSES => $extensionNames,
+
+            // enable the LSP watchern
+            IndexerExtension::PARAM_ENABLED_WATCHERS => ['lsp', 'inotify', 'find', 'php']
         ]);
         $config = $masterSchema->resolve($config);
 
@@ -302,7 +314,7 @@ class Phpactor
         $memoryInBytes = function ($value) {
             $unit = strtolower(substr($value, -1, 1));
             $value = (int) $value;
-            switch($unit) {
+            switch ($unit) {
                 case 'g':
                     $value *= 1024;
                     // no break (cumulative multiplier)

@@ -2,24 +2,39 @@
 
 use std::path::PathBuf;
 
-use lazy_static::lazy_static;
 use log::error;
+use once_cell::sync::Lazy;
 use regex::Regex;
 
-lazy_static! {
-  static ref GREP_POS: Regex = Regex::new(r"^(.*?):(\d+):(\d+):").unwrap();
+static GREP_POS: Lazy<Regex> = Lazy::new(|| Regex::new(r"^(.*?):(\d+):(\d+):(.*)").unwrap());
 
-  // match the file path and line number of grep line.
-  static ref GREP_STRIP_FPATH: Regex = Regex::new(r"^.*:\d+:\d+:").unwrap();
+static DUMB_JUMP_LINE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^\[(.*)\](.*?):(\d+):(\d+):").unwrap());
 
-  // match the tag_name:lnum of tag line.
-  static ref TAG_RE: Regex = Regex::new(r"^(.*:\d+)").unwrap();
+// match the file path and line number of grep line.
+static GREP_STRIP_FPATH: Lazy<Regex> = Lazy::new(|| Regex::new(r"^.*:\d+:\d+:").unwrap());
 
-  static ref BUFFER_TAGS: Regex = Regex::new(r"^.*:(\d+)").unwrap();
+// match the tag_name:lnum of tag line.
+static TAG_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^(.*:\d+)").unwrap());
 
-  static ref PROJ_TAGS: Regex = Regex::new(r"^(.*):(\d+).*\[(.*)@(.*?)\]").unwrap();
+static BUFFER_TAGS: Lazy<Regex> = Lazy::new(|| Regex::new(r"^.*:(\d+).*\[(.*)\]").unwrap());
 
-  static ref COMMIT_RE: Regex = Regex::new(r"^.*\d{4}-\d{2}-\d{2}\s+([0-9a-z]+)\s+").unwrap();
+static PROJ_TAGS: Lazy<Regex> = Lazy::new(|| Regex::new(r"^(.*):(\d+).*\[(.*)@(.*?)\]").unwrap());
+
+static COMMIT_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^.*\d{4}-\d{2}-\d{2}\s+([0-9a-z]+)\s+").unwrap());
+
+static GTAGS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(.*)\s+(\d+)\s+(.*)").unwrap());
+
+pub fn parse_gtags(line: &str) -> Option<(usize, &str, &str)> {
+    let cap = GTAGS.captures(line)?;
+    let lnum = cap.get(2).map(|x| x.as_str()).and_then(parse_lnum)?;
+    let path_and_pattern = cap.get(3).map(|x| x.as_str())?;
+    if let Some((path, pattern)) = path_and_pattern.split_once(' ') {
+        Some((lnum, path, pattern))
+    } else {
+        None
+    }
 }
 
 /// Extract tag name from the line in tags provider.
@@ -44,13 +59,25 @@ pub fn strip_grep_filepath(line: &str) -> Option<(&str, usize)> {
 }
 
 /// Returns a tuple of (fpath, lnum, col).
-pub fn extract_grep_position(line: &str) -> Option<(PathBuf, usize, usize)> {
+pub fn extract_grep_position(line: &str) -> Option<(PathBuf, usize, usize, &str)> {
     let cap = GREP_POS.captures(line)?;
     let fpath = cap.get(1).map(|x| x.as_str().into())?;
     let str2nr = |idx: usize| cap.get(idx).map(|x| x.as_str()).and_then(parse_lnum);
     let lnum = str2nr(2)?;
     let col = str2nr(3)?;
-    Some((fpath, lnum, col))
+    let line_content = cap.get(4).map(|x| x.as_str())?;
+    Some((fpath, lnum, col, line_content))
+}
+
+/// Returns a tuple of (fpath, lnum, col).
+pub fn extract_jump_line_info(line: &str) -> Option<(&str, PathBuf, usize, usize)> {
+    let cap = DUMB_JUMP_LINE.captures(line)?;
+    let def_kind = cap.get(1).map(|x| x.as_str())?;
+    let fpath = cap.get(2).map(|x| x.as_str().into())?;
+    let str2nr = |idx: usize| cap.get(idx).map(|x| x.as_str()).and_then(parse_lnum);
+    let lnum = str2nr(3)?;
+    let col = str2nr(4)?;
+    Some((def_kind, fpath, lnum, col))
 }
 
 pub fn extract_grep_file_path(line: &str) -> Option<String> {
@@ -104,6 +131,12 @@ pub fn extract_proj_tags_kind(line: &str) -> Option<&str> {
     Some(kind)
 }
 
+pub fn extract_buffer_tags_kind(line: &str) -> Option<&str> {
+    let cap = BUFFER_TAGS.captures(line)?;
+    let kind = cap.get(2).map(|x| x.as_str())?;
+    Some(kind)
+}
+
 pub fn extract_buf_tags_lnum(line: &str) -> Option<usize> {
     let cap = BUFFER_TAGS.captures(line)?;
     cap.get(1).map(|x| x.as_str()).and_then(parse_lnum)
@@ -121,7 +154,7 @@ mod tests {
     fn test_grep_regex() {
         let line = "install.sh:1:5:#!/usr/bin/env bash";
         let e = extract_grep_position(line).unwrap();
-        assert_eq!(("install.sh".into(), 1, 5), e);
+        assert_eq!(("install.sh".into(), 1, 5, "#!/usr/bin/env bash"), e);
 
         let path = extract_grep_file_path(line).unwrap();
         assert_eq!(path, "install.sh");
@@ -131,6 +164,23 @@ mod tests {
             "/home/xlc/.vim/plugged/vim-clap/crates/pattern/src/lib.rs",
             extract_grep_file_path(line).unwrap()
         );
+    }
+
+    #[test]
+    fn test_dumb_jump_line() {
+        let line = "[variable]crates/maple_cli/src/stdio_server/session/context.rs:36:8:        let cwd = msg.get_cwd().into();";
+        let info = extract_jump_line_info(line).unwrap();
+        assert_eq!(
+            info,
+            (
+                "variable".into(),
+                "crates/maple_cli/src/stdio_server/session/context.rs".into(),
+                36,
+                8
+            )
+        );
+        let line = "[variable]crates/maple_cli/src/stdio_server/session/providers/dumb_jump.rs:9:8:        let cwd = msg.get_cwd();";
+        println!("{:?}", extract_jump_line_info(line));
     }
 
     #[test]
@@ -176,5 +226,18 @@ mod tests {
         assert_eq!(parse_rev(line), Some("8ed4391"));
         let line = "2019-12-29 3f0d00c Add forerunner job status sign and a delay timer for running maple (#184) (Liu-Cheng Xu)";
         assert_eq!(parse_rev(line), Some("3f0d00c"));
+    }
+
+    #[test]
+    fn test_gtags() {
+        let line = "run               101 crates/maple_cli/src/app.rs pub async fn run(self) -> Result<()> {";
+        assert_eq!(
+            parse_gtags(line),
+            Some((
+                101,
+                "crates/maple_cli/src/app.rs",
+                "pub async fn run(self) -> Result<()> {"
+            ))
+        )
     }
 }

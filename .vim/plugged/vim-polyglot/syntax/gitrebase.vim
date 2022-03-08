@@ -14,8 +14,10 @@ endif
 
 syn case match
 
-syn match   gitrebaseHash   "\v<\x{7,}>"                               contained
-syn match   gitrebaseCommit "\v<\x{7,}>"    nextgroup=gitrebaseSummary skipwhite
+let s:c = escape((matchstr(getline('$'), '^[#;@!$%^&|:]\S\@!') . '#')[0], '^$.*[]~\"/')
+
+syn match   gitrebaseHash   "\v<\x{7,}>"                               contained contains=@NoSpell
+syn match   gitrebaseCommit "\v<\x{7,}>"    nextgroup=gitrebaseSummary skipwhite contains=@NoSpell
 syn match   gitrebasePick   "\v^p%(ick)=>"   nextgroup=gitrebaseCommit skipwhite
 syn match   gitrebaseReword "\v^r%(eword)=>" nextgroup=gitrebaseCommit skipwhite
 syn match   gitrebaseEdit   "\v^e%(dit)=>"   nextgroup=gitrebaseCommit skipwhite
@@ -30,12 +32,15 @@ syn match   gitrebaseLabel  "\v^l(abel)=>"   nextgroup=gitrebaseName skipwhite
 syn match   gitrebaseReset  "\v^(t|reset)=>" nextgroup=gitrebaseName skipwhite
 syn match   gitrebaseSummary ".*"               contains=gitrebaseHash contained
 syn match   gitrebaseCommand ".*"                                      contained
-syn match   gitrebaseComment "^\s*#.*"             contains=gitrebaseHash
+exe 'syn match gitrebaseComment " \@<=' . s:c . ' empty$" containedin=gitrebaseSummary contained'
+exe 'syn match gitrebaseComment "^\s*' . s:c . '.*" contains=gitrebaseHash'
 syn match   gitrebaseSquashError "\v%^%(s%(quash)=>|f%(ixup)=>)" nextgroup=gitrebaseCommit skipwhite
 syn match   gitrebaseMergeOption "\v-[Cc]>"  nextgroup=gitrebaseMergeCommit skipwhite contained
 syn match   gitrebaseMergeCommit "\v<\x{7,}>"  nextgroup=gitrebaseName skipwhite contained
 syn match   gitrebaseName        "\v[^[:space:].*?i:^~/-]\S+" nextgroup=gitrebaseMergeComment skipwhite contained
-syn match   gitrebaseMergeComment "#"  nextgroup=gitrebaseSummary skipwhite contained
+exe 'syn match gitrebaseMergeComment "' . s:c . '"  nextgroup=gitrebaseSummary skipwhite contained'
+
+unlet s:c
 
 hi def link gitrebaseCommit         gitrebaseHash
 hi def link gitrebaseHash           Identifier
