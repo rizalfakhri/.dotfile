@@ -8,22 +8,8 @@ use Phpactor\ClassFileConverter\Domain\FileToClass;
 
 class FileInfo
 {
-    /**
-     * @var FileToClass
-     */
-    private $classToFileConverter;
-
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    public function __construct(
-        FileToClass $classToFileConverter,
-        Filesystem $filesystem
-    ) {
-        $this->classToFileConverter = $classToFileConverter;
-        $this->filesystem = $filesystem;
+    public function __construct(private FileToClass $classToFileConverter, private Filesystem $filesystem)
+    {
     }
 
     public function infoForFile(string $sourcePath)

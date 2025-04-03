@@ -11,26 +11,11 @@ use SplFileInfo;
 
 class ClassSearch
 {
-    /**
-     * @var FileToClass
-     */
-    private $fileToClass;
-
-    /**
-     * @var FilesystemRegistry
-     */
-    private $filesystemRegistry;
-
-    /**
-     * @var Reflector
-     */
-    private $reflector;
-
-    public function __construct(FilesystemRegistry $filesystemRegistry, FileToClass $fileToClass, Reflector $reflector)
-    {
-        $this->filesystemRegistry = $filesystemRegistry;
-        $this->fileToClass = $fileToClass;
-        $this->reflector = $reflector;
+    public function __construct(
+        private FilesystemRegistry $filesystemRegistry,
+        private FileToClass $fileToClass,
+        private Reflector $reflector
+    ) {
     }
 
     public function classSearch(string $filesystemName, string $name)
@@ -74,12 +59,12 @@ class ClassSearch
     {
         try {
             $reflectionClass = $this->reflector->reflectClassLike($name);
-        } catch (NotFound $exception) {
+        } catch (NotFound) {
             return;
         }
 
         return [
-            'file_path' => (string) $reflectionClass->sourceCode()->path(),
+            'file_path' => (string) $reflectionClass->sourceCode()->uri()?->path(),
             'class' => (string) $reflectionClass->name(),
             'class_name' => $reflectionClass->name()->short(),
             'class_namespace' => (string) $reflectionClass->name()->namespace(),
@@ -97,7 +82,7 @@ class ClassSearch
         foreach ($declared as $declaredClass) {
             $short = $this->resolveShortName($declaredClass);
 
-            $namespace = substr($declaredClass, 0, strrpos($declaredClass, '\\'));
+            $namespace = substr($declaredClass, 0, intval(strrpos($declaredClass, '\\')));
 
             if ($name !== $short) {
                 continue;

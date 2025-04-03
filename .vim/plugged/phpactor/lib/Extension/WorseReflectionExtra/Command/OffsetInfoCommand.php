@@ -13,23 +13,11 @@ use Phpactor\Extension\Core\Console\Handler\FormatHandler;
 
 class OffsetInfoCommand extends Command
 {
-    /**
-     * @var FileInfoAtOffset
-     */
-    private $infoForOffset;
-
-    /**
-     * @var DumperRegistry
-     */
-    private $dumperRegistry;
-
     public function __construct(
-        OffsetInfo $infoForOffset,
-        DumperRegistry $dumperRegistry
+        private OffsetInfo $infoForOffset,
+        private DumperRegistry $dumperRegistry
     ) {
         parent::__construct();
-        $this->infoForOffset = $infoForOffset;
-        $this->dumperRegistry = $dumperRegistry;
     }
 
     public function configure(): void

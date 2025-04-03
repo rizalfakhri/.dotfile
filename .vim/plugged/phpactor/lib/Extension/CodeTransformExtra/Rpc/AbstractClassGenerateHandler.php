@@ -22,14 +22,8 @@ abstract class AbstractClassGenerateHandler extends AbstractHandler
     const PARAM_VARIANT = 'variant';
     const PARAM_OVERWRITE = 'overwrite';
 
-    /**
-     * @var AbstractClassGenerator
-     */
-    protected $classGenerator;
-
-    public function __construct(AbstractClassGenerator $classGenerator)
+    public function __construct(protected AbstractClassGenerator $classGenerator)
     {
-        $this->classGenerator = $classGenerator;
     }
 
     public function configure(Resolver $resolver): void
@@ -76,7 +70,7 @@ abstract class AbstractClassGenerateHandler extends AbstractHandler
 
         try {
             $code = $this->generate($arguments);
-        } catch (FileAlreadyExists $e) {
+        } catch (FileAlreadyExists) {
             return InputCallbackResponse::fromCallbackAndInputs(
                 Request::fromNameAndParameters(
                     $this->name(),
@@ -96,7 +90,7 @@ abstract class AbstractClassGenerateHandler extends AbstractHandler
             );
         }
 
-        return ReplaceFileSourceResponse::fromPathAndSource($code->path(), (string) $code);
+        return ReplaceFileSourceResponse::fromPathAndSource($code->uri()->path(), (string) $code);
     }
 
     abstract protected function generate(array $arguments): SourceCode;

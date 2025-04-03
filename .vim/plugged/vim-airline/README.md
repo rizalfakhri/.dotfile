@@ -1,6 +1,6 @@
-# vim-airline 
+# vim-airline
 
-[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/cb%40256bit.org)
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/chrisbra)
 [![reviewdog](https://github.com/vim-airline/vim-airline/workflows/reviewdog/badge.svg?branch=master&event=push)](https://github.com/vim-airline/vim-airline/actions?query=workflow%3Areviewdog+event%3Apush+branch%3Amaster)
 [![CI](https://github.com/vim-airline/vim-airline/workflows/CI/badge.svg)](https://github.com/vim-airline/vim-airline/actions?query=workflow%3ACI)
 
@@ -79,6 +79,22 @@ For a better look, those sections can be colored differently, depending on vario
 *  Supports 7.2 as the minimum Vim version.
 *  The master branch tries to be as stable as possible, and new features are merged in only after they have gone through a [full regression test][33].
 *  Unit testing suite.
+
+# Installation
+
+This plugin follows the standard runtime path structure, and as such it can be installed with a variety of plugin managers:
+
+| Plugin Manager | Install with... |
+| ------------- | ------------- |
+| [Pathogen][11] | `git clone https://github.com/vim-airline/vim-airline ~/.vim/bundle/vim-airline`<br/>Remember to run `:Helptags` to generate help tags |
+| [NeoBundle][12] | `NeoBundle 'vim-airline/vim-airline'` |
+| [Vundle][13] | `Plugin 'vim-airline/vim-airline'` |
+| [Plug][40] | `Plug 'vim-airline/vim-airline'` |
+| [VAM][22] | `call vam#ActivateAddons([ 'vim-airline' ])` |
+| [Dein][52] | `call dein#add('vim-airline/vim-airline')` |
+| [minpac][55] | `call minpac#add('vim-airline/vim-airline')` |
+| pack feature (native Vim 8 package feature)| `git clone https://github.com/vim-airline/vim-airline ~/.vim/pack/dist/start/vim-airline`<br/>Remember to run `:helptags ~/.vim/pack/dist/start/vim-airline/doc` to generate help tags |
+| manual | copy all of the files into your `~/.vim` directory |
 
 ## Straightforward customization
 
@@ -163,7 +179,7 @@ vim-airline integrates with a variety of plugins out of the box.  These extensio
 #### [syntastic][5]
 ![image](https://f.cloud.github.com/assets/306502/962864/9824c484-04f7-11e3-9928-da94f8c7da5a.png)
 
-#### hunks ([vim-gitgutter][29] & [vim-signify][30] & [coc-git][59])
+#### hunks ([vim-gitgutter][29], [vim-signify][30], [coc-git][59] & [gitsigns.nvim][63])
 ![image](https://f.cloud.github.com/assets/306502/995185/73fc7054-09b9-11e3-9d45-618406c6ed98.png)
 
 #### [vimagit][50]
@@ -248,22 +264,6 @@ What about [vim-powerline][1]?
 
 I wrote the initial version on an airplane, and since it's light as air it turned out to be a good name.  Thanks for flying vim!
 
-# Installation
-
-This plugin follows the standard runtime path structure, and as such it can be installed with a variety of plugin managers:
-
-| Plugin Manager | Install with... |
-| ------------- | ------------- |
-| [Pathogen][11] | `git clone https://github.com/vim-airline/vim-airline ~/.vim/bundle/vim-airline`<br/>Remember to run `:Helptags` to generate help tags |
-| [NeoBundle][12] | `NeoBundle 'vim-airline/vim-airline'` |
-| [Vundle][13] | `Plugin 'vim-airline/vim-airline'` |
-| [Plug][40] | `Plug 'vim-airline/vim-airline'` |
-| [VAM][22] | `call vam#ActivateAddons([ 'vim-airline' ])` |
-| [Dein][52] | `call dein#add('vim-airline/vim-airline')` |
-| [minpac][55] | `call minpac#add('vim-airline/vim-airline')` |
-| pack feature (native Vim 8 package feature)| `git clone https://github.com/vim-airline/vim-airline ~/.vim/pack/dist/start/vim-airline`<br/>Remember to run `:helptags ~/.vim/pack/dist/start/vim-airline/doc` to generate help tags |
-| manual | copy all of the files into your `~/.vim` directory |
-
 # Documentation
 
 `:help airline`
@@ -309,7 +309,7 @@ If you are interested in becoming a maintainer (we always welcome more maintaine
 [MIT License][58]. Copyright (c) 2013-2021 Bailey Ling & Contributors.
 
 [1]: https://github.com/Lokaltog/vim-powerline
-[2]: https://github.com/Lokaltog/powerline
+[2]: https://github.com/powerline/powerline
 [3]: https://github.com/Lokaltog/powerline-fonts
 [4]: https://github.com/tpope/vim-fugitive
 [5]: https://github.com/scrooloose/syntastic
@@ -369,3 +369,4 @@ If you are interested in becoming a maintainer (we always welcome more maintaine
 [60]: https://github.com/cdelledonne/vim-cmake
 [61]: http://github.com/lambdalisue/battery.vim/
 [62]: http://github.com/rbong/vim-flog/
+[63]: https://github.com/lewis6991/gitsigns.nvim

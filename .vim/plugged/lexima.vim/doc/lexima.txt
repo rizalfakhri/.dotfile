@@ -1,4 +1,4 @@
-*lexima.txt*	Auto close paentheses and repeat by dot dot dot...
+*lexima.txt*	Auto close parentheses and repeat by dot dot dot...
 
 Version : 2.0
 Author  : cohama / cohama@live.jp
@@ -254,6 +254,15 @@ g:lexima_ctrlh_as_backspace			*g:lexima_ctrlh_as_backspace*
 	If it is 1, <C-h> can be used in the same manner as <BS>.
 	default value: 0
 
+g:lexima_disable_on_nofile			*g:lexima_disable_on_nofile*
+	If it is 1, all of lexima rules are disabled on buftype=nofile.
+	default value: 0
+
+g:lexima_disable_abbrev_trigger			*g:lexima_disable_abbrev_trigger*
+	By default, lexima input <C-]> to expand an abbreviation.
+	If it is 1, disable this feature.
+	default value: 0
+
 b:lexima_disabled				*b:lexima_disabled*
 	If it is 1, all of lexima rules are disabled on the buffer.
 	(local to buffer)
@@ -261,6 +270,9 @@ b:lexima_disabled				*b:lexima_disabled*
 	" Disable lexima.vim in clojure buffers
 	autocmd FileType clojure let b:lexima_disabled = 1
 
+b:lexima_disable_abbrev_trigger			*b:lexima_disable_abbrev_trigger*
+	Same as |g:lexima_disable_abbrev_trigger| but only affects the
+	specified buffer.
 
 ------------------------------------------------------------------------------
 FUNCTIONS					*lexima-functions*
@@ -319,13 +331,15 @@ You can define your own rule by using |lexima#add_rule()|.
 A rule is described as a dictionary having the following keys.
 
 char (String) (Required)			*lexima-rules-char*
-	Define the key to map.
+	Define the key to map. This is used to lhs of |imap|.
 
 at (Regex) (Optional)				*lexima-rules-at*
 	The rule is applied when this regular expression matches around the
 	cursor position.
 	'\%#' can be used to represent the cursor position. (See |/\%#|)
 	If omitted, the rule is always applied.
+	Note that this type is Regex, not String. This means backslash
+	has a special meaning. e.g. "\sin" will be matched to "<SPACE> + in".
 
 except (Regex) (Optional)			*lexima-rules-except*
 	Like "at", but the rule is not applied when this regular expression
@@ -489,16 +503,54 @@ TIPS						*lexima-tips*
 >
 	imap <C-h> <BS>
 	cmap <C-h> <BS>
+<
 
+2. <CR> (or any other) key conflicts with other plugin.
+
+You can manually remap <CR> like bellow. Note that mapping is done at
+lexima.vim's initialization process. To be overwritten correctly, you should
+initialize lexima.vim manually as the followings.
+>
+	let g:lexima_no_default_rules = 1
+	call lexima#set_default_rules()
+
+	inoremap <CR> <Plug>(awesome-plugin-action)<C-r>=lexima#expand('<CR>', 'i')<CR>
+<
+For example, if you are using ddc.vim with pum.vim and want the same behavior as
+|g:lexima_accept_pum_with_enter|, recommended setting is the following.
+>
+	inoremap <silent><expr> <CR> pum#visible() ? "\<Cmd>call pum#map#confirm()\<CR>" :
+	      \ "\<C-r>=lexima#expand('<LT>CR>', 'i')\<CR>"
+<
+Or if you are using coc.nvim,
+>
+	inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() :
+	      \ "\<C-g>u\<C-r>=lexima#expand('<LT>CR>', 'i')\<CR><C-r>=coc#on_enter()\<CR>"
+<
+
+3. <Esc> key mapping causes some problems (plugin conflicts, terminal settings, etc.)
+
+You can disable <Esc> mapping by the following.
+>
+	let g:lexima_map_escape = ""
+<
+Note taht this setting disables some features of lexima.vim. For example, dot
+repeat on multiline input will no longer work.
 
 
 ==============================================================================
 TODO						*lexima-todo*
 
+Avoid blinking when cmdheight=0 set on neovim.
 
 
 ==============================================================================
 CHANGELOG					*lexima-changelog*
+
+v2.1	Breaking Change: lexima.vim also works on buftype=nofile.
+	  Set |g:lexima_disable_on_nofile| to 1 if you prefer previous behavior.
+	Add vim9 script rules.
+	Fix submatch problem.
 
 v2.0	Does not break undo until input <CR>.
 	"leave" and "delete" can be used with "input".

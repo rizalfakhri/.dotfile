@@ -169,6 +169,10 @@ let did_load_filetypes = 1
 
 " DO NOT EDIT CODE BELOW, IT IS GENERATED WITH MAKEFILE
 
+if !has_key(g:polyglot_is_disabled, 'bicep')
+  au BufNewFile,BufRead *.bicep setf bicep
+endif
+
 if !has_key(g:polyglot_is_disabled, 'org')
   au BufNewFile,BufRead *.org setf org
 endif
@@ -1328,10 +1332,6 @@ if !has_key(g:polyglot_is_disabled, 'hex')
   au BufNewFile,BufRead *.h32,*.hex setf hex
 endif
 
-if !has_key(g:polyglot_is_disabled, 'hercules')
-  au BufNewFile,BufRead *.errsum,*.ev,*.sum,*.vc setf hercules
-endif
-
 if !has_key(g:polyglot_is_disabled, 'hastepreproc')
   au BufNewFile,BufRead *.htpp setf hastepreproc
 endif
@@ -1775,7 +1775,7 @@ if !has_key(g:polyglot_is_disabled, 'prolog')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'bzl')
-  au BufNewFile,BufRead *.BUILD,*.bazel,*.bzl,BUCK,BUILD,BUILD.bazel,Tiltfile,WORKSPACE setf bzl
+  au BufNewFile,BufRead *.BUILD,*.bazel,*.bzl,*.star,BUCK,BUILD,BUILD.bazel,Tiltfile,WORKSPACE setf bzl
 endif
 
 if !has_key(g:polyglot_is_disabled, 'odin')
@@ -1783,7 +1783,7 @@ if !has_key(g:polyglot_is_disabled, 'odin')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'dosini')
-  au BufNewFile,BufRead *.dof,*.ini,*.lektorproject,*.prefs,*.pro,*.properties,*/etc/pacman.conf,*/etc/yum.conf,{.,}editorconfig,{.,}flake8,{.,}npmrc,buildozer.spec setf dosini
+  au BufNewFile,BufRead *.dof,*.ini,*.lektorproject,*.prefs,*.pro,*.properties,*.url,*/etc/pacman.conf,*/etc/yum.conf,{.,}coveragerc,{.,}editorconfig,{.,}flake8,{.,}npmrc,{.,}pylintrc,buildozer.spec,pylintrc setf dosini
   au BufNewFile,BufRead php.ini-* call s:StarSetf('dosini')
   au BufNewFile,BufRead */etc/yum.repos.d/* call s:StarSetf('dosini')
 endif
@@ -1873,7 +1873,7 @@ if !has_key(g:polyglot_is_disabled, 'unison')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'typescript')
-  au BufNewFile,BufRead *.ts setf typescript
+  au BufNewFile,BufRead *.cts,*.mts,*.ts setf typescript
   au BufNewFile,BufRead *.tsx setf typescriptreact
 endif
 
@@ -1957,7 +1957,7 @@ if !has_key(g:polyglot_is_disabled, 'slim')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'sh')
-  au BufNewFile,BufRead *.bash,*.bats,*.cgi,*.command,*.env,*.fcgi,*.ksh,*.sh,*.sh.in,*.tmux,*.tool,*/etc/udev/cdsymlinks.conf,{.,}bash_aliases,{.,}bash_history,{.,}bash_logout,{.,}bash_profile,{.,}bashrc,{.,}cshrc,{.,}env,{.,}env.example,{.,}flaskenv,{.,}kshrc,{.,}login,{.,}profile,9fs,PKGBUILD,bash_aliases,bash_logout,bash_profile,bashrc,cshrc,gradlew,kshrc,login,man,profile setf sh
+  au BufNewFile,BufRead *.bash,*.bats,*.cgi,*.command,*.env,*.fcgi,*.ksh,*.sh,*.sh.in,*.tmux,*.tool,*.zsh-theme,*/etc/udev/cdsymlinks.conf,{.,}bash_aliases,{.,}bash_history,{.,}bash_logout,{.,}bash_profile,{.,}bashrc,{.,}cshrc,{.,}env,{.,}env.example,{.,}flaskenv,{.,}kshrc,{.,}login,{.,}profile,9fs,PKGBUILD,bash_aliases,bash_logout,bash_profile,bashrc,cshrc,gradlew,kshrc,login,man,profile setf sh
   au BufNewFile,BufRead *.zsh,*/etc/zprofile,{.,}zfbfmarks,{.,}zlogin,{.,}zlogout,{.,}zprofile,{.,}zshenv,{.,}zshrc setf zsh
   au BufNewFile,BufRead .zsh* call s:StarSetf('zsh')
   au BufNewFile,BufRead .zlog* call s:StarSetf('zsh')
@@ -1985,7 +1985,7 @@ if !has_key(g:polyglot_is_disabled, 'rspec')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'ruby')
-  au BufNewFile,BufRead *.axlsx,*.builder,*.cap,*.eye,*.fcgi,*.gemspec,*.god,*.jbuilder,*.mspec,*.opal,*.pluginspec,*.podspec,*.prawn,*.rabl,*.rake,*.rant,*.rb,*.rbi,*.rbuild,*.rbw,*.rbx,*.rjs,*.ru,*.ruby,*.rxml,*.spec,*.thor,*.watchr,{.,}Brewfile,{.,}Guardfile,{.,}autotest,{.,}irbrc,{.,}pryrc,{.,}simplecov,Appraisals,Berksfile,Buildfile,Capfile,Cheffile,Dangerfile,Deliverfile,Fastfile,Gemfile,Guardfile,Jarfile,KitchenSink,Mavenfile,Podfile,Puppetfile,Rakefile,Routefile,Snapfile,Thorfile,Vagrantfile,[Rr]antfile,buildfile,vagrantfile setf ruby
+  au BufNewFile,BufRead *.axlsx,*.builder,*.cap,*.eye,*.fcgi,*.gemspec,*.god,*.jbuilder,*.mspec,*.opal,*.pluginspec,*.podspec,*.prawn,*.rabl,*.rake,*.rant,*.rb,*.rbi,*.rbuild,*.rbw,*.rbx,*.rjs,*.ru,*.ruby,*.rxml,*.spec,*.thor,*.watchr,{.,}Brewfile,{.,}Guardfile,{.,}autotest,{.,}irbrc,{.,}pryrc,{.,}simplecov,Appraisals,Berksfile,Buildfile,Capfile,Cheffile,Dangerfile,Deliverfile,Fastfile,Gemfile,Guardfile,Jarfile,KitchenSink,Mavenfile,Podfile,Puppetfile,Rakefile,Routefile,Snapfile,Steepfile,Thorfile,Vagrantfile,[Rr]antfile,buildfile,vagrantfile setf ruby
   au BufNewFile,BufRead [Rr]akefile* call s:StarSetf('ruby')
   au BufNewFile,BufRead *.erb,*.erb.deface,*.rhtml setf eruby
 endif
@@ -2157,7 +2157,7 @@ if !has_key(g:polyglot_is_disabled, 'mako')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'm4')
-  au BufNewFile,BufRead *.at,*.m4 setf m4
+  au BufNewFile,BufRead *.at,*.m4,*.mc setf m4
 endif
 
 if !has_key(g:polyglot_is_disabled, 'lua')
@@ -2233,7 +2233,7 @@ if !has_key(g:polyglot_is_disabled, 'jsonnet')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'json')
-  au BufNewFile,BufRead *.JSON-tmLanguage,*.avsc,*.geojson,*.gltf,*.har,*.ice,*.json,*.jsonl,*.jsonp,*.mcmeta,*.template,*.tfstate,*.tfstate.backup,*.topojson,*.webapp,*.webmanifest,*.yy,*.yyp,{.,}arcconfig,{.,}auto-changelog,{.,}c8rc,{.,}htmlhintrc,{.,}imgbotconfig,{.,}nycrc,{.,}tern-config,{.,}tern-project,{.,}watchmanconfig,Pipfile.lock,composer.lock,mcmod.info setf json
+  au BufNewFile,BufRead *.4DForm,*.4DProject,*.JSON-tmLanguage,*.avsc,*.geojson,*.gltf,*.har,*.ice,*.json,*.jsonl,*.jsonp,*.mcmeta,*.template,*.tfstate,*.tfstate.backup,*.topojson,*.webapp,*.webmanifest,*.yy,*.yyp,{.,}arcconfig,{.,}auto-changelog,{.,}c8rc,{.,}htmlhintrc,{.,}imgbotconfig,{.,}nycrc,{.,}tern-config,{.,}tern-project,{.,}watchmanconfig,Pipfile.lock,composer.lock,mcmod.info setf json
 endif
 
 if !has_key(g:polyglot_is_disabled, 'json5')
@@ -2320,14 +2320,20 @@ endif
 
 if !has_key(g:polyglot_is_disabled, 'javascript')
   au! BufNewFile,BufRead,BufWritePost *.frag call polyglot#detect#Frag()
-  au BufNewFile,BufRead *._js,*.bones,*.cjs,*.es,*.es6,*.gs,*.jake,*.javascript,*.js,*.jsb,*.jscad,*.jsfl,*.jsm,*.jss,*.jsx,*.mjs,*.njs,*.pac,*.sjs,*.ssjs,*.xsjs,*.xsjslib,Jakefile setf javascript
+  au BufNewFile,BufRead *._js,*.bones,*.cjs,*.es,*.es6,*.gs,*.jake,*.javascript,*.js,*.jsb,*.jscad,*.jsfl,*.jslib,*.jsm,*.jspre,*.jss,*.jsx,*.mjs,*.njs,*.pac,*.sjs,*.ssjs,*.xsjs,*.xsjslib,Jakefile setf javascript
   au BufNewFile,BufRead *.flow setf flow
 endif
 
 if !has_key(g:polyglot_is_disabled, 'go')
   au BufNewFile,BufRead *.go setf go
   au BufNewFile,BufRead go.mod setf gomod
+  au BufNewFile,BufRead go.sum setf gosum
+  au BufNewFile,BufRead go.work setf gowork
   au BufNewFile,BufRead *.tmpl setf gohtmltmpl
+endif
+
+if !has_key(g:polyglot_is_disabled, 'hercules')
+  au BufNewFile,BufRead *.errsum,*.ev,*.sum,*.vc setf hercules
 endif
 
 if !has_key(g:polyglot_is_disabled, 'gnuplot')
@@ -2350,10 +2356,6 @@ if !has_key(g:polyglot_is_disabled, 'git')
   au BufNewFile,BufRead git-rebase-todo setf gitrebase
   au BufNewFile,BufRead .gitsendemail.* call s:StarSetf('gitsendemail')
   au BufNewFile,BufRead COMMIT_EDITMSG,MERGE_MSG,TAG_EDITMSG setf gitcommit
-endif
-
-if !has_key(g:polyglot_is_disabled, 'gdscript')
-  au BufNewFile,BufRead *.gd setf gdscript3
 endif
 
 if !has_key(g:polyglot_is_disabled, 'fsharp')
@@ -2458,7 +2460,7 @@ if !has_key(g:polyglot_is_disabled, 'coffee-script')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'markdown')
-  au BufNewFile,BufRead *.markdown,*.md,*.mdown,*.mdwn,*.mkd,*.mkdn,*.mkdown,*.ronn,*.scd,*.workbook,contents.lr setf markdown
+  au BufNewFile,BufRead *.livemd,*.markdown,*.md,*.mdown,*.mdwn,*.mkd,*.mkdn,*.mkdown,*.ronn,*.scd,*.workbook,contents.lr setf markdown
 endif
 
 if !has_key(g:polyglot_is_disabled, 'cmake')
@@ -2466,7 +2468,7 @@ if !has_key(g:polyglot_is_disabled, 'cmake')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'clojure')
-  au BufNewFile,BufRead *.boot,*.cl2,*.clj,*.cljc,*.cljs,*.cljs.hl,*.cljscm,*.cljx,*.edn,*.hic,build.boot,profile.boot,riemann.config setf clojure
+  au BufNewFile,BufRead *.bb,*.boot,*.cl2,*.clj,*.cljc,*.cljs,*.cljs.hl,*.cljscm,*.cljx,*.edn,*.hic,build.boot,profile.boot,riemann.config setf clojure
 endif
 
 if !has_key(g:polyglot_is_disabled, 'carp')
@@ -2577,7 +2579,7 @@ if !has_key(g:polyglot_is_disabled, 'ant')
 endif
 
 if !has_key(g:polyglot_is_disabled, 'xml')
-  au BufNewFile,BufRead *.adml,*.admx,*.ant,*.axml,*.builds,*.ccproj,*.ccxml,*.cdxml,*.clixml,*.cproject,*.cscfg,*.csdef,*.csl,*.csproj,*.csproj.user,*.ct,*.depproj,*.dita,*.ditamap,*.ditaval,*.dll.config,*.dotsettings,*.filters,*.fsproj,*.fxml,*.glade,*.gml,*.gmx,*.grxml,*.gst,*.hzp,*.iml,*.ivy,*.jelly,*.jsproj,*.kml,*.launch,*.mdpolicy,*.mjml,*.mod,*.mxml,*.natvis,*.ncl,*.ndproj,*.nproj,*.nuspec,*.odd,*.osm,*.pkgproj,*.pluginspec,*.proj,*.props,*.psc1,*.pt,*.rdf,*.res,*.resx,*.rss,*.sch,*.scxml,*.sfproj,*.shproj,*.srdf,*.storyboard,*.sublime-snippet,*.targets,*.tml,*.tpm,*.ui,*.urdf,*.ux,*.vbproj,*.vcxproj,*.vsixmanifest,*.vssettings,*.vstemplate,*.vxml,*.wixproj,*.workflow,*.wpl,*.wsdl,*.wsf,*.wxi,*.wxl,*.wxs,*.x3d,*.xacro,*.xaml,*.xib,*.xlf,*.xliff,*.xmi,*.xml,*.xml.dist,*.xmp,*.xproj,*.xsd,*.xspec,*.xul,*.zcml,*/etc/blkid.tab,*/etc/blkid.tab.old,*/etc/xdg/menus/*.menu,*fglrxrc,{.,}classpath,{.,}cproject,{.,}project,App.config,NuGet.config,Settings.StyleCop,Web.Debug.config,Web.Release.config,Web.config,packages.config setf xml
+  au BufNewFile,BufRead *.adml,*.admx,*.ant,*.axaml,*.axml,*.builds,*.ccproj,*.ccxml,*.cdxml,*.clixml,*.cproject,*.cscfg,*.csdef,*.csl,*.csproj,*.csproj.user,*.ct,*.depproj,*.dita,*.ditamap,*.ditaval,*.dll.config,*.dotsettings,*.filters,*.fsproj,*.fxml,*.glade,*.gml,*.gmx,*.grxml,*.gst,*.hzp,*.iml,*.ivy,*.jelly,*.jsproj,*.kml,*.launch,*.mdpolicy,*.mjml,*.mod,*.mxml,*.natvis,*.ncl,*.ndproj,*.nproj,*.nuspec,*.odd,*.osm,*.pkgproj,*.pluginspec,*.proj,*.props,*.psc1,*.pt,*.qhelp,*.rdf,*.res,*.resx,*.rss,*.sch,*.scxml,*.sfproj,*.shproj,*.srdf,*.storyboard,*.sublime-snippet,*.targets,*.tml,*.tpm,*.ui,*.urdf,*.ux,*.vbproj,*.vcxproj,*.vsixmanifest,*.vssettings,*.vstemplate,*.vxml,*.wixproj,*.workflow,*.wpl,*.wsdl,*.wsf,*.wxi,*.wxl,*.wxs,*.x3d,*.xacro,*.xaml,*.xib,*.xlf,*.xliff,*.xmi,*.xml,*.xml.dist,*.xmp,*.xproj,*.xsd,*.xspec,*.xul,*.zcml,*/etc/blkid.tab,*/etc/blkid.tab.old,*/etc/xdg/menus/*.menu,*fglrxrc,{.,}classpath,{.,}cproject,{.,}project,App.config,NuGet.config,Settings.StyleCop,Web.Debug.config,Web.Release.config,Web.config,packages.config setf xml
 endif
 
 if !has_key(g:polyglot_is_disabled, 'csv')
@@ -3510,7 +3512,7 @@ au BufNewFile,BufRead .reminders*		call s:StarSetf('remind')
 au BufNewFile,BufRead sgml.catalog*		call s:StarSetf('catalog')
 
 " Shell scripts ending in a star
-au BufNewFile,BufRead .bashrc*,.bash[_-]profile*,.bash[_-]logout*,.bash[_-]aliases*,bash-fc[-.]*,,PKGBUILD* call polyglot#ft#SetFileTypeSH("bash")
+au BufNewFile,BufRead .bashrc*,.bash[_-]profile*,.bash[_-]logout*,.bash[_-]aliases*,bash-fc[-.]*,PKGBUILD* call polyglot#ft#SetFileTypeSH("bash")
 au BufNewFile,BufRead .kshrc* call polyglot#ft#SetFileTypeSH("ksh")
 au BufNewFile,BufRead .profile* call polyglot#ft#SetFileTypeSH(getline(1))
 

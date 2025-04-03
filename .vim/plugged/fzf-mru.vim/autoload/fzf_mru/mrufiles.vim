@@ -17,6 +17,7 @@ fu! fzf_mru#mrufiles#opts()
         \ 'relative': ['s:re', 0],
         \ 'store_relative_dirs': ['s:stre', []],
         \ 'save_on_update': ['s:soup', 1],
+        \ 'exclude_current_file': ['s:excur', 1],
         \ }]
   for [ke, va] in items(opts)
     let [{va[0]}, {pref.ke}] = [pref.ke, exists(pref.ke) ? {pref.ke} : va[1]]
@@ -126,6 +127,10 @@ fu! fzf_mru#mrufiles#add(fn)
   en
 endf
 
+fu! fzf_mru#mrufiles#raw_list()
+  return s:mergelists()
+endf
+
 fu! fzf_mru#mrufiles#list(...)
   retu a:0 ? a:1 == 'raw' ? s:reformat(s:mergelists(), a:1) : 0
         \ : s:reformat(s:mergelists())
@@ -149,7 +154,7 @@ endf
 
 function! fzf_mru#mrufiles#source()
   let source = copy(fzf_mru#mrufiles#list())
-  if !empty(get(g:, 'fzf_mru_exclude_current_file', 1))
+  if !empty({s:excur})
     " remove current file from the list
     let source = filter(source, 'v:val != expand("%")')
   endif

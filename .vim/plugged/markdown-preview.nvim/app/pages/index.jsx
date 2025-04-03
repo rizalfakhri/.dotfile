@@ -3,7 +3,6 @@ import Head from 'next/head'
 import io from 'socket.io-client'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
-import mkuml from 'markdown-it-plantuml'
 import emoji from 'markdown-it-emoji'
 import taskLists from 'markdown-it-task-lists'
 import footnote from 'markdown-it-footnote'
@@ -19,7 +18,8 @@ import image from './image'
 import diagram, { renderDiagram } from './diagram'
 import flowchart, { renderFlowchart } from './flowchart'
 import dot, { renderDot } from './dot'
-import blockUml from './plantuml'
+import blockUml from './blockPlantuml'
+import codeUml from './plantuml'
 import scrollToLine from './scroll'
 import { meta } from './meta';
 import markdownImSize from './markdown-it-imsize'
@@ -68,19 +68,25 @@ const DEFAULT_OPTIONS = {
     'throwOnError': false,
     'errorColor': ' #cc0000'
   },
-  uml: {}
+  uml: {},
+  toc: {
+    listType: 'ul'
+  }
 }
 
 export default class PreviewPage extends React.Component {
   constructor(props) {
     super(props)
 
+    this.preContent = ''
+    this.timer = undefined
+
     this.state = {
       name: '',
       cursor: '',
       content: '',
       pageTitle: '',
-      theme: 'light',
+      theme: '',
       themeModeIsVisible: false,
       contentEditable: false,
       disableFilename: 1
@@ -106,13 +112,6 @@ export default class PreviewPage extends React.Component {
 
 
   componentDidMount() {
-    if (
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
-      this.setState({ theme: 'dark' })
-    }
-
     const socket = io({
       query: {
         bufnr: window.location.pathname.split('/')[2]
@@ -152,6 +151,7 @@ export default class PreviewPage extends React.Component {
     winheight,
     cursor,
     pageTitle = '',
+    theme,
     name = '',
     content
   }) {
@@ -163,6 +163,7 @@ export default class PreviewPage extends React.Component {
         hide_yaml_meta: hideYamlMeta = 1,
         sequence_diagrams: sequenceDiagrams = {},
         flowchart_diagrams: flowchartDiagrams = {},
+        toc = {}
       } = options
       // markdown-it
       this.md = new MarkdownIt({
@@ -178,7 +179,11 @@ export default class PreviewPage extends React.Component {
           ...DEFAULT_OPTIONS.katex,
           ...katex
         })
-        .use(mkuml, {
+        .use(blockUml, {
+          ...DEFAULT_OPTIONS.uml,
+          ...uml
+        })
+        .use(codeUml, {
           ...DEFAULT_OPTIONS.uml,
           ...uml
         })
@@ -191,10 +196,6 @@ export default class PreviewPage extends React.Component {
         .use(linenumbers)
         .use(mkitMermaid)
         .use(chart.chartPlugin)
-        .use(blockUml, {
-          ...DEFAULT_OPTIONS.uml,
-          ...uml
-        })
         .use(diagram, {
           ...sequenceDiagrams
         })
@@ -207,32 +208,30 @@ export default class PreviewPage extends React.Component {
           permalinkClass: 'anchor'
         })
         .use(markdownItToc, {
-          listType: 'ul'
+          ...DEFAULT_OPTIONS.toc,
+          ...toc
         })
     }
-    this.setState({
-      cursor,
-      name: ((name) => {
-        let tokens = name.split(/\\|\//).pop().split('.');
-        return tokens.length > 1 ? tokens.slice(0, -1).join('.') : tokens[0];
-      })(name),
-      content: this.md.render(content.join('\n')),
-      pageTitle,
-      contentEditable: options.content_editable,
-      disableFilename: options.disable_filename
-    }, () => {
-      try {
-        // eslint-disable-next-line
-        mermaid.initialize(options.maid || {})
-        // eslint-disable-next-line
-        mermaid.init(undefined, document.querySelectorAll('.mermaid'))
-      } catch (e) { }
 
-      chart.render()
-      renderDiagram()
-      renderFlowchart()
-      renderDot()
+    // Theme already applied
+    if (this.state.theme) {
+      theme = this.state.theme
+    }
+    // Define the theme according to the preferences of the system
+    else if (!theme || !['light', 'dark'].includes(theme)) {
+      if (
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+      ) {
+        theme = 'dark'
+      }
+    }
 
+    const newContent = content.join('\n')
+    const refreshContent = this.preContent !== newContent
+    this.preContent = newContent
+
+    const refreshScroll = () => {
       if (isActive && !options.disable_sync_scroll) {
         scrollToLine[options.sync_scroll_type || 'middle']({
           cursor: cursor[1],
@@ -241,7 +240,56 @@ export default class PreviewPage extends React.Component {
           len: content.length
         })
       }
-    })
+    }
+
+    const refreshRender = () => {
+      this.setState({
+        cursor,
+        name: ((name) => {
+          let tokens = name.split(/\\|\//).pop().split('.');
+          return tokens.length > 1 ? tokens.slice(0, -1).join('.') : tokens[0];
+        })(name),
+        ...(
+          refreshContent
+          ? { content: this.md.render(newContent) }
+          : {}
+        ),
+        pageTitle,
+        theme,
+        contentEditable: options.content_editable,
+        disableFilename: options.disable_filename
+      }, () => {
+        if (refreshContent) {
+          try {
+            // eslint-disable-next-line
+            mermaid.initialize(options.maid || {})
+            // eslint-disable-next-line
+            mermaid.init(undefined, document.querySelectorAll('.mermaid'))
+          } catch (e) { }
+
+          chart.render()
+          renderDiagram()
+          renderFlowchart()
+          renderDot()
+        }
+        refreshScroll()
+      })
+    }
+
+    if (!this.preContent) {
+      refreshRender()
+    } else {
+      if (!refreshContent) {
+        refreshScroll()
+      } else {
+        if (this.timer) {
+          clearTimeout(this.timer)
+        }
+        this.timer = setTimeout(() => {
+          refreshRender()
+        }, 16);
+      }
+    }
   }
 
   render() {
@@ -263,7 +311,7 @@ export default class PreviewPage extends React.Component {
           <link rel="stylesheet" href="/_static/page.css" />
           <link rel="stylesheet" href="/_static/markdown.css" />
           <link rel="stylesheet" href="/_static/highlight.css" />
-          <link rel="stylesheet" href="/_static/katex@0.12.0.css" />
+          <link rel="stylesheet" href="/_static/katex@0.15.3.css" />
           <link rel="stylesheet" href="/_static/sequence-diagram-min.css" />
           <script type="text/javascript" src="/_static/underscore-min.js"></script>
           <script type="text/javascript" src="/_static/webfont.js"></script>
@@ -271,7 +319,7 @@ export default class PreviewPage extends React.Component {
           <script type="text/javascript" src="/_static/tweenlite.min.js"></script>
           <script type="text/javascript" src="/_static/mermaid.min.js"></script>
           <script type="text/javascript" src="/_static/sequence-diagram-min.js"></script>
-          <script type="text/javascript" src="/_static/katex@0.12.0.js"></script>
+          <script type="text/javascript" src="/_static/katex@0.15.3.js"></script>
           <script type="text/javascript" src="/_static/mhchem.min.js"></script>
           <script type="text/javascript" src="/_static/raphael@2.3.0.min.js"></script>
           <script type="text/javascript" src="/_static/flowchart@1.13.0.min.js"></script>

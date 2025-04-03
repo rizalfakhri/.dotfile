@@ -1,13 +1,51 @@
 VIM / NeoVim
 ============
 
-.. _lsp_client_vim_coc:
+.. _lsp_client_vim:
 
 Client Guides
 -------------
 
 
 .. tabs::
+
+    .. tab:: Neovim LSP
+
+        Prerequisites:
+            - Neovim 0.5.0 or higher.
+            - `nvim-lspconfig <https://github.com/neovim/nvim-lspconfig>`_ package (this contains common LSP configurations, including one for Phpactor)
+            - `phpactor` is installed and executable in your path
+
+        For example: include it in your ``.vimrc`` with Plug:
+
+        ::
+
+            Plug 'neovim/nvim-lspconfig'
+
+        Then enable it in your ``.vimrc.`` (note that `on_attach` is a
+        `callback
+        <https://github.com/neovim/nvim-lspconfig#suggested-configuration>`_
+        which can be used for key bindings):
+
+        ::
+
+            lua << EOF
+            require'lspconfig'.phpactor.setup{
+                on_attach = on_attach,
+                init_options = {
+                    ["language_server_phpstan.enabled"] = false,
+                    ["language_server_psalm.enabled"] = false,
+                }
+            }
+            EOF
+
+        the `init_options` map directly to Phpactors configuration.
+
+        Please refer to the `nvim-lspconfig
+        <https://github.com/neovim/nvim-lspconfig>`_ package for keybindings
+        (also see `:help lsp`).
+
+        See :doc:`vim-lsp` for further configuration options.
 
     .. tab:: CoC
 
@@ -18,31 +56,31 @@ Client Guides
         ::
 
            Plug 'neoclide/coc.nvim', {'branch': 'release'}
-           
+
         Once you have both installed there are two ways of integrating `phpactor` into `coc`:
 
         - **Installing the coc phpactor extension**:
-        
+
         Restart VIM and type ``:CocInstall coc-phpactor``.
 
         If Phpactor is already installed you can set ``phpactor.path`` in
         ``:CocConfig`` to point to the Phpactor binary.
-        
+
         At the root level:
-        
+
         ::
-       
+
            {
                "phpactor.enable": true,
                "phpactor.path": "/home/vivo/phpactor/bin/phpactor"
            }
-        
+
         - **Without phpactor extension**:
-        
+
         Restart VIM and type `:CocConfig`, you can set up phpactor as a language server for php files directly to `coc-settings.json`:
-        
+
         ::
-       
+
            "languageserver": {
                "phpactor": {
                    "command": "phpactor",
@@ -95,30 +133,6 @@ Client Guides
 
         See `coc-phpactor <https://github.com/phpactor/coc-phpactor>`_ for more
         information.
-
-    .. tab:: Neovim LSP
-
-        You will need Neovim 0.5.0 or higher.
-
-        Ensure you have installed `nvim-lspconfig <https://github.com/neovim/nvim-lspconfig>`_ package: This contains common LSP configurations, including one for Phpactor.
-
-        For example: include it in your ``.vimrc`` with Plug:
-
-        ::
-
-            Plug 'neovim/nvim-lspconfig'
-
-        Then enable it in your ``.vimrc.``:
-
-        ::
-
-            lua << EOF
-            require'lspconfig'.phpactor.setup{}
-            EOF
-
-        Ensure phpactor is in your ``$PATH``
-
-        Please refer to the `nvim-lspconfig <https://github.com/neovim/nvim-lspconfig>`_ package for keybindings (also see `:help lsp`).
 
     .. tab:: Autozimu
 

@@ -42,8 +42,14 @@ yabai -m rule --add app="^Sequel Ace$" manage=off
 yabai -m rule --add app="^PrimoVPN$" manage=off
 yabai -m rule --add app="^FortiClient$" manage=off
 yabai -m rule --add app="^Postman$" manage=off
+yabai -m rule --add app="^GitKraken$" manage=off
 yabai -m rule --add app="^VOX$" manage=off
+yabai -m rule --add app="^WhatsApp$" manage=off
 yabai -m rule --add app="^Lulu*?$" manage=off
+yabai -m rule --add app="^QuickTime Player$" manage=off
+yabai -m rule --add app="^Telegram$" manage=off
+yabai -m rule --add app="^Notes$" manage=off
+yabai -m rule --add app="^Docker Desktop$" manage=off
 
 #find ~/Library/Parallels/Applications\ Menus/ -maxdepth 3 -type f | awk -F'/' '{ print $NF; }' | awk '{$1=$1};1' | sort | uniq | tr "\n" "\0" | xargs -0 -I{} yabai -m rule --add app="^{}\$" title=".*" manage=on
 
@@ -86,11 +92,19 @@ yabai -m config mouse_action1 move
 
 ## Change how yabai looks
 yabai -m config layout bsp
-yabai -m config top_padding 2
-yabai -m config bottom_padding 2
-yabai -m config left_padding 2
-yabai -m config right_padding 2
-yabai -m config window_gap 10
+yabai -m config top_padding 5
+yabai -m config bottom_padding 5
+yabai -m config left_padding 5
+yabai -m config right_padding 5
+yabai -m config window_gap 5
+
+yabai -m signal --add event=window_created action='ymsp window-created'
+
+yabai -m signal --add event=application_launched action='ymsp window-created'
+
+yabai -m signal --add event=window_moved action='ymsp window-moved'
+
+ymsp on-yabai-start
 
 #Limelight addon (Kill it and start it each time Yabai starts)
 killall limelight &>/dev/null

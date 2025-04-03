@@ -11,50 +11,17 @@ use Symfony\Component\Process\Process;
 
 class Status
 {
-    /**
-     * @var FilesystemRegistry
-     */
-    private $registry;
-
-    /**
-     * @var ExecutableFinder
-     */
-    private $executableFinder;
-
-    /**
-     * @var PathCandidates
-     */
-    private $paths;
-
-    /**
-     * @var string
-     */
-    private $workingDirectory;
-
-    /**
-     * @var PhpVersionResolver
-     */
-    private $phpVersionResolver;
-
-    /**
-     * @var bool
-     */
-    private $warnOnDevelop;
+    private ExecutableFinder $executableFinder;
 
     public function __construct(
-        FilesystemRegistry $registry,
-        PathCandidates $paths,
-        string $workingDirectory,
-        PhpVersionResolver $phpVersionResolver,
+        private FilesystemRegistry $registry,
+        private PathCandidates $paths,
+        private string $workingDirectory,
+        private PhpVersionResolver $phpVersionResolver,
         ExecutableFinder $executableFinder = null,
-        bool $warnOnDevelop = true
+        private bool $warnOnDevelop = true
     ) {
-        $this->registry = $registry;
         $this->executableFinder = $executableFinder ?: new ExecutableFinder();
-        $this->paths = $paths;
-        $this->workingDirectory = $workingDirectory;
-        $this->phpVersionResolver = $phpVersionResolver;
-        $this->warnOnDevelop = $warnOnDevelop;
     }
 
     public function check(): array
@@ -127,7 +94,7 @@ class Status
 
         return [
             'phpactor_version' => $matches[1],
-            'phpactor_is_develop' => $this->warnOnDevelop && (false !== strpos($matches[2], 'develop'))
+            'phpactor_is_develop' => $this->warnOnDevelop && (str_contains($matches[2], 'develop'))
         ];
     }
 }

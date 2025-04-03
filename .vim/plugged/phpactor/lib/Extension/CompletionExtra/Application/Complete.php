@@ -9,16 +9,16 @@ use Phpactor\TextDocument\TextDocumentBuilder;
 
 class Complete
 {
-    /**
-     * @var TypedCompletorRegistry
-     */
-    private $registry;
-
-    public function __construct(TypedCompletorRegistry $registry)
+    public function __construct(private TypedCompletorRegistry $registry)
     {
-        $this->registry = $registry;
     }
 
+    /**
+     * @return array{
+     *    suggestions: array<array<string,mixed>>,
+     *    issues: array
+     * }
+     */
     public function complete(string $source, int $offset, string $type = 'php'): array
     {
         $completor = $this->registry->completorForType($type);

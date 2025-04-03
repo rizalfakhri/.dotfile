@@ -1,24 +1,34 @@
-/vendor
 /extensions
-/tests/Assets/Workspace
+/phpactor.schema.json
+/lib/Extension/WorseReflection/stubs
+/.phpbench
+
+# Composer
+/vendor
+
+# Cache
 /tests/Assets/Cache
 /cache
-/extensions
-/phpbench.json
+/lib/Completion/cache
+/lib/WorseReflection/Tests/Cache
+
+# Workspaces
+/tests/Assets/Workspace
+/**/Tests/Workspace
 
 # File frequently used for testing
 /lib/Test.php
 /.phpactor.yml
 /.phpactor/*
 
+# Logging
+/application.log
+
 # docs
 /doc/_build
 
-# php-cs-fixer
-/.php_cs.cache
-./.php_cs
+/.php-cs-fixer.cache
 /build
 __pycache__
 /doc/_ext/__pycache__
 .phpunit.result.cache
-.php_cs.cache

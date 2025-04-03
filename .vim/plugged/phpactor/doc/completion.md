@@ -10,6 +10,7 @@ Phpactor provides completion for:
 - **Functions**: Built-in and bootstrapped.
 - **Constants**: Built-in and bootstrapped.
 - **Parameters**: Will suggest appropriate local variables for method parameters.
+- **Array Keys**: For array-shapes (`array{key1:value1}`) complete the keys.
 
 Uniquely, Phpactor does not pre-index anything, completion happens in _real
 time_, file locations are guessed based on composer locations (or brute forced
@@ -36,7 +37,7 @@ $foo-> // type: Hello|Goodbye
 
 ### Assignments
 
-Phpactor will track assignemnts:
+Phpactor will track assignments:
 
 ```php
 $a = 'hello';
@@ -83,9 +84,9 @@ foreach ($foos as $foo) {
 
 ### FunctionLike
 
-Understands annonymous functions:
+Understands anonymous functions:
 
-```
+```php
 $barfoo = new Barfoo();
 $function = function (Foobar $foobar) use ($barfoo) {
     $foobar-> // type: Foobar
@@ -122,14 +123,14 @@ if ($foobar instanceof Hello || $foobar instanceof Goodbye) {
 
 Phpactor supports type injection via. docblock:
 
-```
+```php
 /** @var Foobar $foobar */
 $foobar-> // type: Foobar
 ```
 
 and inference from parameters:
 
-```
+```php
 function foobar(Barfoo $foobar, $barbar = 'foofoo')
 {
     $foobar; // type: Barfoo

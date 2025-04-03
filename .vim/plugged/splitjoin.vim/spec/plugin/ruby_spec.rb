@@ -16,6 +16,7 @@ describe "ruby" do
     vim.command('silent! unlet g:splitjoin_trailing_comma')
     vim.command('silent! unlet g:splitjoin_ruby_options_as_arguments')
     vim.command('silent! unlet g:splitjoin_ruby_curly_braces')
+    vim.command('silent! unlet g:splitjoin_ruby_expand_options_in_arrays')
   end
 
   specify "if-clauses" do
@@ -122,6 +123,33 @@ describe "ruby" do
           module Bar
             class Baz < Quux
             end
+          end
+        end
+      EOF
+    end
+
+    specify "with one-letter names" do
+      set_file_contents <<~EOF
+        module A
+          module B
+          end
+        end
+      EOF
+
+      vim.search 'A'
+      join
+
+      assert_file_contents <<~EOF
+        module A::B
+        end
+      EOF
+
+      vim.search 'A::B'
+      split
+
+      assert_file_contents <<~EOF
+        module A
+          module B
           end
         end
       EOF
@@ -378,7 +406,8 @@ describe "ruby" do
           do_something_else
       EOF
 
-      join
+      # Call command instead of mapping to avoid default mapping
+      vim.command 'SplitjoinJoin'
 
       assert_file_contents <<~EOF
         when condition
@@ -922,6 +951,86 @@ describe "ruby" do
       assert_file_contents <<~EOF
         foo("\#{one}") do
           two
+        end
+      EOF
+    end
+
+    it "doesn't get confused by ; when joining" do
+      set_file_contents <<~EOF
+        foo do
+          example1
+          example2
+        end
+      EOF
+
+      vim.search 'do'
+      join
+
+      assert_file_contents <<~EOF
+        foo { example1; example2 }
+      EOF
+    end
+
+    it "doesn't get confused by ; when splitting" do
+      set_file_contents <<~EOF
+        foo { example1; example2 }
+      EOF
+
+      vim.search 'example1;'
+      split
+
+      assert_file_contents <<~EOF
+        foo do
+          example1
+          example2
+        end
+      EOF
+    end
+
+    it "doesn't get confused when ; is in a string literal(single quotes) when splitting" do
+      set_file_contents <<~EOF
+        foo { example1; 'some string ; literal' }
+      EOF
+
+      vim.search 'example1;'
+      split
+
+      assert_file_contents <<~EOF
+        foo do
+          example1
+          'some string ; literal'
+        end
+      EOF
+    end
+
+    it "doesn't get confused when ; is in a string literal(double quotes) when splitting" do
+      set_file_contents <<~EOF
+        foo { example1; "some string ; literal" }
+      EOF
+
+      vim.search 'example1;'
+      split
+
+      assert_file_contents <<~EOF
+        foo do
+          example1
+          "some string ; literal"
+        end
+      EOF
+    end
+
+    it "doesn't get confused when ; is in a string literal(percent strings) when splitting" do
+      set_file_contents <<~EOF
+        foo { example1; %(some string ; literal) }
+      EOF
+
+      vim.search 'example1;'
+      split
+
+      assert_file_contents <<~EOF
+        foo do
+          example1
+          %(some string ; literal)
         end
       EOF
     end
@@ -1517,6 +1626,26 @@ describe "ruby" do
     end
 
     specify "last hash inside array doesn't disappear" do
+      set_file_contents "array = [0, { a: 1 }]"
+
+      vim.search '0'
+      split
+
+      assert_file_contents <<~EOF
+        array = [
+          0,
+          { a: 1 }
+        ]
+      EOF
+
+      vim.search 'array ='
+      join
+
+      assert_file_contents "array = [0, { a: 1 }]"
+    end
+
+    specify "last hash inside array can be expanded" do
+      vim.command('let g:splitjoin_ruby_expand_options_in_arrays = 1')
       set_file_contents "array = [0, { a: 1 }]"
 
       vim.search '0'

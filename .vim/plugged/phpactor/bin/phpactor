@@ -1,10 +1,9 @@
 #!/usr/bin/env php
 <?php
 
-use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Phpactor\Application;
-use Composer\XdebugHandler\XdebugHandler;
+
 
 foreach ([
     __DIR__ . '/../../../autoload.php',
@@ -14,6 +13,10 @@ foreach ([
         $autoloadFile = $file;
         break;
     }
+}
+
+if (!getenv('PHPACTOR_DEPRECATIONS')) {
+    error_reporting(\E_ALL^~\E_DEPRECATED^~\E_NOTICE);
 }
 
 ini_set('display_errors', 'stderr');
@@ -26,10 +29,10 @@ if (!isset($autoloadFile)) {
     exit(255);
 }
 
-$minVersion = '7.3.0';
+$minVersion = '8.0.0';
 
 if (version_compare(PHP_VERSION, $minVersion) < 0) {
-    echo sprintf('Phpactor requires at least PHP %s', $minVersion) . PHP_EOL;
+    fwrite(STDERR, sprintf('Phpactor requires at least PHP %s', $minVersion) . PHP_EOL);
     exit(255);
 }
 

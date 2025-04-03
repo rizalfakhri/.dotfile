@@ -6,7 +6,6 @@ use Phpactor\Extension\Core\Console\Dumper\IndentedDumper;
 
 class IndentedDumperTest extends DumperTestCase
 {
-
     /**
      * @testdox It outputs indented dump
      */
@@ -36,8 +35,9 @@ class IndentedDumperTest extends DumperTestCase
               hai:ho
 
             EOT
-        , $output);
+            , $output);
     }
+
     protected function dumper()
     {
         return new IndentedDumper();

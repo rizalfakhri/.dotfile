@@ -12,7 +12,7 @@ command! -buffer -range=% PhpactorExtractExpression call phpactor#ExtractExpress
 command! -buffer -nargs=0 PhpactorExtractConstant call phpactor#ExtractConstant()
 
 ""
-" Import the name under the cusor. If multiple options are available, you
+" Import the name under the cursor. If multiple options are available, you
 " are able to choose one.
 command! -buffer -nargs=0 PhpactorImportClass call phpactor#ImportClass()
 
@@ -33,6 +33,10 @@ command! -buffer -nargs=0 PhpactorContextMenu call phpactor#ContextMenu()
 " Copy the current file - updating the namespace and class name according to
 " the new file location and name
 command! -buffer -nargs=0 PhpactorCopyFile call phpactor#CopyFile()
+
+""
+" Copy the current class FQN (based on current filename) to the clipboard
+command! -buffer -nargs=0 PhpactorCopyClassName call phpactor#CopyFullClassName()
 
 ""
 " Move the current file - updating the namespace and class name according to
@@ -63,5 +67,10 @@ command! -buffer -nargs=0 PhpactorChangeVisibility call phpactor#ChangeVisibilit
 command! -buffer -nargs=0 PhpactorGenerateAccessors call phpactor#GenerateAccessors()
 
 ""
+" Generate mutators for the current class
+command! -buffer -nargs=0 PhpactorGenerateMutators call phpactor#GenerateMutators()
+
+""
 " Automatically add any missing properties to a class
 command! -buffer -nargs=0 PhpactorTransform call phpactor#Transform()
+

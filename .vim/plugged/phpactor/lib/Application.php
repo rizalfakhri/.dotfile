@@ -4,6 +4,7 @@ namespace Phpactor;
 
 use Phpactor\Extension\Logger\Formatter\PrettyFormatter;
 use Symfony\Component\Console\Application as SymfonyApplication;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -15,28 +16,20 @@ use PackageVersions\Versions;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Exception;
+use Throwable;
 
 class Application extends SymfonyApplication
 {
-    /**
-     * @var Container
-     */
-    private $container;
+    private Container $container;
 
-    /**
-     * @var string
-     */
-    private $vendorDir;
-
-    public function __construct(string $vendorDir)
+    public function __construct(private string $vendorDir)
     {
         parent::__construct('Phpactor', Versions::getVersion('phpactor/phpactor'));
-        $this->vendorDir = $vendorDir;
     }
 
-    public function doRun(InputInterface $input, OutputInterface $output)
+    public function doRun(InputInterface $input, OutputInterface $output): int
     {
-        $this->initialize($input);
+        $this->initialize($input, $output);
         $this->setCatchExceptions(false);
 
         if ($output->isVerbose()) {
@@ -60,7 +53,10 @@ class Application extends SymfonyApplication
                 && $input->hasOption('format')
                 && $input->getOption('format')
             ) {
-                return $this->handleException($output, $input->getOption('format'), $e);
+                /** @var string $format */
+                $format = $input->getOption('format');
+
+                return $this->handleException($output, $format, $e);
             }
 
             if ($output instanceof ConsoleOutputInterface) {
@@ -71,7 +67,7 @@ class Application extends SymfonyApplication
         }
     }
 
-    protected function getDefaultInputDefinition()
+    protected function getDefaultInputDefinition(): InputDefinition
     {
         $definition = parent::getDefaultInputDefinition();
         $definition->addOption(new InputOption('working-dir', 'd', InputOption::VALUE_REQUIRED, 'Working directory'));
@@ -79,7 +75,7 @@ class Application extends SymfonyApplication
         return $definition;
     }
 
-    private function handleException(OutputInterface $output, string $dumper, Exception $e)
+    private function handleException(OutputInterface $output, string $dumper, Exception $e): int
     {
         $errors = [
             'error' => $this->serializeException($e),
@@ -98,7 +94,10 @@ class Application extends SymfonyApplication
         return 64;
     }
 
-    private function serializeException(Exception $e)
+    /**
+     * @return array<string, string>
+    */
+    private function serializeException(Throwable $e): array
     {
         return [
             'class' => get_class($e),
@@ -107,9 +106,9 @@ class Application extends SymfonyApplication
         ];
     }
 
-    private function initialize(InputInterface $input): void
+    private function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->container = Phpactor::boot($input, $this->vendorDir);
+        $this->container = Phpactor::boot($input, $output, $this->vendorDir);
 
         $this->setCommandLoader($this->container->get(ConsoleExtension::SERVICE_COMMAND_LOADER));
     }

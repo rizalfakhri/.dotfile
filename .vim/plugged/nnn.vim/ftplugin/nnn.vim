@@ -3,16 +3,20 @@ if exists('b:nnn_ftplugin')
 endif
 let b:nnn_ftplugin = 1
 
-for key in keys(g:nnn#action)
-    execute 'tnoremap <nowait><buffer><silent>' key '<c-\><c-n>:<c-u>call nnn#select_action("'.substitute(key, '<', '<lt>', 'g').'")<cr>'
-endfor
+if !empty(g:nnn#action)
+    for key in keys(g:nnn#action)
+        execute 'tnoremap <nowait><buffer><silent>' key '<c-\><c-n>:<c-u>call nnn#select_action("'.substitute(key, '<', '<lt>', 'g').'")<cr>'
+    endfor
+endif
 
 if g:nnn#set_default_mappings
     tnoremap <buffer><silent> <C-w> <C-\><C-n><C-w>
 endif
 
 if !exists('w:is_nnn_float')
-    if has('nvim')
+    if has('nvim-0.7')
+        setl winhighlight=Normal:NnnNormal,NormalNC:NnnNormalNC,WinSeparator:NnnWinSeparator
+    elseif has('nvim')
         setl winhighlight=Normal:NnnNormal,NormalNC:NnnNormalNC,VertSplit:NnnVertSplit
     else
         setl wincolor=NnnNormal

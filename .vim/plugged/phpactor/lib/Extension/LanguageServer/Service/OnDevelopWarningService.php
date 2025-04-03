@@ -10,31 +10,11 @@ use function Amp\call;
 
 class OnDevelopWarningService implements ServiceProvider
 {
-    /**
-     * @var ClientApi
-     */
-    private $client;
-
-    /**
-     * @var bool
-     */
-    private $warnOnDevelop;
-
-    /**
-     * @var Status
-     */
-    private $status;
-
-    public function __construct(ClientApi $client, Status $status, bool $warnOnDevelop)
+    public function __construct(private ClientApi $client, private Status $status, private bool $warnOnDevelop)
     {
-        $this->client = $client;
-        $this->warnOnDevelop = $warnOnDevelop;
-        $this->status = $status;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     public function services(): array
     {
         if (false === $this->warnOnDevelop) {
@@ -46,6 +26,9 @@ class OnDevelopWarningService implements ServiceProvider
         ];
     }
 
+    /**
+     * @return Promise<void>
+     */
     public function serviceAnnouncements(): Promise
     {
         return call(function (): void {

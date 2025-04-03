@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.newSemanticTokenProvider = void 0;
 const languageModes_1 = require("./languageModes");
@@ -15,19 +24,21 @@ function newSemanticTokenProvider(languageModes) {
     return {
         legend,
         getSemanticTokens(document, ranges) {
-            const allTokens = [];
-            for (let mode of languageModes.getAllModesInDocument(document)) {
-                if (mode.getSemanticTokens) {
-                    const mapping = legendMappings[mode.getId()];
-                    const tokens = mode.getSemanticTokens(document);
-                    applyTypesMapping(tokens, mapping.types);
-                    applyModifiersMapping(tokens, mapping.modifiers);
-                    for (let token of tokens) {
-                        allTokens.push(token);
+            return __awaiter(this, void 0, void 0, function* () {
+                const allTokens = [];
+                for (let mode of languageModes.getAllModesInDocument(document)) {
+                    if (mode.getSemanticTokens) {
+                        const mapping = legendMappings[mode.getId()];
+                        const tokens = yield mode.getSemanticTokens(document);
+                        applyTypesMapping(tokens, mapping.types);
+                        applyModifiersMapping(tokens, mapping.modifiers);
+                        for (let token of tokens) {
+                            allTokens.push(token);
+                        }
                     }
                 }
-            }
-            return encodeTokens(allTokens, ranges);
+                return encodeTokens(allTokens, ranges, document);
+            });
         }
     };
 }
@@ -73,14 +84,13 @@ function applyModifiersMapping(tokens, modifiersMapping) {
         }
     }
 }
-const fullRange = [languageModes_1.Range.create(languageModes_1.Position.create(0, 0), languageModes_1.Position.create(Number.MAX_VALUE, 0))];
-function encodeTokens(tokens, ranges) {
+function encodeTokens(tokens, ranges, document) {
     const resultTokens = tokens.sort((d1, d2) => d1.start.line - d2.start.line || d1.start.character - d2.start.character);
     if (ranges) {
         ranges = ranges.sort((d1, d2) => d1.start.line - d2.start.line || d1.start.character - d2.start.character);
     }
     else {
-        ranges = fullRange;
+        ranges = [languageModes_1.Range.create(languageModes_1.Position.create(0, 0), languageModes_1.Position.create(document.lineCount, 0))];
     }
     let rangeIndex = 0;
     let currRange = ranges[rangeIndex++];

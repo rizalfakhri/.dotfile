@@ -4,12 +4,16 @@ namespace Phpactor\Tests\Unit\Extension\CodeTransformExtra\Rpc;
 
 use Phpactor\Extension\Rpc\Handler;
 use Phpactor\Extension\Rpc\Response\InputCallbackResponse;
-use Phpactor\CodeTransform\Domain\SourceCode;
 use Phpactor\Extension\Rpc\Response\UpdateFileSourceResponse;
 use Phpactor\CodeTransform\Domain\Refactor\ExtractConstant;
 use Phpactor\Extension\CodeTransformExtra\Rpc\ExtractConstantHandler;
 use Phpactor\Extension\Rpc\Response\Input\TextInput;
 use Phpactor\Tests\Unit\Extension\Rpc\HandlerTestCase;
+use Phpactor\TextDocument\TextDocumentEdits;
+use Phpactor\TextDocument\TextDocumentUri;
+use Phpactor\TextDocument\TextEdit;
+use Phpactor\TextDocument\TextEdits;
+use Prophecy\Prophecy\ObjectProphecy;
 
 class ExtractConstantHandlerTest extends HandlerTestCase
 {
@@ -18,10 +22,7 @@ class ExtractConstantHandlerTest extends HandlerTestCase
     const OFFSET = 1234;
     const CONSTANT_NAME = 'FOOBAR';
 
-    /**
-     * @var ExtractConstant
-     */
-    private $extractConstant;
+    private ObjectProphecy $extractConstant;
 
     public function setUp(): void
     {
@@ -57,7 +58,10 @@ class ExtractConstantHandlerTest extends HandlerTestCase
             self::SOURCE,
             self::OFFSET,
             self::CONSTANT_NAME
-        )->willReturn(SourceCode::fromStringAndPath('asd', '/path'));
+        )->willReturn(new TextDocumentEdits(
+            TextDocumentUri::fromString('file://'. self::PATH),
+            TextEdits::one(TextEdit::create(6, 10, 'newMethod()'))
+        ));
 
         $action = $this->handle('extract_constant', [
             'source' => self::SOURCE,

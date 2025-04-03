@@ -19,14 +19,8 @@ class ExtractConstantHandler extends AbstractHandler
     const PARAM_CONSTANT_NAME_SUGGESTION = 'constant_name_suggestion';
     const INPUT_LABEL_NAME = 'Constant name: ';
 
-    /**
-     * @var ExtractConstant
-     */
-    private $extractConstant;
-
-    public function __construct(ExtractConstant $extractConstant)
+    public function __construct(private ExtractConstant $extractConstant)
     {
-        $this->extractConstant = $extractConstant;
     }
 
     public function name(): string
@@ -59,16 +53,16 @@ class ExtractConstantHandler extends AbstractHandler
             return $this->createInputCallback($arguments);
         }
 
-        $sourceCode = $this->extractConstant->extractConstant(
+        $textEdits = $this->extractConstant->extractConstant(
             SourceCode::fromStringAndPath($arguments[self::PARAM_SOURCE], $arguments[self::PARAM_PATH]),
             $arguments[self::PARAM_OFFSET],
             $arguments[self::PARAM_CONSTANT_NAME]
         );
 
         return UpdateFileSourceResponse::fromPathOldAndNewSource(
-            $sourceCode->path(),
+            $arguments[self::PARAM_PATH],
             $arguments[self::PARAM_SOURCE],
-            (string) $sourceCode
+            $textEdits->textEdits()->apply($arguments[self::PARAM_SOURCE])
         );
     }
 }

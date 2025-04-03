@@ -49,10 +49,10 @@ class Message
      */
     public $headers;
 
+    public $opaque;
+
     /**
      * @return string
      */
-    public function errstr()
-    {
-    }
+    public function errstr() {}
 }

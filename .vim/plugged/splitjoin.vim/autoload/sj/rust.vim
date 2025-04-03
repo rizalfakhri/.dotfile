@@ -1,5 +1,37 @@
 let s:skip_syntax = sj#SkipSyntax(['String', 'Comment'])
-let s:ending_semicolon_pattern = ';\s*\%(//.*\)\=$'
+let s:eol_pattern = '\s*\%(//.*\)\=$'
+
+" TODO (2023-02-25) running substitute() on semicolons won't work well for
+" strings. Need a generic solution, sj#DelimiterOffsets(
+
+function! sj#rust#SplitMatchExpression()
+  if !sj#SearchUnderCursor('\<match .* {')
+    return 0
+  endif
+
+  call sj#JumpBracketsTill('{', {'opening': '([<"''', 'closing': ')]>"'''})
+  let [from, to] = sj#LocateBracesAroundCursor('{', '}')
+  if from < 0 && to < 0
+    return 0
+  endif
+
+  let parser = sj#argparser#rust_struct#Construct(from + 1, to - 1, getline('.'))
+  call parser.Process()
+  let args = parser.args
+  if len(args) <= 0
+    return 0
+  endif
+
+  let items = map(args, 'v:val.argument')
+  let body = join(items, ",\n")
+  if sj#settings#Read('trailing_comma')
+    let body .= ','
+  endif
+  let body = "{\n" . body . "\n}"
+
+  call sj#ReplaceCols(from, to, body)
+  return 1
+endfunction
 
 function! sj#rust#SplitMatchClause()
   if !sj#SearchUnderCursor('^.*\s*=>\s*.*$')
@@ -11,7 +43,7 @@ function! sj#rust#SplitMatchClause()
   endif
 
   let start_col = col('.')
-  if !search(',\=\s*\%(//.*\)\=$', 'W', line('.'))
+  if !search(',\='.s:eol_pattern, 'W', line('.'))
     return 0
   endif
 
@@ -24,7 +56,14 @@ function! sj#rust#SplitMatchClause()
     let body_end_col = content_end_col
   endif
 
-  let body = sj#GetCols(start_col, body_end_col)
+  let body = sj#Trim(sj#GetCols(start_col, body_end_col))
+  if body =~ '[({[.,*/%+-]$'
+    " ends in an opening bracket or operator of some sorts, so it's
+    " incomplete, don't touch it
+    return 0
+  endif
+
+  let body = substitute(body, '^{\s*\(.\{-}\)\s*}$', '\1', '')
   call sj#ReplaceCols(start_col, content_end_col, "{\n".body."\n},")
   return 1
 endfunction
@@ -39,6 +78,11 @@ function! sj#rust#JoinMatchClause()
   let body = sj#Trim(sj#GetMotion('Vi{'))
   if stridx(body, "\n") >= 0
     return 0
+  endif
+
+  if len(body) == 0
+    call sj#ReplaceMotion('va{', '{}')
+    return 1
   endif
 
   " Remove semicolons when joining, they don't work in non-block form
@@ -186,14 +230,17 @@ function! sj#rust#JoinMatchStatement()
   else
     call sj#ReplaceByPosition(match_position, end_position, expr.'.unwrap()')
   endif
+
+  return 1
 endfunction
 
 function! sj#rust#SplitBlockClosure()
-  if sj#SearchUnderCursor('|.\{-}|\s*\zs{', 'Wc', line('.')) <= 0
+  if sj#SearchUnderCursor('|.\{-}|\s*\zs{', 'Wc', s:skip_syntax, line('.')) <= 0
     return 0
   endif
 
   let closure_contents = sj#GetMotion('vi{')
+  let closure_contents = substitute(closure_contents, ';\ze.', ";\n", 'g')
   call sj#ReplaceMotion('va{', "{\n".sj#Trim(closure_contents)."\n}")
   return 1
 endfunction
@@ -208,8 +255,18 @@ function! sj#rust#SplitExprClosure()
 
   let start_col = col('.')
   let end_col = sj#JumpBracketsTill('\%([,;]\|$\)', {'opening': '([<{"''', 'closing': ')]>}"'''})
+  if end_col == col('$')
+    " found end-of-line, one character past the actual end
+    let end_col -= 1
+  endif
 
   let closure_contents = sj#GetCols(start_col, end_col)
+  if closure_contents =~ '[({[.,*/%+-]$'
+    " ends in an opening bracket or operator of some sorts, so it's
+    " incomplete, don't touch it
+    return 0
+  endif
+
   call sj#ReplaceCols(start_col, end_col, "{\n".closure_contents."\n}")
   return 1
 endfunction
@@ -250,21 +307,25 @@ function! sj#rust#SplitCurlyBrackets()
   call sj#SearchUnderCursor('\<if .\{-}{', 'e')
 
   let [from, to] = sj#LocateBracesAroundCursor('{', '}')
-
   if from < 0 && to < 0
     return 0
   endif
 
   if (to - from) < 2
-    " empty {} block
-    return 0
+    call sj#ReplaceMotion('va{', "{\n\n}")
+    return 1
   endif
 
   let body = sj#Trim(sj#GetCols(from + 1, to - 1))
+  if len(body) == 0
+    call sj#ReplaceMotion('va{', "{\n\n}")
+    return 1
+  endif
+
   let prefix = sj#GetCols(0, from - 1)
   let indent = indent(line('.')) + (exists('*shiftwidth') ? shiftwidth() : &sw)
 
-  let parser = sj#argparser#rust#Construct(from + 1, to - 1, getline('.'))
+  let parser = sj#argparser#rust_struct#Construct(from + 1, to - 1, getline('.'))
   call parser.Process()
   let args = parser.args
   if len(args) <= 0
@@ -282,8 +343,6 @@ function! sj#rust#SplitCurlyBrackets()
 
     call sj#ReplaceCols(from, to, "{\n".body."\n}")
   elseif parser.IsValidStruct()
-    " then it's a
-    "
     let is_only_pairs = parser.IsOnlyStructPairs()
 
     let items = []
@@ -334,16 +393,19 @@ endfunction
 
 function! sj#rust#JoinCurlyBrackets()
   let line = getline('.')
-
   if line !~ '{\s*$'
     return 0
   endif
-
   call search('{', 'c', line('.'))
+
+  if eval(s:skip_syntax)
+    return 0
+  endif
 
   " check if we've got an empty block:
   if sj#GetMotion('va{') =~ '^{\_s*}$'
-    return 0
+    call sj#ReplaceMotion('va{', '{}')
+    return 1
   endif
 
   let body = sj#GetMotion('Vi{')
@@ -451,7 +513,7 @@ function! sj#rust#SplitIfLetIntoMatch()
   let body = sj#Trim(sj#GetMotion('vi{'))
 
   " multiple lines or ends with `;` -> wrap it in a block
-  if len(split(body, "\n")) > 1 || body =~ s:ending_semicolon_pattern
+  if len(split(body, "\n")) > 1 || body =~ ';'.s:eol_pattern
     let body = "{\n".body."\n}"
   endif
 
@@ -463,7 +525,7 @@ function! sj#rust#SplitIfLetIntoMatch()
     let else_body = sj#Trim(sj#GetMotion('vi{'))
 
     " multiple lines or ends with `;` -> wrap it in a block
-    if len(split(else_body, "\n")) > 1 || else_body =~ s:ending_semicolon_pattern
+    if len(split(else_body, "\n")) > 1 || else_body =~ ';'.s:eol_pattern
       let else_body = "{\n".else_body."\n}"
     endif
 
@@ -480,15 +542,24 @@ function! sj#rust#SplitIfLetIntoMatch()
   return 1
 endfunction
 
+function! sj#rust#SplitArgs()
+  return s:SplitList(['(', ')'], 'cursor_on_line')
+endfunction
+
+function! sj#rust#SplitArray()
+  return s:SplitList(['[', ']'], 'cursor_inside')
+endfunction
+
 function! sj#rust#JoinEmptyMatchIntoIfLet()
-  let match_pattern = 'match\s\+\zs.\{-}\ze\s\+{$'
+  let match_pattern = '\<match\s\+\zs.\{-}\ze\s\+{$'
   let pattern_pattern = '^\s*\zs.\{-}\ze\s\+=>'
 
-  if search(match_pattern, 'We', line('.')) <= 0
+  if search(match_pattern, 'Wc', line('.')) <= 0
     return 0
   endif
 
   let outer_start_lineno = line('.')
+  let [_, match_start_col] = searchpos('\<match\s\+', 'nbW', line('.'))
 
   " find end point
   normal! f{%
@@ -548,22 +619,23 @@ function! sj#rust#JoinEmptyMatchIntoIfLet()
   if search('^\s*_\s*=>\s*\zs\S', 'W', outer_end_lineno) > 0
     let fallback_value = strpart(getline('.'), col('.') - 1)
 
-    if fallback_value =~ '^{'
+    if fallback_value =~ '^(\s*)\|^{\s*}'
+      " ignore it
+    elseif fallback_value =~ '^{'
       " the else-clause is going to be in a block
       let else_body = sj#Trim(sj#GetMotion('vi{'))
-    elseif fallback_value =~ '^()'
-      " ignore it
     else
       " one-line value, remove its trailing comma and any comments
-      let else_body = substitute(fallback_value, ',\=\s*\%(//.*\)\=$', '', '')
+      let else_body = substitute(fallback_value, ','.s:eol_pattern, '', '')
     endif
   endif
+
   call sj#PopCursor()
 
   " jump on outer start
   exe outer_start_lineno
-  call sj#ReplaceMotion('V', 'if let '.match_pattern.' = '.match_value.' {')
-  normal! 0f{
+  call sj#ReplaceCols(match_start_col, col('$'), 'if let '.match_pattern.' = '.match_value." {\n")
+  normal! $
   call sj#ReplaceMotion('va{', "{\n".body."\n}")
 
   if else_body != ''
@@ -581,7 +653,7 @@ function! sj#rust#SplitImportList()
 
   let prefix = sj#Trim(strpart(getline('.'), 0, col('.') - 1))
   let body   = sj#GetMotion('vi{')
-  let parser = sj#argparser#rust#Construct(1, len(body), body)
+  let parser = sj#argparser#rust_struct#Construct(1, len(body), body)
 
   call parser.Process()
 
@@ -602,39 +674,63 @@ function! sj#rust#SplitImportList()
     return 0
   endif
 
+  let attributes = s:GetLineAttributes(line('.'))
+
+  if len(attributes) > 0
+    let attribute_block = join(attributes, "\n")
+    let expanded_imports = [expanded_imports[0]] + map(expanded_imports[1:-1], 'attribute_block . "\n" . v:val')
+  endif
+
   let replacement = join(expanded_imports, "\n")
-  call sj#ReplaceMotion('V', replacement)
+  if body =~ '\n'
+    " Select a multiline area
+    call sj#ReplaceMotion('va{$o0', replacement . "\n")
+  else
+    call sj#ReplaceMotion('V', replacement)
+  endif
 
   return 1
 endfunction
 
 function! sj#rust#JoinImportList()
   let import_pattern = '^\s*use\s\+\%(\k\+::\)\+'
+  let attribute_pattern = '^\s*#['
 
   if sj#SearchUnderCursor(import_pattern) <= 0
     return 0
   endif
 
   let first_import = getline('.')
-  let first_import = substitute(first_import, s:ending_semicolon_pattern, '', '')
+  let first_import = substitute(first_import, ';'.s:eol_pattern, '', '')
   let imports = [sj#Trim(first_import)]
 
   let start_line = line('.')
   let last_line = line('.')
-  normal! j
+  let attributes = s:GetLineAttributes(start_line)
+
+  " If there's no attributes, get the next line, otherwise skip the attribute
+  " lines
+  exe 'normal! ' . (len(attributes) + 1) . 'j'
 
   while sj#SearchUnderCursor(import_pattern) > 0
     if line('.') == last_line
       " we haven't moved, stop here
       break
     endif
+
+    let local_attributes = s:GetLineAttributes(line('.'))
+    if local_attributes != attributes
+      " This import is not compatible, stop here
+      break
+    endif
+
     let last_line = line('.')
 
     let import_line = getline('.')
-    let import_line = substitute(import_line, s:ending_semicolon_pattern, '', '')
+    let import_line = substitute(import_line, ';'.s:eol_pattern, '', '')
 
     call add(imports, sj#Trim(import_line))
-    normal! j
+    exe 'normal! ' . (len(attributes) + 1) . 'j'
   endwhile
 
   if len(imports) <= 1
@@ -701,7 +797,7 @@ function! sj#rust#JoinImportList()
 
     if difference =~ '^{.*}$'
       " there's a list of imports, merge them together
-      let parser = sj#argparser#rust#Construct(2, len(difference) - 1, difference)
+      let parser = sj#argparser#rust_struct#Construct(2, len(difference) - 1, difference)
       call parser.Process()
       for part in map(parser.args, 'v:val.argument')
         call add(differences, part)
@@ -720,10 +816,20 @@ function! sj#rust#JoinImportList()
   endif
 
   let replacement = common_prefix . '::{' . join(differences, ', ') . '};'
-  let end_line = start_line + len(compatible_imports) - 1
-  call sj#ReplaceLines(start_line, end_line, replacement)
 
-  return 0
+  let attribute_line_count = (len(compatible_imports) - 1) * len(attributes)
+  let end_line = start_line + len(compatible_imports) + attribute_line_count - 1
+
+  call sj#ReplaceLines(start_line, end_line, replacement)
+  return 1
+endfunction
+
+function! sj#rust#JoinArgs()
+  return s:JoinList(['(', ')'])
+endfunction
+
+function! sj#rust#JoinArray()
+  return s:JoinList(['[', ']'])
 endfunction
 
 function! s:FunctionReturnType()
@@ -739,4 +845,91 @@ function! s:FunctionReturnType()
   else
     return ''
   endif
+endfunction
+
+function s:GetLineAttributes(line)
+  let end_line = prevnonblank(a:line - 1)
+
+  if getline(end_line) !~ '^\s*#['
+    return []
+  endif
+
+  let start_line = end_line
+  let tested_line = start_line
+
+  while getline(tested_line) =~ '^\s*#['
+    let start_line = tested_line
+    let tested_line = prevnonblank(tested_line - 1)
+  endwhile
+
+  return getline(start_line, end_line)
+endfunction
+
+function! s:SplitList(delimiter, cursor_position)
+  let start = a:delimiter[0]
+  let end   = a:delimiter[1]
+
+  let lineno = line('.')
+  let indent = indent('.')
+
+  if a:cursor_position == 'cursor_inside'
+    let [from, to] = sj#LocateBracesAroundCursor(start, end)
+  elseif a:cursor_position == 'cursor_on_line'
+    let [from, to] = sj#LocateBracesOnLine(start, end)
+  else
+    echoerr "Invalid value for a:cursor_position: ".a:cursor_position
+    return
+  endif
+
+  if from < 0 && to < 0
+    return 0
+  endif
+
+  let line = getline('.')
+
+  if start == '(' && from > 1 && strpart(line, 0, from - 1) =~ '\<fn \k\+\%(<.*>\)$'
+    let parser_type = 'fn'
+  else
+    let parser_type = 'list'
+  endif
+
+  let parser = sj#argparser#rust_list#Construct(parser_type, from + 1, to - 1, line)
+  call parser.Process()
+  let items = parser.args
+  if empty(items)
+    return 0
+  endif
+
+  if sj#settings#Read('trailing_comma')
+    let body = start."\n".join(items, ",\n").",\n".end
+  else
+    let body = start."\n".join(items, ",\n")."\n".end
+  endif
+
+  call sj#ReplaceMotion('Va'.start, body)
+
+  return 1
+endfunction
+
+function! s:JoinList(delimiter)
+  let start = a:delimiter[0]
+  let end   = a:delimiter[1]
+
+  let line = getline('.')
+
+  if line !~ start . '\s*$'
+    return 0
+  endif
+
+  call search(start, 'c', line('.'))
+  let body = sj#GetMotion('Vi'.start)
+
+  let lines = split(body, "\n")
+  let lines = sj#TrimList(lines)
+  let body  = sj#Trim(join(lines, ' '))
+  let body  = substitute(body, ',\s*$', '', '')
+
+  call sj#ReplaceMotion('Va'.start, start.body.end)
+
+  return 1
 endfunction

@@ -156,7 +156,12 @@ function! airline#update_statusline()
   " Now create the active statusline
   let w:airline_active = 1
   let context = { 'winnr': winnr(), 'active': 1, 'bufnr': winbufnr(winnr()) }
-  call s:invoke_funcrefs(context, g:airline_statusline_funcrefs)
+  try
+    call s:invoke_funcrefs(context, g:airline_statusline_funcrefs)
+  catch /^Vim\%((\a\+)\)\=:E48:/
+    " Catch: Sandbox mode
+    " no-op
+  endtry
 endfunction
 
 " Function to be called to make all statuslines inactive
@@ -186,7 +191,12 @@ function! airline#update_statusline_inactive(range)
             \ 'left_sep': g:airline_left_alt_sep,
             \ 'right_sep': g:airline_right_alt_sep }, 'keep')
     endif
-    call s:invoke_funcrefs(context, g:airline_inactive_funcrefs)
+    try
+      call s:invoke_funcrefs(context, g:airline_inactive_funcrefs)
+    catch /^Vim\%((\a\+)\)\=:E48:/
+      " Catch: Sandbox mode
+      " no-op
+    endtry
   endfor
 endfunction
 
@@ -222,33 +232,33 @@ function! airline#check_mode(winnr)
 
   if get(w:, 'airline_active', 1)
     let m = mode(1)
-    if m ==# "i"
-      let mode = ['insert']
-    elseif m[0] ==# "i"
-      let mode = ['insert']
-    elseif m ==# "Rv"
-      let mode =['replace']
-    elseif m[0] ==# "R"
-      let mode = ['replace']
-    elseif m[0] =~# '\v(v|V||s|S|)'
-      let mode = ['visual']
+    " Refer :help mode() to see the list of modes
+    "   NB: 'let mode' here refers to the display colour _groups_,
+    "   not the literal mode's code (i.e., m). E.g., Select modes
+    "   v, S and ^V use 'visual' since they are of similar ilk.
+    "   Some modes do not get recognised for status line purposes:
+    "   no, nov, noV, no^V, !, cv, and ce.
+    "   Mode name displayed is handled in init.vim (g:airline_mode_map).
+    "
+    if m[0] ==# "i"
+      let mode = ['insert']  " Insert modes + submodes (i, ic, ix)
+    elseif m[0] == "R"
+      let mode = ['replace']  " Replace modes + submodes (R, Rc, Rv, Rx) (NB: case sensitive as 'r' is a mode)
+    elseif m[0] =~ '\v(v|V||s|S|)'
+        let mode = ['visual']  " Visual and Select modes (v, V, ^V, s, S, ^S))
     elseif m ==# "t"
-      let mode = ['terminal']
-    elseif m[0] ==# "c"
-      let mode = ['commandline']
-    elseif m ==# "no"   " does not work, most likely, Vim does not refresh the statusline in OP mode
-      let mode = ['normal']
-    elseif m[0:1] ==# 'ni'
-      let mode = ['insert']
-      let m = 'ni'
+      let mode = ['terminal']  " Terminal mode (only has one mode (t))
+    elseif m[0] =~ '\v(c|r|!)'
+      let mode = ['commandline']  " c, cv, ce, r, rm, r? (NB: cv and ce stay showing as mode entered from)
     else
-      let mode = ['normal']
+      let mode = ['normal']  " Normal mode + submodes (n, niI, niR, niV; plus operator pendings no, nov, noV, no^V)
     endif
     if exists("*VMInfos") && !empty(VMInfos())
       " Vim plugin Multiple Cursors https://github.com/mg979/vim-visual-multi
       let m = 'multi'
     endif
-    if index(['Rv', 'no', 'ni', 'ix', 'ic', 'multi'], m) == -1
+    " Adjust to handle additional modes, which don't display correctly otherwise
+    if index(['niI', 'niR', 'niV', 'ic', 'ix', 'Rc', 'Rv', 'Rx', 'multi'], m) == -1
       let m = m[0]
     endif
     let w:airline_current_mode = get(g:airline_mode_map, m, m)

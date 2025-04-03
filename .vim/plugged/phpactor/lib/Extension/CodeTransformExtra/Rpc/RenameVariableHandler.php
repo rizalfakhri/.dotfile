@@ -21,14 +21,8 @@ class RenameVariableHandler extends AbstractHandler
     const INPUT_LABEL = 'New name: ';
     const PARAM_SCOPE = 'scope';
 
-    /**
-     * @var RenameVariable
-     */
-    private $renameVariable;
-
-    public function __construct(RenameVariable $renameVariable)
+    public function __construct(private RenameVariable $renameVariable)
     {
-        $this->renameVariable = $renameVariable;
     }
 
     public function name(): string
@@ -82,7 +76,7 @@ class RenameVariableHandler extends AbstractHandler
         );
 
         return UpdateFileSourceResponse::fromPathOldAndNewSource(
-            $sourceCode->path(),
+            $sourceCode->uri()->path(),
             $arguments[self::PARAM_SOURCE],
             (string) $sourceCode
         );

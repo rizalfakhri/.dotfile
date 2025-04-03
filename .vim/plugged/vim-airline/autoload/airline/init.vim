@@ -32,27 +32,63 @@ function! airline#init#bootstrap()
   call s:check_defined('g:airline_exclude_filetypes', [])
   call s:check_defined('g:airline_exclude_preview', 0)
 
+  " If g:airline_mode_map_codes is set to 1 in your .vimrc it will display
+  " only the modes' codes in the status line. Refer :help mode() for codes.
+  " That may be a preferred presentation because it is minimalistic.
+  call s:check_defined('g:airline_mode_map_codes', 0)
   call s:check_defined('g:airline_mode_map', {})
-  call extend(g:airline_mode_map, {
+
+  if g:airline_mode_map_codes != 1
+    " If you prefer different mode names than those below they can be
+    " customised by inclusion in your .vimrc - for example, including just:
+    " let g:airline_mode_map = {
+    "    \ 'Rv' : 'VIRTUAL REPLACE',
+    "    \ 'niV' : 'VIRTUAL REPLACE (NORMAL)',
+    "    \ }
+    " ...would override 'Rv' and 'niV' below respectively.
+    call extend(g:airline_mode_map, {
         \ '__' : '------',
-        \ 'c'  : 'COMMAND',
-        \ 'i'  : 'INSERT',
-        \ 'ic' : 'INSERT COMPL',
-        \ 'ix' : 'INSERT COMPL',
-        \ 'multi' : 'MULTI',
-        \ 'n'  : 'NORMAL',
-        \ 'ni' : '(INSERT)',
+        \ 'n' : 'NORMAL',
         \ 'no' : 'OP PENDING',
-        \ 'R'  : 'REPLACE',
-        \ 'Rv' : 'V REPLACE',
-        \ 's'  : 'SELECT',
-        \ 'S'  : 'S-LINE',
-        \ '' : 'S-BLOCK',
-        \ 't'  : 'TERMINAL',
-        \ 'v'  : 'VISUAL',
-        \ 'V'  : 'V-LINE',
+        \ 'nov' : 'OP PENDING CHAR',
+        \ 'noV' : 'OP PENDING LINE',
+        \ 'no' : 'OP PENDING BLOCK',
+        \ 'niI' : 'INSERT (NORMAL)',
+        \ 'niR' : 'REPLACE (NORMAL)',
+        \ 'niV' : 'V REPLACE (NORMAL)',
+        \ 'v' : 'VISUAL',
+        \ 'V' : 'V-LINE',
         \ '' : 'V-BLOCK',
+        \ 's' : 'SELECT',
+        \ 'S' : 'S-LINE',
+        \ '' : 'S-BLOCK',
+        \ 'i' : 'INSERT',
+        \ 'ic' : 'INSERT COMPL GENERIC',
+        \ 'ix' : 'INSERT COMPL',
+        \ 'R' : 'REPLACE',
+        \ 'Rc' : 'REPLACE COMP GENERIC',
+        \ 'Rv' : 'V REPLACE',
+        \ 'Rx' : 'REPLACE COMP',
+        \ 'c'  : 'COMMAND',
+        \ 'cv'  : 'VIM EX',
+        \ 'ce'  : 'EX',
+        \ 'r'  : 'PROMPT',
+        \ 'rm'  : 'MORE PROMPT',
+        \ 'r?'  : 'CONFIRM',
+        \ '!'  : 'SHELL',
+        \ 't'  : 'TERMINAL',
+        \ 'multi' : 'MULTI',
         \ }, 'keep')
+        " NB: no*, cv, ce, r? and ! do not actually display
+  else
+    " Exception: The control character in ^S and ^V modes' codes
+    " break the status line if allowed to render 'naturally' so
+    " they are overridden with ^ (when g:airline_mode_map_codes = 1)
+    call extend(g:airline_mode_map, {
+        \ '' : '^V',
+        \ '' : '^S',
+        \ }, 'keep')
+  endif
 
   call s:check_defined('g:airline_theme_map', {})
   call extend(g:airline_theme_map, {
@@ -86,7 +122,7 @@ function! airline#init#bootstrap()
     call s:check_defined('g:airline_left_alt_sep', "\ue0b1")  " 
     call s:check_defined('g:airline_right_sep', "\ue0b2")     " 
     call s:check_defined('g:airline_right_alt_sep', "\ue0b3") " 
-    " ro=, ws=☲, lnr=, mlnr=☰, colnr=, br=, nx=Ɇ, crypt=🔒, dirty=⚡
+    " ro=, ws=☲, lnr=, mlnr=☰, colnr=℅, br=, nx=Ɇ, crypt=🔒, dirty=⚡
     "  Note: For powerline, we add an extra space after maxlinenr symbol,
     "  because it is usually setup as a ligature in most powerline patched
     "  fonts. It can be over-ridden by configuring a custom maxlinenr
@@ -95,12 +131,13 @@ function! airline#init#bootstrap()
           \ 'whitespace': "\u2632",
           \ 'maxlinenr': "\u2630 ",
           \ 'linenr': " \ue0a1:",
-          \ 'colnr': " \ue0a3:",
+          \ 'colnr': " \u2105:",
           \ 'branch': "\ue0a0",
           \ 'notexists': "\u0246",
           \ 'dirty': "\u26a1",
           \ 'crypt': nr2char(0x1F512),
           \ }, 'keep')
+    "  Note: If "\u2046" (Ɇ) does not show up, try to use "\u2204" (∄)
   elseif &encoding==?'utf-8' && !get(g:, "airline_symbols_ascii", 0)
     " Symbols for Unicode terminals
     call s:check_defined('g:airline_left_sep', "")

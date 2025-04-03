@@ -30,16 +30,11 @@ use Phpactor\Extension\ClassMover\Application\ClassMemberReferences;
 
 class ClassMoverExtension implements Extension
 {
-    /**
-     * {@inheritDoc}
-     */
     public function configure(Resolver $schema): void
     {
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     public function load(ContainerBuilder $container): void
     {
         $this->registerClassMover($container);
@@ -67,7 +62,7 @@ class ClassMoverExtension implements Extension
 
         $container->register('class_mover.handler.move_class', function (Container $container) {
             return new ClassMoveHandler(
-                $container->get('application.class_mover'),
+                $container->get(ClassMoverApp::class),
                 SourceCodeFilesystemExtension::FILESYSTEM_GIT
             );
         }, [ RpcExtension::TAG_RPC_HANDLER => [ 'name' => ClassMoveHandler::NAME ] ]);
@@ -92,7 +87,7 @@ class ClassMoverExtension implements Extension
 
     private function registerApplicationServices(ContainerBuilder $container): void
     {
-        $container->register('application.class_mover', function (Container $container) {
+        $container->register(ClassMoverApp::class, function (Container $container) {
             return new ClassMoverApp(
                 $container->get('application.helper.class_file_normalizer'),
                 $container->get(ClassMover::class),
@@ -133,25 +128,25 @@ class ClassMoverExtension implements Extension
     {
         $container->register('command.class_move', function (Container $container) {
             return new ClassMoveCommand(
-                $container->get('application.class_mover'),
+                $container->get(ClassMoverApp::class),
                 $container->get('console.prompter')
             );
         }, [ ConsoleExtension::TAG_COMMAND => [ 'name' => 'class:move' ]]);
-        
+
         $container->register('command.class_copy', function (Container $container) {
             return new ClassCopyCommand(
                 $container->get('application.class_copy'),
                 $container->get('console.prompter')
             );
         }, [ ConsoleExtension::TAG_COMMAND => [ 'name' => 'class:copy' ]]);
-        
+
         $container->register('command.class_references', function (Container $container) {
             return new ReferencesClassCommand(
                 $container->get('application.class_references'),
                 $container->get('console.dumper_registry')
             );
         }, [ ConsoleExtension::TAG_COMMAND => [ 'name' => 'references:class' ]]);
-        
+
         $container->register('command.member_references', function (Container $container) {
             return new ReferencesMemberCommand(
                 $container->get('application.method_references'),

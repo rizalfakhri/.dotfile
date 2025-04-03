@@ -8,8 +8,8 @@ use Phpactor\Extension\ContextMenu\Model\ContextMenu;
 use Phpactor\MapResolver\Resolver;
 use Phpactor\Extension\Rpc\Handler;
 use Phpactor\TextDocument\ByteOffset;
+use Phpactor\TextDocument\TextDocumentBuilder;
 use Phpactor\WorseReflection\Reflector;
-use Phpactor\WorseReflection\Core\SourceCode;
 use Phpactor\Extension\Rpc\Response\EchoResponse;
 use Phpactor\Extension\Rpc\Request;
 use Phpactor\Extension\Rpc\Response\InputCallbackResponse;
@@ -29,43 +29,13 @@ class ContextMenuHandler implements Handler
     const PARAMETER_ACTION = 'action';
     const PARAMETER_CURRENT_PATH = 'current_path';
 
-    /**
-     * @var Reflector
-     */
-    private $reflector;
-
-    /**
-     * @var InterestingOffsetFinder
-     */
-    private $offsetFinder;
-
-    /**
-     * @var ContextMenu
-     */
-    private $menu;
-
-    /**
-     * @var Container
-     */
-    private $container;
-
-    /**
-     * @var ClassFileNormalizer
-     */
-    private $classFileNormalizer;
-
     public function __construct(
-        Reflector $reflector,
-        InterestingOffsetFinder $offsetFinder,
-        ClassFileNormalizer $classFileNormalizer,
-        ContextMenu $menu,
-        Container $container
+        private Reflector $reflector,
+        private InterestingOffsetFinder $offsetFinder,
+        private ClassFileNormalizer $classFileNormalizer,
+        private ContextMenu $menu,
+        private Container $container
     ) {
-        $this->reflector = $reflector;
-        $this->offsetFinder = $offsetFinder;
-        $this->menu = $menu;
-        $this->container = $container;
-        $this->classFileNormalizer = $classFileNormalizer;
     }
 
     public function name(): string
@@ -93,7 +63,7 @@ class ContextMenuHandler implements Handler
             $arguments[self::PARAMETER_OFFSET],
             $arguments[self::PARAMETER_CURRENT_PATH]
         );
-        $symbol = $offset->symbolContext()->symbol();
+        $symbol = $offset->nodeContext()->symbol();
 
         return $this->resolveAction($offset, $symbol, $arguments);
     }
@@ -154,7 +124,7 @@ class ContextMenuHandler implements Handler
 
     private function offsetFromSourceAndOffset(string $source, int $offset, string $currentPath)
     {
-        $sourceCode = SourceCode::fromPathAndString($currentPath, $source);
+        $sourceCode = TextDocumentBuilder::create($source)->uri($currentPath)->build();
 
         $interestingOffset = $this->offsetFinder->find(
             $sourceCode,
@@ -169,7 +139,7 @@ class ContextMenuHandler implements Handler
 
     private function replaceTokens(array $parameters, ReflectionOffset $offset, array $arguments)
     {
-        $symbolContext = $offset->symbolContext();
+        $nodeContext = $offset->nodeContext();
         foreach ($parameters as $parameterName => $parameterValue) {
             switch ($parameterValue) {
                 case '%current_path%':
@@ -180,8 +150,8 @@ class ContextMenuHandler implements Handler
                     // this to be the current path but it is not. It is used
                     // when we want to act on the file in the "type" under the
                     // cursor. this shouldn't be a thing.
-                    $type = $symbolContext->hasContainerType() ? $symbolContext->containerType() : $symbolContext->type();
-                    $parameterValue = $this->classFileNormalizer->classToFile($type);
+                    $type = $nodeContext->containerType()->isDefined() ? $nodeContext->containerType() : $nodeContext->type();
+                    $parameterValue = $this->classFileNormalizer->classToFile($type->generalize());
                     break;
                 case '%offset%':
                     $parameterValue = $arguments[self::PARAMETER_OFFSET];
@@ -190,7 +160,7 @@ class ContextMenuHandler implements Handler
                     $parameterValue = $arguments[self::PARAMETER_SOURCE];
                     break;
                 case '%symbol%':
-                    $parameterValue = $symbolContext->symbol()->name();
+                    $parameterValue = $nodeContext->symbol()->name();
                     break;
             }
 

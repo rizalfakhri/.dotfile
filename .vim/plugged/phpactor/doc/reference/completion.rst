@@ -13,7 +13,7 @@ Completors
 
 .. note::
 
-    Completors can be disabled using the :ref:`param_completion_worse.disabled_completors` configuration.
+    Completors can be enabled or disabled in configuration f.e. :ref:`param_completion_worse.completor.worse_parameter.enabled` configuration.
 
 ``worse_parameter``
 ~~~~~~~~~~~~~~~~~~~
@@ -71,7 +71,7 @@ Provide completion for local variables in a scope. Triggered on ``$``.
 ~~~~~~~~~~~~~~~~~~~~~
 
 Provide function name completion based on functions defined at _runtime_ in the
-Phpactor process. 
+Phpactor process.
 
 Note that any functions which are not loaded when _Phpactor_
 loads will not be available. So this is mainly useful for built-in functions.
@@ -82,7 +82,7 @@ This completor is disabled by default when using the :ref:`language_server`.
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Provide constant name completion based on constants defined at _runtime_ in the
-Phpactor process. 
+Phpactor process.
 
 This is mainly useful for built-in constants (e.g. ``JSON_PRETTY_PRINT`` or
 ``PHP_INT_MAX``).
@@ -211,7 +211,7 @@ Also understands simple generics:
 FunctionLike
 ~~~~~~~~~~~~
 
-Understands annonymous functions:
+Understands anonymous functions:
 
 .. code:: php
 
@@ -258,7 +258,7 @@ type is inferred:
 Variables
 ~~~~~~~~~
 
-Phpactor supports type injection via. docblock:
+Phpactor supports type injection via docblock:
 
 .. code:: php
 
@@ -277,4 +277,52 @@ and inference from parameters:
    {
        $foobar; // type: Barfoo
        $barbar; // type: foofoo
+   }
+
+Generics
+~~~~~~~~
+
+Phpactor currently supports the `@implements` and `@extends` generic tags:
+
+.. code:: php
+
+   <?php
+
+   namespace Foo;
+
+   /**
+    * @template T
+    * @extends IteratorAggregate<T>
+    */
+   interface ReflectionCollection extends \IteratorAggregate, \Countable
+   {
+   }
+
+   /**
+    * @template T of ReflectionMember
+    * @extends ReflectionCollection<T>
+    */
+   interface ReflectionMemberCollection extends ReflectionCollection
+   {
+       /**
+        * @return ReflectionMemberCollection<T>
+        */
+       public function byName(string $name): ReflectionMemberCollection;
+
+       /**
+        * @return ReflectionMemberCollection<T>
+        */
+       public function byMemberType(string $type): ReflectionMemberCollection;
+   }
+
+   interface ReflectionClassLike
+   {
+       public function members(): ReflectionMemberCollection;
+   }
+
+
+   /** @var ReflectionClassLike $reflection */
+   $reflection;
+   foreach ($reflection->members()->byMemberType('fii')->byName('__construct') as $constructor) {
+        $reflection-><>
    }

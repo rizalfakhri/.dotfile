@@ -16,14 +16,8 @@ class GenerateMethodHandler extends AbstractHandler
     const PARAM_SOURCE = 'source';
     const PARAM_PATH = 'path';
 
-    /**
-     * @var GenerateMethod
-     */
-    private $generateMethod;
-
-    public function __construct(GenerateMethod $generateMethod)
+    public function __construct(private GenerateMethod $generateMethod)
     {
-        $this->generateMethod = $generateMethod;
     }
 
     public function name(): string
@@ -51,7 +45,7 @@ class GenerateMethodHandler extends AbstractHandler
         );
 
         $originalSource = $this->determineOriginalSource($textDocumentEdits->uri(), $arguments);
-        
+
         return UpdateFileSourceResponse::fromPathOldAndNewSource(
             $textDocumentEdits->uri()->path(),
             $originalSource,

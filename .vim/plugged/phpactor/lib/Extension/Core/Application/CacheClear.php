@@ -3,19 +3,13 @@
 namespace Phpactor\Extension\Core\Application;
 
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class CacheClear
 {
-    /**
-     * @var string
-     */
-    private $cachePath;
+    private string $cachePath;
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
+    private Filesystem $filesystem;
 
     public function __construct(string $cachePath)
     {

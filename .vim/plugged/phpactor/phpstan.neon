@@ -1,7 +1,22 @@
 parameters:
-    level: 7
+    level: max
     paths:
         - lib
+    excludePaths:
+        - */lib/*Tests/Workspace/*
+        - */lib/*Tests/Example/*
+        - */lib/Extension/*/Tests/Workspace/*
+        - */lib/Extension/*/Tests/Example/*
+        - */lib/WorseReflection/Tests/*
+        - lib/Completion/Tests/Unit/Core/Util/OffsetHelperTest.php
+        - */lib/ClassMover/Tests/Adapter/TolerantParser/examples/*
+        - lib/Test.php
+        - lib/WorseReflection/Core/SourceCodeLocator/InternalStubs/*
+        - lib/Extension/LanguageServerCodeTransform/Tests/Stub/*
+    reportUnmatchedIgnoredErrors: false
+    inferPrivatePropertyTypeFromConstructor: true
+rules:
+    - Phpactor\Tests\PHPStan\Rule\NoDumpRule
+
 includes:
-    - vendor/jangregor/phpstan-prophecy/extension.neon
     - phpstan-baseline.neon

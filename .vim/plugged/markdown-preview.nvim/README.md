@@ -42,7 +42,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 
 
 " If you have nodejs and yarn
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 ```
 
 Or install with [dein](https://github.com/Shougo/dein.vim):
@@ -62,16 +62,48 @@ Or with [Vundle](https://github.com/vundlevim/vundle.vim):
 
 Place this in your `.vimrc` or `init.vim`,
 ```vim
-Plugin 'iamcco/markdown-preview.nvim' 
+Plugin 'iamcco/markdown-preview.nvim'
 ```
-... then run the following in vim
+... then run the following in vim (to complete the `Plugin` installation):
 ```vim
 :source %
 :PluginInstall
 :call mkdp#util#install()
 ```
 
-Config:
+Or with [Packer.nvim](https://github.com/wbthomason/packer.nvim):
+
+Add this in your `init.lua or plugins.lua`
+
+```lua
+-- install without yarn or npm
+use({
+    "iamcco/markdown-preview.nvim",
+    run = function() vim.fn["mkdp#util#install"]() end,
+})
+
+use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
+```
+
+Or by hand
+
+```vim
+use {'iamcco/markdown-preview.nvim'}
+```
+
+add plugin in `~/.local/share/nvim/site/pack/packer/start/` directory:
+
+```vim
+cd ~/.local/share/nvim/site/pack/packer/start/
+git clone https://github.com/iamcco/markdown-preview.nvim.git
+cd markdown-preview.nvim
+yarn install
+yarn build
+```
+Please make sure that you have installed `node.js` and `yarn`.
+Open `nvim` and run `:PackerInstall` to make it workable
+
+### MarkdownPreview Config:
 
 ```vim
 " set to 1, nvim will open the preview window after entering the markdown buffer
@@ -106,6 +138,9 @@ let g:mkdp_open_to_the_world = 0
 let g:mkdp_open_ip = ''
 
 " specify browser to open preview page
+" for path with space
+" valid: `/path/with\ space/xxx`
+" invalid: `/path/with\\ space/xxx`
 " default: ''
 let g:mkdp_browser = ''
 
@@ -143,7 +178,8 @@ let g:mkdp_preview_options = {
     \ 'sequence_diagrams': {},
     \ 'flowchart_diagrams': {},
     \ 'content_editable': v:false,
-    \ 'disable_filename': 0
+    \ 'disable_filename': 0,
+    \ 'toc': {}
     \ }
 
 " use a custom markdown style must be absolute path
@@ -154,7 +190,7 @@ let g:mkdp_markdown_css = ''
 " like '/Users/username/highlight.css' or expand('~/highlight.css')
 let g:mkdp_highlight_css = ''
 
-" use a custom port to start server or random for empty
+" use a custom port to start server or empty for random
 let g:mkdp_port = ''
 
 " preview page title
@@ -164,6 +200,10 @@ let g:mkdp_page_title = '「${name}」'
 " recognized filetypes
 " these filetypes will have MarkdownPreview... commands
 let g:mkdp_filetypes = ['markdown']
+
+" set default theme (dark or light)
+" By default the theme is define according to the preferences of the system
+let g:mkdp_theme = 'dark'
 ```
 
 Mappings:
@@ -357,16 +397,28 @@ Question: How can I change the dark/light theme?
 Answer: The default theme is based on your system preferences.
 There is a button hidden in the header to change the theme. Place your mouse over the header to reveal it.
 
+Question: How can I pass CLI options to the browser, like opening in a new window?
+
+Answer: Add the following to your NVIM init script:
+
+```vimscript
+  function OpenMarkdownPreview (url)
+    execute "silent ! firefox --new-window " . a:url
+  endfunction
+  let g:mkdp_browserfunc = 'OpenMarkdownPreview'
+```
+
+Replace "firefox" with "chrome" if you prefer. Both browsers recognize the `--new-window` option.
+
+
 ### About vim support
 
-Vim support is powered by [vim-node-rpc](https://github.com/neoclide/vim-node-rpc)
-
-> This plugin is integrated with vim-node-rpc, therefore you don't need to install vim-node-rpc
+Vim support is powered by [@chemzqm/neovim](https://github.com/neoclide/neovim)
 
 ### Reference
 
 - [coc.nvim](https://github.com/neoclide/coc.nvim)
-- [vim-node-rpc](https://github.com/neoclide/vim-node-rpc)
+- [@chemzqm/neovim](https://github.com/neoclide/neovim)
 - [chart.js](https://github.com/chartjs/Chart.js)
 - [highlight](https://github.com/highlightjs/highlight.js)
 - [neovim/node-client](https://github.com/neovim/node-client)

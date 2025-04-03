@@ -8,6 +8,10 @@ describe "yaml" do
     vim.set 'shiftwidth', 2
   end
 
+  after :each do
+    vim.command('silent! unlet g:splitjoin_curly_brace_padding')
+  end
+
   describe "arrays" do
     specify "basic" do
       set_file_contents <<~EOF
@@ -225,7 +229,8 @@ describe "yaml" do
       EOF
 
       vim.search 'list'
-      join
+      # Call command instead of mapping to avoid default mapping
+      vim.command 'SplitjoinJoin'
 
       # Does nothing, needs to be joined from the inside first
       assert_file_contents <<~EOF
@@ -243,7 +248,8 @@ describe "yaml" do
       EOF
 
       vim.search 'list'
-      join
+      # Call command instead of mapping to avoid default mapping
+      vim.command 'SplitjoinJoin'
 
       assert_file_contents <<~EOF
         list:
@@ -396,7 +402,6 @@ describe "yaml" do
         end: true
       EOF
     end
-
   end
 
   describe "maps" do
@@ -447,9 +452,23 @@ describe "yaml" do
       EOF
     end
 
+    specify "without padding" do
+      vim.command 'let g:splitjoin_curly_brace_padding = 0'
+
+      set_file_contents <<~EOF
+        root:
+          one: 1
+      EOF
+
+      vim.search 'root:'
+      join
+
+      assert_file_contents 'root: {one: 1}'
+    end
+
     specify "complex keys" do
       set_file_contents <<~EOF
-        map:
+        root:
           one value: 1
           'my:key': 2
       EOF
@@ -458,7 +477,7 @@ describe "yaml" do
       join
 
       assert_file_contents <<~EOF
-        map: { one value: 1, 'my:key': 2 }
+        root: { one value: 1, 'my:key': 2 }
       EOF
     end
 
@@ -616,7 +635,8 @@ describe "yaml" do
       EOF
 
       vim.search 'map'
-      join
+      # Call command instead of mapping to avoid default mapping
+      vim.command 'SplitjoinJoin'
 
       assert_file_contents <<~EOF
         map:
@@ -635,7 +655,8 @@ describe "yaml" do
       EOF
 
       vim.search 'two'
-      join
+      # Call command instead of mapping to avoid default mapping
+      vim.command 'SplitjoinJoin'
 
       assert_file_contents <<~EOF
         list1:
@@ -670,5 +691,19 @@ describe "yaml" do
       EOF
     end
 
+    specify "splitting paths in maps" do
+      set_file_contents <<~EOF
+        - copy: { dest: /etc/default/locale, content: "LANG=en_US.UTF-8" }
+      EOF
+
+      vim.search 'dest'
+      split
+
+      assert_file_contents <<~EOF
+        - copy:
+            dest: /etc/default/locale
+            content: "LANG=en_US.UTF-8"
+      EOF
+    end
   end
 end

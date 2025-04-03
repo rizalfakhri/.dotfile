@@ -9,15 +9,9 @@ use Phpactor\Extension\Core\Application\Status;
 
 class StatusCommand extends Command
 {
-    /**
-     * @var Status
-     */
-    private $status;
-
-    public function __construct(Status $status)
+    public function __construct(private Status $status)
     {
         parent::__construct();
-        $this->status = $status;
     }
 
     protected function configure(): void

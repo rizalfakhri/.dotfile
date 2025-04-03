@@ -6,8 +6,8 @@ use Phpactor\ClassMover\ClassMover as ClassMoverFacade;
 use Phpactor\ClassMover\Domain\Name\FullyQualifiedName;
 use Phpactor\Filesystem\Domain\Filesystem;
 use Phpactor\Phpactor;
+use Symfony\Component\Filesystem\Path;
 use Webmozart\Glob\Glob;
-use Webmozart\PathUtil\Path;
 use Phpactor\Filesystem\Domain\CopyReport;
 use Phpactor\Extension\Core\Application\Helper\ClassFileNormalizer;
 use Phpactor\Extension\ClassMover\Application\Logger\ClassCopyLogger;
@@ -16,30 +16,12 @@ use RuntimeException;
 
 class ClassCopy
 {
-    /**
-     * @var ClassFileNormalizer
-     */
-    private $classFileNormalizer;
-
-    /**
-     * @var ClassMoverFacade
-     */
-    private $classMover;
-
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
     // rename compositetransformer => classToFileConverter
     public function __construct(
-        ClassFileNormalizer $classFileNormalizer,
-        ClassMoverFacade $classMover,
-        Filesystem $filesystem
+        private ClassFileNormalizer $classFileNormalizer,
+        private ClassMoverFacade $classMover,
+        private Filesystem $filesystem
     ) {
-        $this->classFileNormalizer = $classFileNormalizer;
-        $this->classMover = $classMover;
-        $this->filesystem = $filesystem;
     }
 
     /**
@@ -65,6 +47,9 @@ class ClassCopy
     public function copyFile(ClassCopyLogger $logger, string $srcPath, string $destPath): void
     {
         $srcPath = Phpactor::normalizePath($srcPath);
+        if (str_ends_with($destPath, '/')) {
+            $destPath = $destPath . basename($srcPath);
+        }
 
         if (false === Glob::isDynamic($srcPath) && !file_exists($srcPath)) {
             throw new RuntimeException(sprintf(
@@ -78,7 +63,7 @@ class ClassCopy
             // if the src is not the same as the globbed src, then it is a wildcard
             // and we want to append the filename to the destination
             if ($srcPath !== $globPath) {
-                $globDest = Path::join($destPath, Path::getFilename($globPath));
+                $globDest = Path::join($destPath, basename($globPath));
             }
 
             try {

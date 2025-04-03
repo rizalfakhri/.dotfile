@@ -284,26 +284,6 @@ function! phpactor#OffsetTypeInfo()
     call phpactor#rpc("offset_info", { "offset": phpactor#_offset(), "source": phpactor#_source()})
 endfunction
 
-function! phpactor#ExtensionList()
-    call phpactor#rpc("extension_list", {})
-endfunction
-
-function! phpactor#ExtensionInstall(...)
-    if v:false != get(a:,1, v:false)
-        call phpactor#rpc("extension_install", {"extension_name":get(a:,1)})
-        return
-    endif
-    call phpactor#rpc("extension_install", {})
-endfunction
-
-function! phpactor#ExtensionRemove(...)
-    if v:false != get(a:,1, v:false)
-        call phpactor#rpc("extension_remove", {"extension_name":get(a:,1)})
-        return
-    endif
-    call phpactor#rpc("extension_remove", {})
-endfunction
-
 function! phpactor#Transform(...)
     let transform = get(a:, 1, '')
 
@@ -377,12 +357,26 @@ function! phpactor#GetClassFullName()
     return fileInfo['class']
 endfunction
 
+function! phpactor#CopyFullClassName()
+    let className = phpactor#GetClassFullName()
+    if empty(className)
+        echo "No class name found for the current file"
+    else
+        let @+ = className
+        echo printf("Class Name copied to clipboard: %s", className)
+    endif
+endfunction
+
 function! phpactor#ChangeVisibility()
     call phpactor#rpc("change_visibility", { "offset": phpactor#_offset(), "source": phpactor#_source(), "path": expand('%:p') })
 endfunction
 
 function! phpactor#GenerateAccessors()
     call phpactor#rpc("generate_accessor", { "source": phpactor#_source(), "path": expand('%:p'), 'offset': phpactor#_offset() })
+endfunction
+
+function! phpactor#GenerateMutators()
+    call phpactor#rpc("generate_mutator", { "source": phpactor#_source(), "path": expand('%:p'), 'offset': phpactor#_offset() })
 endfunction
 
 """""""""""""""""""""""

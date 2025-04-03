@@ -2,6 +2,7 @@
 
 namespace Phpactor\Tests\Unit\Extension\Completion\Rpc;
 
+use Generator;
 use Phpactor\Completion\Bridge\WorseReflection\Formatter\ClassFormatter;
 use Phpactor\Completion\Bridge\WorseReflection\Formatter\MethodFormatter;
 use Phpactor\Completion\Bridge\WorseReflection\Formatter\VariableFormatter;
@@ -10,14 +11,14 @@ use Phpactor\Extension\CompletionExtra\Rpc\HoverHandler;
 use Phpactor\Extension\Rpc\Handler;
 use Phpactor\TestUtils\ExtractOffset;
 use Phpactor\Tests\Unit\Extension\Rpc\HandlerTestCase;
+use Phpactor\WorseReflection\Reflector;
 use Phpactor\WorseReflection\ReflectorBuilder;
 
 class HoverHandlerTest extends HandlerTestCase
 {
-    /**
-     * @var Reflector
-     */
-    private $reflector;
+    private Reflector $reflector;
+
+    private ObjectFormatter $formatter;
 
     public function setUp(): void
     {
@@ -39,8 +40,10 @@ class HoverHandlerTest extends HandlerTestCase
 
         $this->assertEquals($expectedMessage, $response->message());
     }
-
-    public function provideHover()
+    /**
+     * @return Generator<string,array{string,string}>
+     */
+    public function provideHover(): Generator
     {
         yield 'method' => [
             '<?php class Foobar { public function fo<>obar() { } }',
@@ -69,7 +72,7 @@ class HoverHandlerTest extends HandlerTestCase
 
         yield 'unknown' => [
             '<?php <> $foo = "bar"',
-            '<unknown> <unknown>',
+            '<unknown> InlineHtml',
         ];
     }
 
@@ -93,24 +96,25 @@ class HoverHandlerTest extends HandlerTestCase
 
         $this->assertEquals($expectedMessage, $response->message());
     }
-
-    public function provideHoverWithFormatter()
+    /**
+     * @return Generator<string,array{string,string}>
+     */
+    public function provideHoverWithFormatter(): Generator
     {
         yield 'method' => [
             '<?php class Foobar { public function fo<>obar() { } }',
             'pub foobar()',
         ];
 
-
         yield 'method with documentation' => [
             <<<'EOT'
-                <?php 
+                <?php
 
-                class Foobar { 
+                class Foobar {
                     /**
                      * this is documentation
                      */
-                public function fo<>obar() { } 
+                public function fo<>obar() { }
                 }
                 EOT
             ,
@@ -121,7 +125,7 @@ class HoverHandlerTest extends HandlerTestCase
 
         yield 'class with documentation' => [
             <<<'EOT'
-                <?php 
+                <?php
 
                 /**
                  * this is documentation
@@ -136,9 +140,10 @@ class HoverHandlerTest extends HandlerTestCase
 
         yield 'unknown' => [
             '<?php <> $foo = "bar"',
-            '<unknown> <unknown>',
+            '<unknown> InlineHtml',
         ];
     }
+
     protected function createHandler(): Handler
     {
         return new HoverHandler($this->reflector, $this->formatter);

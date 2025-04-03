@@ -23,7 +23,6 @@ Plug 'junegunn/vim-easy-align'
 Plug 'kana/vim-repeat'
 Plug 'Lenovsky/nuake'
 Plug 'liuchengxu/vista.vim'
-Plug 'liuchengxu/vim-clap'
 Plug 'pbogut/fzf-mru.vim'
 "Plug 'maximbaz/lightline-ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': { -> coc#util#install()}}
@@ -48,7 +47,6 @@ Plug 'mileszs/ack.vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'mattn/emmet-vim'
-"Plug 'wakatime/vim-wakatime'
 Plug 'chemzqm/vim-jsx-improve'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'mhinz/vim-startify'
@@ -59,6 +57,8 @@ Plug 'artanikin/vim-synthwave84'
 Plug 'mhartington/oceanic-next'
 Plug 'arzg/vim-substrata'
 Plug 'rodrigore/coc-tailwind-intellisense', {'do': 'npm install'}
+Plug 'yaegassy/coc-blade', {'do': 'yarn install --frozen-lockfile'}
+Plug 'prisma/vim-prisma'
 
 call plug#end()
 " }}}
@@ -231,7 +231,7 @@ autocmd BufRead,BufNewFile *.md,*.txt set filetype=markdown " Highlight Markdown
 
 autocmd BufRead,BufNewFile *.go  set tabstop=4 shiftwidth=4  softtabstop=4
 autocmd BufRead,BufNewFile *.php set tabstop=4 shiftwidth=4 tabstop=4
-" autocmd BufRead,BufNewFile *.blade.php set filetype=blade.html
+autocmd BufRead,BufNewFile *.blade.php set filetype=blade
 autocmd BufRead,BufNewFile *.js set tabstop=2 shiftwidth=2 tabstop=2
 autocmd BufRead,BufNewFile *.rb set tabstop=2 shiftwidth=2 tabstop=2
 
@@ -247,6 +247,8 @@ augroup END
 " Fast save
 nmap <leader>w :w!<CR>
 imap <leader>w <esc>:w<CR>
+map <leader>fs <esc>:CocCommand eslint.executeAutoFix<CR>
+
 
 " source vimrc
 nmap <Leader>so :so $MYVIMRC<CR>  " Fast source .vimrc
@@ -369,13 +371,16 @@ let g:coc_user_config = {
 \ }
 
 
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-l>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+"" Use tab for trigger completion with characters ahead and navigate.
+"" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+"inoremap <silent><expr> <TAB>
+      "\ pumvisible() ? "\<C-l>" :
+      "\ <SID>check_back_space() ? "\<TAB>" :
+      "\ coc#refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -388,7 +393,7 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+"inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Use `[c` and `]c` to navigate diagnostics
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
@@ -648,7 +653,7 @@ let g:php_cs_fixer_level = "psr2"                  " which level ?
 let g:php_cs_fixer_config = "default"             " configuration
 "let g:php_cs_fixer_fixers_list = "linefeed,short_tag,indentation"
 let g:php_cs_fixer_enable_default_mapping = 0
-let g:phpfmt_php_path = "php"
+let g:phpfmt_php_path = "php8"
 let g:php_cs_fixer_dry_run = 0                    " Call command with dry-run option
 let g:php_cs_fixer_verbose = 1                    " Return the output of command if 1, else an inline information.
 nnoremap <silent><leader>pf :w \| :call PhpCsFixerFixFile()<CR><CR>
@@ -912,4 +917,6 @@ nnoremap <silent> <leader>z :ZoomToggle<CR>
 
 colorscheme substrata
 
+
+hi Normal guibg=NONE ctermbg=NONE
 

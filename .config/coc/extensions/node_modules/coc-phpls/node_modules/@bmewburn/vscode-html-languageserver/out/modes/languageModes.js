@@ -7,7 +7,16 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLanguageModes = void 0;
@@ -19,9 +28,9 @@ const embeddedSupport_1 = require("./embeddedSupport");
 const htmlMode_1 = require("./htmlMode");
 const javascriptMode_1 = require("./javascriptMode");
 __exportStar(require("vscode-html-languageservice"), exports);
-function getLanguageModes(supportedLanguages, workspace, clientCapabilities, customDataProviders) {
-    const htmlLanguageService = vscode_html_languageservice_1.getLanguageService({ customDataProviders, clientCapabilities });
-    const cssLanguageService = vscode_css_languageservice_1.getCSSLanguageService({ clientCapabilities });
+function getLanguageModes(supportedLanguages, workspace, clientCapabilities, requestService) {
+    const htmlLanguageService = vscode_html_languageservice_1.getLanguageService({ clientCapabilities, fileSystemProvider: requestService });
+    const cssLanguageService = vscode_css_languageservice_1.getCSSLanguageService({ clientCapabilities, fileSystemProvider: requestService });
     let documentRegions = languageModelCache_1.getLanguageModelCache(10, 60, document => embeddedSupport_1.getDocumentRegions(htmlLanguageService, document));
     let modelCaches = [];
     modelCaches.push(documentRegions);
@@ -31,10 +40,15 @@ function getLanguageModes(supportedLanguages, workspace, clientCapabilities, cus
         modes['css'] = cssMode_1.getCSSMode(cssLanguageService, documentRegions, workspace);
     }
     if (supportedLanguages['javascript']) {
-        modes['javascript'] = javascriptMode_1.getJavaScriptMode(documentRegions, 'javascript');
-        modes['typescript'] = javascriptMode_1.getJavaScriptMode(documentRegions, 'typescript');
+        modes['javascript'] = javascriptMode_1.getJavaScriptMode(documentRegions, 'javascript', workspace);
+        modes['typescript'] = javascriptMode_1.getJavaScriptMode(documentRegions, 'typescript', workspace);
     }
     return {
+        updateDataProviders(dataProviders) {
+            return __awaiter(this, void 0, void 0, function* () {
+                htmlLanguageService.setDataProviders(true, dataProviders);
+            });
+        },
         getModeAtPosition(document, position) {
             let languageId = documentRegions.get(document).getLanguageAtPosition(position);
             if (languageId) {

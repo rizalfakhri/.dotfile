@@ -1,8 +1,10 @@
 {
     "tld": "test",
+    "loopback": "127.0.0.1",
     "paths": [
         "/Users/rizalfakhri/.config/valet/Sites",
-        "/Volumes/SSD/bb"
+        "/Users/rizalfakhri/Project/bb/dashboard-marketing",
+        "/Users/rizalfakhri/Project/bb"
     ],
-    "loopback": "127.0.0.1"
+    "share-tool": "ngrok"
 }

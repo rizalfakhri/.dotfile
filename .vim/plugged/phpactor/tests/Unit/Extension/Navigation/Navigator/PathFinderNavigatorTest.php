@@ -3,25 +3,19 @@
 namespace Phpactor\Tests\Unit\Extension\Navigation\Navigator;
 
 use PHPUnit\Framework\TestCase;
-use Phpactor\ClassFileConverter\PathFinder;
 use Phpactor\Extension\Navigation\Navigator\PathFinderNavigator;
+use Phpactor\PathFinder\PathFinder;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 
 class PathFinderNavigatorTest extends TestCase
 {
     use ProphecyTrait;
-
     const TEST_PATH = '/test/path';
 
-    /**
-     * @var ObjectProphecy
-     */
-    private $pathFinder;
+    private ObjectProphecy $pathFinder;
 
-    /**
-     * @var PathFinderNavigator
-     */
-    private $navigator;
+    private PathFinderNavigator $navigator;
 
     public function setUp(): void
     {

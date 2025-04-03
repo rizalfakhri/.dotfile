@@ -80,7 +80,68 @@ Becomes:
        }
    }
 
+.. _refactoring_add_missing_docblock:
+
+Add Missing Docblock
+--------------------
+
+This refactoring will add docblocks:
+
+- If there is an array return type and an iterator value can be inferred from
+  the function's return statement.
+- If there is an class return type and a generic type can be inferred from the
+  function's return statement.
+
+.. tabs::
+
+   .. tab:: CLI
+
+       .. code-block::
+
+           $ phpactor class:transform path/to/Class.php --transform=add_missing_docblocks
+
+   .. tab:: VIM Context Menu
+
+       *Class context menu > Transform > Add missing docblocks*.
+
+   .. tab:: VIM Plugin
+
+       .. code-block::
+
+           :PhpactorTransform
+
+   .. tab:: Language Server
+
+       Request code actions when there is a candidate
+
 .. _refactoring_complete_constructor:
+
+Add Missing Return Types
+------------------------
+
+This refactoring add missing return types.
+
+.. tabs::
+
+   .. tab:: CLI
+
+       .. code-block::
+
+           $ phpactor class:transform path/to/Class.php --transform=add_missing_return_types
+
+   .. tab:: VIM Context Menu
+
+       *Class context menu > Transform > Add missing return types*.
+
+   .. tab:: VIM Plugin
+
+       .. code-block::
+
+           :PhpactorTransform
+
+   .. tab:: Language Server
+
+       Request code actions when there is a candidate
 
 Complete Constructor
 --------------------
@@ -179,7 +240,7 @@ configuration.
 
    .. tab:: VIM Context Menu
 
-       *Class context menu > Transform > Fix namespace or classname*.
+       *Class context menu > Transform > Fix namespace or class name*.
 
    .. tab:: VIM Plugin
 
@@ -244,12 +305,18 @@ After:
        }
    }
 
+.. _generation_generate_accessors:
+
 Generate Accessors
 ------------------
 
 Generate accessors for a class.
 
 .. tabs::
+
+   .. tab:: Language Server
+
+       Select a range and request code actions
 
    .. tab:: VIM Context Menu
 
@@ -344,7 +411,7 @@ Motivation
 ~~~~~~~~~~
 
 When initially authoring a package you will often write a method call
-which doesn’t exist and then add the method to the corresponding class.
+which doesn't exist and then add the method to the corresponding class.
 
 This refactoring will automatically generate the method inferring any
 type information that it can.
@@ -407,6 +474,55 @@ After generating the method:
        }
    }
 
+.. _generateo_constructor:
+
+Generate Constructor
+--------------------
+
+Generate a constructor from a new object instance expression
+
+.. tabs::
+
+   .. tab:: LSP
+
+      Invoke code action on new class expression for class with no constructor
+
+
+
+Before and After
+~~~~~~~~~~~~~~~~
+
+Assuming `MyFancyObject` exists and has no constructor.
+
+Cursor position shown as ``<>``:
+
+.. code:: php
+
+   <?php
+
+   use App\MyFancyObject;
+
+   $barfoo = 'barfor?';
+
+   new My<>FancyObject($barfoo, 'foobar', 1234);
+
+After choosing the "Generate Constructor" code action the `MyFancyObject`
+class should have a constructor:
+
+.. code:: php
+
+   <?php
+
+   namespace App;
+
+   class MyFancyObject
+   {
+       public function __construct(string $barfoo, string $string, int $int)
+       {
+       }
+   }
+
+
 .. _implement_contracts:
 
 Implement Contracts
@@ -466,6 +582,54 @@ After:
    {
        public function count()
        {
+       }
+   }
+
+.. _generate_decorator:
+
+Generate Decorator
+-------------------
+
+Given a skeleton class which implements an interface, add the methods required
+to convert that class into a `decorator
+<https://en.wikipedia.org/wiki/Decorator_pattern>`_.
+
+.. tabs::
+
+   .. tab:: LSP
+
+       Invoke code action on a class which has implemented no methods and
+       implements one or more interfaces.
+
+Before and After
+~~~~~~~~~~~~~~~~
+
+.. code:: php
+
+   <?php
+
+   class Foobar implements Countable
+   {
+   }
+
+After:
+
+.. code:: php
+
+   <?php
+
+   class Foobar implements Countable
+   {
+       private Countable $innerCounter;
+
+       public function __construct(Countable $innerCounter)
+       {
+           $this->innerCounter = $innerCounter;
+       }
+
+       public function count(): int
+       {
+           return $this->innerCounter->count();
        }
    }
 
@@ -625,6 +789,43 @@ subsequently need to import all the foreign classes into the current
 namespace. This refactoring will identify all unresolvable classes and
 import them.
 
+Fill Object
+-----------
+
+Fill a new objects constructor with default arguments.
+
+.. tabs::
+
+   .. tab:: LSP
+
+      Invoke code action on new class expression with no constructor arguments
+
+
+Motivation
+~~~~~~~~~~
+
+This refactoring is especially useful if you need to either create or map a
+DTO (data transfer object).
+
+Before and After
+~~~~~~~~~~~~~~~~
+
+Cursor position shown as ``<>``:
+
+.. code:: php
+
+   <?php
+
+   new My<>FancyDTO();
+
+After choosing the "Fill Object" code action:
+
+.. code:: php
+
+   <?php
+
+   new MyFancyDTO(title: '', cost: 0);
+
 Override Method
 ---------------
 
@@ -699,6 +900,10 @@ Generate a new class with a name and namespace at a given location or
 from a class name.
 
 .. tabs::
+
+   .. tab:: Language Server
+
+       Invoke the code action menu on a non-existing class name
 
    .. tab:: CLI
 
@@ -783,7 +988,7 @@ namespace.
 
        .. code-block::
 
-           $ phpactor class:copy path/to/ClassA.php path/to/ClassB.php 
+           $ phpactor class:copy path/to/ClassA.php path/to/ClassB.php
 
        Note that class FQNs are also accepted.
 
@@ -881,7 +1086,7 @@ Motivation
 ~~~~~~~~~~
 
 It is sometimes unwise to preemptively create interfaces for all your
-classes, as doing so adds maintainance overhead, and the interfaces may
+classes, as doing so adds maintenance overhead, and the interfaces may
 never be needed.
 
 This refactoring allows you to generate an interface from an existing
@@ -926,7 +1131,7 @@ Change the visibility of a class member
 
    .. tab:: VIM context menu
 
-       *Class member context menu > Change Visiblity*
+       *Class member context menu > Change Visibility*
 
    .. tab:: VIM Plugin
 
@@ -1080,12 +1285,18 @@ After moving to ``src/Writer.php``:
    {
    }
 
+.. _generation_extract_constant:
+
 Extract Constant
 ----------------
 
 Extract a constant from a scalar value.
 
 .. tabs::
+
+   .. tab:: Language Server
+
+       Select a range and request code actions
 
    .. tab:: VIM Context Menu
 
@@ -1271,7 +1482,7 @@ Motivation
 This is one of the most common refactorings. Decomposing code into
 discrete methods helps to make code understandable and maintainable.
 
-Extracting a method manually involes:
+Extracting a method manually involves:
 
 1. Creating a new method
 2. Moving the relevant block of code to that method.
@@ -1339,7 +1550,7 @@ After extracting method ``newMethod``:
            if ($foobar) {
                return 'yes';
            }
-           
+
            return $foobar;
        }
    }
@@ -1472,7 +1683,7 @@ Cursor position shown as ``<>``:
    {
        public function say()
        {
-           
+
        }
 
    }
@@ -1490,7 +1701,7 @@ Rename ``Hello`` to ``Goodbye``
    {
        public function say()
        {
-           
+
        }
 
    }
@@ -1582,7 +1793,7 @@ Cursor position shown as ``<>``:
    {
        public function sa<>y()
        {
-           
+
        }
 
    }
@@ -1600,7 +1811,7 @@ Rename ``Hello#say()`` to ``Hello#speak()``
    {
        public function speak()
        {
-           
+
        }
 
    }

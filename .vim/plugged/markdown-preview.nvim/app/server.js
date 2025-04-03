@@ -60,6 +60,7 @@ exports.run = function () {
         const cursor = await plugin.nvim.call('getpos', '.')
         const options = await plugin.nvim.getVar('mkdp_preview_options')
         const pageTitle = await plugin.nvim.getVar('mkdp_page_title')
+        const theme = await plugin.nvim.getVar('mkdp_theme')
         const name = await buffer.name
         const content = await buffer.getLines()
         const currentBuffer = await plugin.nvim.buffer
@@ -70,6 +71,7 @@ exports.run = function () {
           winheight,
           cursor,
           pageTitle,
+          theme,
           name,
           content
         })
@@ -123,7 +125,7 @@ exports.run = function () {
       }
       async function openBrowser ({ bufnr }) {
         const openIp = await plugin.nvim.getVar('mkdp_open_ip')
-        const openHost = openIp !== '' ? openIp : (openToTheWord ? getIP() : '127.0.0.1')
+        const openHost = openIp !== '' ? openIp : (openToTheWord ? getIP() : 'localhost')
         const url = `http://${openHost}:${port}/page/${bufnr}`
         const browserfunc = await plugin.nvim.getVar('mkdp_browserfunc')
         if (browserfunc !== '') {

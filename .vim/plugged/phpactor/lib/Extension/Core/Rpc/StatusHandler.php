@@ -13,26 +13,12 @@ use Phpactor\Extension\Rpc\Response\EchoResponse;
 class StatusHandler implements Handler
 {
     const NAME = 'status';
-
     const PARAM_TYPE = 'type';
-
     const TYPE_FORMATTED = 'formatted';
     const TYPE_DETAILED = 'detailed';
 
-    /**
-     * @var Status
-     */
-    private $status;
-
-    /**
-     * @var PathCandidates
-     */
-    private $paths;
-
-    public function __construct(Status $status, PathCandidates $paths)
+    public function __construct(private Status $status, private PathCandidates $paths)
     {
-        $this->status = $status;
-        $this->paths = $paths;
     }
 
     public function name(): string
@@ -51,16 +37,10 @@ class StatusHandler implements Handler
     {
         $diagnostics = $this->status->check();
 
-        switch ($arguments[self::PARAM_TYPE]) {
-            case self::TYPE_FORMATTED:
-                $response = $this->handleFormattedType($diagnostics);
-                break;
-
-            case self::TYPE_DETAILED:
-            default:
-                $response = $this->handleDetailedType($diagnostics);
-                break;
-        }
+        $response = match ($arguments[self::PARAM_TYPE]) {
+            self::TYPE_FORMATTED => $this->handleFormattedType($diagnostics),
+            default => $this->handleDetailedType($diagnostics),
+        };
 
         return $response;
     }

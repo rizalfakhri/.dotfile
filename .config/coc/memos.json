@@ -1,1 +1,47 @@
-{}
+{
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/fullstack-challenge/frontend": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/bb/crm": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/smart/vpn99-frontend": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/bb/bc": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/bb/pmo": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/bb/zte-system": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/bb/hrms-vue": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/move38/gotvibes": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/move38/gotvibes/frontend-live/app": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/move38/gotvibes/frontend/app": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/move38/gotvibes/backend-live": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/bb/hrms-backend-2": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/bb/allo-broadband": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/bb/customer-portal": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  },
+  "@yaegassy/coc-volar|/Users/rizalfakhri/Project/bb/engineering": {
+    "coc-volar-tsdk-path": "/Users/rizalfakhri/.config/coc/extensions/node_modules/@yaegassy/coc-volar/node_modules/typescript/lib"
+  }
+}

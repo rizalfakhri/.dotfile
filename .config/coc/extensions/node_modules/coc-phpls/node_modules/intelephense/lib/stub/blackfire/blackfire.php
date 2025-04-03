@@ -104,4 +104,20 @@ final class BlackfireProbe
      * @return string|null The sub-query or null if the current profile is not the first sample or profiling is disabled.
      */
     public function createSubProfileQuery() {}
+
+    /**
+     * Sets a custom transaction name for Blackfire Monitoring.
+     *
+     * @param string $transactionName Name to register for the transaction (e.g. 'user_model:show')
+     *
+     * @return void
+     */
+    public function setTransactionName(string $transactionName) {}
+
+    /**
+     * Disables Blackfire Monitoring instrumentation for a transaction.
+     *
+     * @return void
+     */
+    public function ignoreTransaction() {}
 }

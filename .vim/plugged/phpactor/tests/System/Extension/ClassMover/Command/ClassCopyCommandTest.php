@@ -19,7 +19,7 @@ class ClassCopyCommandTest extends SystemTestCase
      */
     public function testSmokeSuccess($command, array $fileMap = [], array $contentExpectations = []): void
     {
-        $process = $this->phpactor($command);
+        $process = $this->phpactorFromStringArgs($command);
         $this->assertSuccess($process);
 
         foreach ($fileMap as $filePath => $shouldExist) {
@@ -63,6 +63,12 @@ class ClassCopyCommandTest extends SystemTestCase
                     'lib/Hello/World/Foobar.php' => true,
                 ],
             ],
+            'Copy file to folder' => [
+                'class:copy lib/Aardvark/Edentate.php lib/Hello/World/',
+                [
+                    'lib/Hello/World/Edentate.php' => true,
+                ],
+            ],
             'Copy file force' => [
                 'class:copy lib/Aardvark/Edentate.php lib/Foobar.php --type=file',
             ],
@@ -97,7 +103,7 @@ class ClassCopyCommandTest extends SystemTestCase
      */
     public function testSmokeFailure($command, $expectedMessage = null): void
     {
-        $process = $this->phpactor($command);
+        $process = $this->phpactorFromStringArgs($command);
         $this->assertFailure($process, $expectedMessage);
     }
 

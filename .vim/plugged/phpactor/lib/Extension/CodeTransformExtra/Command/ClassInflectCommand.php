@@ -16,23 +16,11 @@ use Phpactor\Extension\Core\Console\Handler\FormatHandler;
 
 class ClassInflectCommand extends Command
 {
-    /**
-     * @var DumperRegistry
-     */
-    private $dumperRegistry;
-
-    /**
-     * @var ClassInflect
-     */
-    private $classInflect;
-
     public function __construct(
-        ClassInflect $classInflect,
-        DumperRegistry $dumperRegistry
+        private ClassInflect $classInflect,
+        private DumperRegistry $dumperRegistry
     ) {
         parent::__construct();
-        $this->dumperRegistry = $dumperRegistry;
-        $this->classInflect = $classInflect;
     }
 
     public function configure(): void
@@ -72,7 +60,7 @@ class ClassInflectCommand extends Command
 
         try {
             $response['path'] = $this->classInflect->generateFromExisting($src, $dest, $variant, $input->getOption('force'));
-        } catch (FileAlreadyExists $exception) {
+        } catch (FileAlreadyExists) {
             $questionHelper = new QuestionHelper();
             $question = new ConfirmationQuestion('<question>File already exists, overwrite? [y/n]</>', false);
 

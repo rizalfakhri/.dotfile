@@ -2,26 +2,20 @@
 
 namespace Phpactor\Extension\Navigation\Navigator;
 
-use Phpactor\ClassFileConverter\Exception\NoMatchingSourceException;
-use Phpactor\ClassFileConverter\PathFinder;
+use Phpactor\PathFinder\Exception\NoMatchingSourceException;
+use Phpactor\PathFinder\PathFinder;
 
 class PathFinderNavigator implements Navigator
 {
-    /**
-     * @var PathFinder
-     */
-    private $pathFinder;
-
-    public function __construct(PathFinder $pathFinder)
+    public function __construct(private PathFinder $pathFinder)
     {
-        $this->pathFinder = $pathFinder;
     }
 
     public function destinationsFor(string $path): array
     {
         try {
             return $this->pathFinder->destinationsFor($path);
-        } catch (NoMatchingSourceException $e) {
+        } catch (NoMatchingSourceException) {
             return [];
         }
     }

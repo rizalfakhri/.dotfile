@@ -14,10 +14,12 @@ window:
   dynamic_padding: true
 
   # Startup Mode (changes require restart)
-  startup_mode: Maximized
+  startup_mode: Windowed
+  #startup_mode: Windowed
 
   # hide title bar
-  decorations: None
+  # decorations: full
+  decorations: none
 
 # Sample Font configuration for font: Monoid.
 # Feel free to use different font configuration family & face for each sections

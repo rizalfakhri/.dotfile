@@ -4,35 +4,18 @@ namespace Phpactor\Extension\WorseReflectionExtra\Application;
 
 use Phpactor\Extension\Core\Application\Helper\ClassFileNormalizer;
 use Phpactor\WorseReflection\Core\ClassName;
+use Phpactor\WorseReflection\Core\Reflection\ReflectionEnum;
 use Phpactor\WorseReflection\Reflector;
-use Phpactor\WorseReflection\Core\Type;
 use Phpactor\WorseReflection\Core\Reflection\ReflectionClass;
 use Phpactor\WorseReflection\Core\Reflection\ReflectionMethod;
-use Phpactor\WorseReflection\Core\Reflection\ReflectionProperty;
-use Phpactor\WorseReflection\Core\Reflection\ReflectionConstant;
-use Phpactor\WorseReflection\Core\Reflection\ReflectionParameter;
 
 class ClassReflector
 {
     const FOOBAR = 'foo';
 
-    /**
-     * @var ClassFileNormalizer
-     */
-    private $classFileNormalizer;
-
-    /**
-     * @var Reflector
-     */
-    private $reflector;
-
     // rename compositetransformer => classToFileConverter
-    public function __construct(
-        ClassFileNormalizer $classFileNormalizer,
-        Reflector $reflector
-    ) {
-        $this->classFileNormalizer = $classFileNormalizer;
-        $this->reflector = $reflector;
+    public function __construct(private ClassFileNormalizer $classFileNormalizer, private Reflector $reflector)
+    {
     }
 
     /**
@@ -53,8 +36,8 @@ class ClassReflector
         ];
 
 
-        /** @var $method ReflectionMethod */
         foreach ($reflection->methods() as $method) {
+            assert($method instanceof ReflectionMethod);
             $methodInfo = [
                 (string) $method->visibility() . ' function ' . $method->name()
             ];
@@ -68,13 +51,12 @@ class ClassReflector
             ];
 
             $paramInfos = [];
-            /** @var $parameter ReflectionParameter */
             foreach ($method->parameters() as $parameter) {
                 $parameterType = $parameter->type();
                 // build parameter synopsis
                 $paramInfo = [];
-                if ($parameter->type()->isDefined()) {
-                    $paramInfo[] = $parameterType->className() ?: (string) $parameterType;
+                if (($parameter->type()->isDefined())) {
+                    $paramInfo[] = $parameter->type()->__toString();
                 }
                 $paramInfo[] = '$' . $parameter->name();
                 if ($parameter->default()->isDefined()) {
@@ -84,8 +66,8 @@ class ClassReflector
 
                 $return['methods'][$method->name()]['parameters'][$parameter->name()] = [
                     'name' => $parameter->name(),
-                    'has_type' => $parameter->type()->isDefined(),
-                    'type' => $parameter->type()->isDefined() ? ($parameterType->className() ? $parameterType->className()->short(): (string) $parameterType) : null,
+                    'has_type' => ($parameter->type()->isDefined()),
+                    'type' => $parameter->type()->__toString(),
                     'has_default' => $parameter->default()->isDefined(),
                     'default' => $parameter->default()->value(),
                 ];
@@ -94,18 +76,17 @@ class ClassReflector
             $methodInfo[] = '(' . implode(', ', $paramInfos) . ')';
             $methodType = $method->returnType();
 
-            if (Type::unknown() != $methodType) {
-                $methodInfo[] = ': ' . ($methodType->isPrimitive() ? (string) $methodType : $methodType->className()->short());
+            if (($methodType->isDefined())) {
+                $methodInfo[] = ': ' . $methodType->__toString();
             }
 
-            $return['methods'][$method->name()]['type'] = $methodType->isDefined() ? $methodType->short() : null;
+            $return['methods'][$method->name()]['type'] = $methodType->__toString();
 
             $return['methods'][$method->name()]['synopsis'] = implode('', $methodInfo);
             $return['methods'][$method->name()]['docblock'] = $method->docblock()->formatted();
         }
 
-        if (false === $reflection->isTrait()) {
-            /** @var $constant ReflectionConstant */
+        if (!$reflection instanceof ReflectionEnum) {
             foreach ($reflection->constants() as $constant) {
                 $return['constants'][$constant->name()] = [
                     'name' => $constant->name()
@@ -118,9 +99,8 @@ class ClassReflector
             return $return;
         }
 
-        /** @var $property ReflectionProperty */
         foreach ($reflection->properties() as $property) {
-            $propertyType = $property->inferredTypes()->best();
+            $propertyType = $property->inferredType();
             $return['properties'][$property->name()] = [
                 'name' => $property->name(),
                 'visibility' => (string) $property->visibility(),
@@ -128,7 +108,7 @@ class ClassReflector
                 'info' => sprintf(
                     '%s %s $%s',
                     (string) $property->visibility(),
-                    $propertyType->isPrimitive() ? (string) $propertyType : (string) $propertyType->className(),
+                    $propertyType->__toString(),
                     $property->name()
                 ),
             ];

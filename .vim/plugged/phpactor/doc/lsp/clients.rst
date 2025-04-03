@@ -9,4 +9,9 @@ Clients
    vim
    sublime
    vscode
+   emacs
 
+.. toctree::
+   :hidden:
+
+   vim-lsp

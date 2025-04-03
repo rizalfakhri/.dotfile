@@ -12,8 +12,6 @@ match-up is a plugin that lets you highlight, navigate, and operate on
 sets of matching text.  It extends vim's `%` key to language-specific
 words instead of just single characters.
 
-[![Gitter](https://badges.gitter.im/vim-matchup/community.svg)](https://gitter.im/vim-matchup/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 ## Screenshot
 
 <img src='https://raw.githubusercontent.com/wiki/andymass/vim-matchup/images/match-up-hl1.gif' width='450px'>
@@ -67,18 +65,59 @@ more information.  This plugin:
 
 ## Installation
 
-If you use [vim-plug](https://github.com/junegunn/vim-plug), then add the following line to your vimrc file:
+If you use [vim-plug](https://github.com/junegunn/vim-plug), then add the
+following line to your vimrc's plugin section:
 
 ```vim
 Plug 'andymass/vim-matchup'
 ```
 
-and then use `:PlugInstall`.  Or, you can use any other plugin manager such as
+and then use `:PlugInstall`.
+
+Or, if you use [packer](https://github.com/wbthomason/packer.nvim), add
+it to your init.vim
+
+```lua
+return require('packer').startup(function(use)
+  use {
+    'andymass/vim-matchup',
+    setup = function()
+      -- may set any options here
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end
+  }
+end)
+```
+
+and run `:PackerSync` or similar.
+
+See [Tree-sitter integration](https://github.com/andymass/vim-matchup#tree-sitter-integration)
+for information on how to enable tree-sitter matching with neovim.
+
+Note: I do not recommend using alternative loading strategies such as
+`event = 'VimEnter'` or `event = 'CursorMoved'` as match-up already
+loads a minimal amount of code on start-up.  It may work, but if you run
+into issues, remove the event key as a first debugging step.
+
+With [LunarVim](https://www.lunarvim.org/), tree-sitter integration can be
+enabled as follows:
+
+```lua
+{
+  "andymass/vim-matchup",
+  setup = function()
+    vim.g.matchup_matchparen_offscreen = { method = "popup" }
+  end,
+},
+
+lvim.builtin.treesitter.matchup.enable = true
+```
+
+You can use any other plugin manager such as
 [vundle](https://github.com/gmarik/vundle),
 [dein](https://github.com/Shougo/dein.vim),
-[neobundle](https://github.com/Shougo/neobundle.vim),
-[pathogen](https://github.com/tpope/vim-pathogen), or
-[packer](https://github.com/wbthomason/packer.nvim).
+[neobundle](https://github.com/Shougo/neobundle.vim), or
+[pathogen](https://github.com/tpope/vim-pathogen),
 
 match-up should automatically disable matchit and matchparen, but if you
 are still having trouble, try placing this near the top of your vimrc:
@@ -92,10 +131,11 @@ together with other plugins.
 
 ### Tree-sitter integration
 
-_Note: Currently this feature is possible in neovim 0.5+ only._
+_Note: Currently this feature is possible in neovim only.  Only the latest
+version of neovim is supported._
 
-match-up now has experimental support for language syntax provided
-by tree-sitter.  The list of supported languages is available
+match-up has support for language syntax provided by tree-sitter.  The
+list of supported languages is available
 [here](https://github.com/andymass/vim-matchup/tree/master/after/queries).
 
 This feature requires manual opt-in in your init.vim and requires
@@ -348,7 +388,7 @@ pressing `d]%` will produce (cursor on the `e`)
 if endif
 ```
 
-To include the close word, use either `dv]%` or `vd]%`.  This is also
+To include the close word, use either `dv]%` or `v]%d`.  This is also
 compatible with vim's `d])` and `d]}`.
 
 Operators over _backward_ exclusive motions will instead exclude the
@@ -376,7 +416,7 @@ example, pressing `d%` will leave behind nothing.
    )
 ```
 
-To operate character-wise in this situation, use `dv%` or `vd%`.
+To operate character-wise in this situation, use `dv%` or `v%d`.
 This is vim compatible with the built-in `d%` on `matchpairs`.
 
 ### Line-wise operator/text-object combinations
@@ -621,8 +661,7 @@ let g:matchup_matchparen_deferred = 1
 default: 0 (disabled)
 
 Note: this feature is only available if your vim version has `timers` and
-the function `timer_pause`, version 7.4.2180 and after.  For neovim, this
-will only work in nvim-0.2.1 and after.
+the function `timer_pause`, version 7.4.2180 and after.
 
 Adjust delays in milliseconds for deferred highlighting:
 ```vim
@@ -707,15 +746,24 @@ default: `['d', 'y']`
 
 - Why does jumping not work for construct X in language Y?
 
-  Please open a new issue
+  You can configure custom match expressions for a file type using
+
+  ```vim
+  autocmd FileType myft let b:match_words = 'something:else'`
+  ```
+
+  For more information about how to customize matching, see
+  [the wiki](https://github.com/andymass/vim-matchup/wiki/The-match-up-wiki).
+
+  For help, please open a new issue and be as specific as possible.
 
 - Highlighting is not correct for construct X
 
   match-up uses matchit's filetype-specific data, which may not give
   enough information to create proper highlights.  To fix this, you may
-  need to modify `b:match_words`.
+  need to modify `b:match_words` in your configuration.
 
-  For help, please open a new issue and be as specific as possible.
+  For more help, please open a new issue and be as specific as possible.
 
 - I'm having performance problems
 

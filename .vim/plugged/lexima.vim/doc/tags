@@ -1,6 +1,9 @@
+b:lexima_disable_abbrev_trigger	lexima.txt	/*b:lexima_disable_abbrev_trigger*
 b:lexima_disabled	lexima.txt	/*b:lexima_disabled*
 g:lexima_accept_pum_with_enter	lexima.txt	/*g:lexima_accept_pum_with_enter*
 g:lexima_ctrlh_as_backspace	lexima.txt	/*g:lexima_ctrlh_as_backspace*
+g:lexima_disable_abbrev_trigger	lexima.txt	/*g:lexima_disable_abbrev_trigger*
+g:lexima_disable_on_nofile	lexima.txt	/*g:lexima_disable_on_nofile*
 g:lexima_enable_basic_rules	lexima.txt	/*g:lexima_enable_basic_rules*
 g:lexima_enable_endwise_rules	lexima.txt	/*g:lexima_enable_endwise_rules*
 g:lexima_enable_newline_rules	lexima.txt	/*g:lexima_enable_newline_rules*

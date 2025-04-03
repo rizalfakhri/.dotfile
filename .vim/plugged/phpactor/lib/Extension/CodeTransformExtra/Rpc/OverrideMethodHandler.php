@@ -3,6 +3,7 @@
 namespace Phpactor\Extension\CodeTransformExtra\Rpc;
 
 use Phpactor\MapResolver\Resolver;
+use Phpactor\TextDocument\TextDocumentBuilder;
 use Phpactor\WorseReflection\Reflector;
 use InvalidArgumentException;
 use Phpactor\Extension\Rpc\Response\Input\ListInput;
@@ -22,22 +23,8 @@ class OverrideMethodHandler extends AbstractHandler
     const PARAM_METHOD_NAME = 'method_name';
     const PARAM_PATH = 'path';
 
-    /**
-     * @var Reflector
-     */
-    private $reflector;
-
-    /**
-     * @var OverrideMethod
-     */
-    private $overrideMethod;
-
-    public function __construct(
-        Reflector $reflector,
-        OverrideMethod $overrideMethod
-    ) {
-        $this->reflector = $reflector;
-        $this->overrideMethod = $overrideMethod;
+    public function __construct(private Reflector $reflector, private OverrideMethod $overrideMethod)
+    {
     }
 
     public function name(): string
@@ -90,7 +77,7 @@ class OverrideMethodHandler extends AbstractHandler
 
     private function class($source, $className = null)
     {
-        $classes = $this->reflector->reflectClassesIn($source);
+        $classes = $this->reflector->reflectClassesIn(TextDocumentBuilder::fromUnknown($source));
 
         if ($classes->count() === 0) {
             throw new InvalidArgumentException(

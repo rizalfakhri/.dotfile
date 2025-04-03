@@ -7,15 +7,18 @@ use Symfony\Component\Process\Process;
 
 abstract class SystemTestCase extends IntegrationTestCase
 {
-    protected function phpactor(string $args, string $stdin = null): Process
+    protected function phpactorFromStringArgs(string $args, string $stdin = null): Process
     {
         chdir($this->workspaceDir());
+
         $bin = __DIR__ . '/../../bin/phpactor --verbose ';
-        $process = new Process(sprintf(
+        $process = Process::fromShellCommandline(sprintf(
             '%s %s',
             $bin,
             $args
-        ));
+        ), null, [
+            'XDG_CACHE_HOME' => __DIR__ . '/../Assets/Cache',
+        ]);
 
         if ($stdin) {
             $process->setInput($stdin);

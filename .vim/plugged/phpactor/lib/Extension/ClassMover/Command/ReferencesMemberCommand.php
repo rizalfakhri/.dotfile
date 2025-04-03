@@ -18,23 +18,11 @@ use Phpactor\Extension\Core\Console\Handler\FilesystemHandler;
 
 class ReferencesMemberCommand extends Command
 {
-    /**
-     * @var ClassMemberReferences
-     */
-    private $memberReferences;
-
-    /**
-     * @var DumperRegistry
-     */
-    private $dumperRegistry;
-
     public function __construct(
-        ClassMemberReferences $memberReferences,
-        DumperRegistry $dumperRegistry
+        private ClassMemberReferences $memberReferences,
+        private DumperRegistry $dumperRegistry
     ) {
         parent::__construct();
-        $this->memberReferences = $memberReferences;
-        $this->dumperRegistry = $dumperRegistry;
     }
 
     public function configure(): void
@@ -50,18 +38,25 @@ class ReferencesMemberCommand extends Command
         FilesystemHandler::configure($this, SourceCodeFilesystemExtension::FILESYSTEM_GIT);
     }
 
-    public function execute(InputInterface $input, OutputInterface $output, $bar = null)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $class = $input->getArgument('class');
         $member = $input->getArgument('member');
         $format = $input->getOption('format');
         $replace = $input->getOption('replace');
-        $dryRun = $input->getOption('dry-run');
-        $risky = $input->getOption('risky');
+        $dryRun = (bool) $input->getOption('dry-run');
+        $risky = (bool) $input->getOption('risky');
         $memberType = $input->getOption('type');
         $filesystem = $input->getOption('filesystem');
 
-        $results = $this->memberReferences->findOrReplaceReferences($filesystem, $class, $member, $memberType, $replace, $dryRun);
+        $results = $this->memberReferences->findOrReplaceReferences(
+            $filesystem,
+            $class,
+            $member,
+            $memberType,
+            $replace,
+            $dryRun
+        );
 
         if ($replace && $dryRun) {
             $output->writeln('<info># DRY RUN</> No files will be modified');
@@ -69,7 +64,7 @@ class ReferencesMemberCommand extends Command
 
         if ($format) {
             $this->dumperRegistry->get($format)->dump($output, $results);
-            return;
+            return 0;
         }
 
         $output->writeln('<comment># References:</>');
@@ -95,10 +90,11 @@ class ReferencesMemberCommand extends Command
 
         $output->write(PHP_EOL);
         $output->writeln(sprintf('%s reference(s), %s risky references', $count, $riskyCount));
+
         return 0;
     }
 
-    private function renderTable(OutputInterface $output, array $results, string $type, bool $ansi)
+    private function renderTable(OutputInterface $output, array $results, string $type, bool $ansi): int
     {
         $table = new Table($output);
         $table->setHeaders([

@@ -1,38 +1,49 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFoldingRanges = void 0;
 const languageModes_1 = require("./languageModes");
 function getFoldingRanges(languageModes, document, maxRanges, _cancellationToken) {
-    let htmlMode = languageModes.getMode('html');
-    let range = languageModes_1.Range.create(languageModes_1.Position.create(0, 0), languageModes_1.Position.create(document.lineCount, 0));
-    let result = [];
-    if (htmlMode && htmlMode.getFoldingRanges) {
-        result.push(...htmlMode.getFoldingRanges(document));
-    }
-    let rangesPerMode = Object.create(null);
-    let getRangesForMode = (mode) => {
-        if (mode.getFoldingRanges) {
-            let ranges = rangesPerMode[mode.getId()];
-            if (!Array.isArray(ranges)) {
-                ranges = mode.getFoldingRanges(document) || [];
-                rangesPerMode[mode.getId()] = ranges;
+    return __awaiter(this, void 0, void 0, function* () {
+        let htmlMode = languageModes.getMode('html');
+        let range = languageModes_1.Range.create(languageModes_1.Position.create(0, 0), languageModes_1.Position.create(document.lineCount, 0));
+        let result = [];
+        if (htmlMode && htmlMode.getFoldingRanges) {
+            result.push(...yield htmlMode.getFoldingRanges(document));
+        }
+        let rangesPerMode = Object.create(null);
+        let getRangesForMode = (mode) => __awaiter(this, void 0, void 0, function* () {
+            if (mode.getFoldingRanges) {
+                let ranges = rangesPerMode[mode.getId()];
+                if (!Array.isArray(ranges)) {
+                    ranges = (yield mode.getFoldingRanges(document)) || [];
+                    rangesPerMode[mode.getId()] = ranges;
+                }
+                return ranges;
             }
-            return ranges;
+            return [];
+        });
+        let modeRanges = languageModes.getModesInRange(document, range);
+        for (let modeRange of modeRanges) {
+            let mode = modeRange.mode;
+            if (mode && mode !== htmlMode && !modeRange.attributeValue) {
+                const ranges = yield getRangesForMode(mode);
+                result.push(...ranges.filter(r => r.startLine >= modeRange.start.line && r.endLine < modeRange.end.line));
+            }
         }
-        return [];
-    };
-    let modeRanges = languageModes.getModesInRange(document, range);
-    for (let modeRange of modeRanges) {
-        let mode = modeRange.mode;
-        if (mode && mode !== htmlMode && !modeRange.attributeValue) {
-            const ranges = getRangesForMode(mode);
-            result.push(...ranges.filter(r => r.startLine >= modeRange.start.line && r.endLine < modeRange.end.line));
+        if (maxRanges && result.length > maxRanges) {
+            result = limitRanges(result, maxRanges);
         }
-    }
-    if (maxRanges && result.length > maxRanges) {
-        result = limitRanges(result, maxRanges);
-    }
-    return result;
+        return result;
+    });
 }
 exports.getFoldingRanges = getFoldingRanges;
 function limitRanges(ranges, maxRanges) {

@@ -2,6 +2,7 @@
 
 namespace Phpactor\Tests;
 
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +13,20 @@ use Phpactor\Phpactor;
 
 abstract class IntegrationTestCase extends TestCase
 {
-    protected function workspaceDir()
+    /**
+     * @param list<string> $cmd
+     */
+    public function phpactor(array $cmd): Process
+    {
+        $p = new Process(array_merge(
+            [__DIR__ . '/../bin/phpactor'],
+            $cmd
+        ), $this->workspace()->path());
+
+        return $p;
+    }
+
+    protected function workspaceDir(): string
     {
         return __DIR__ . '/Assets/Workspace';
     }
@@ -37,7 +51,7 @@ abstract class IntegrationTestCase extends TestCase
         ));
     }
 
-    protected function assertFailure(Process $process, $message): void
+    protected function assertFailure(Process $process, ?string $message): void
     {
         if (true === $process->isSuccessful()) {
             $this->fail('Process was a success');
@@ -50,7 +64,7 @@ abstract class IntegrationTestCase extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    protected function loadProject($name): void
+    protected function loadProject(string $name): void
     {
         $filesystem = new Filesystem();
 
@@ -72,15 +86,17 @@ abstract class IntegrationTestCase extends TestCase
 
     protected function container(): Container
     {
-        return Phpactor::boot(new ArrayInput([]), __DIR__ . '/../vendor');
+        return Phpactor::boot(new ArrayInput([
+            '--working-dir' => $this->workspaceDir(),
+        ]), new BufferedOutput(), __DIR__ . '/../vendor');
     }
 
-    private function cacheDir(string $name)
+    private function cacheDir(string $name): string
     {
         return __DIR__ . '/Assets/Cache/'.$name;
     }
 
-    private function cacheWorkspace($name): void
+    private function cacheWorkspace(string $name): void
     {
         $filesystem = new Filesystem();
         $cacheDir = $this->cacheDir($name);

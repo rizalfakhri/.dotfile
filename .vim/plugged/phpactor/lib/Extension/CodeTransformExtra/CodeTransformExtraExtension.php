@@ -3,11 +3,9 @@
 namespace Phpactor\Extension\CodeTransformExtra;
 
 use Phpactor\CodeTransform\CodeTransform;
-use Phpactor\CodeTransform\Domain\Helper\UnresolvableClassNameFinder;
 use Phpactor\CodeTransform\Domain\Refactor\ExtractExpression;
 use Phpactor\CodeTransform\Domain\Refactor\ChangeVisiblity;
 use Phpactor\CodeTransform\Domain\Refactor\GenerateMethod;
-use Phpactor\CodeTransform\Domain\Refactor\GenerateAccessor;
 use Phpactor\CodeTransform\Domain\Refactor\ExtractMethod;
 use Phpactor\CodeTransform\Domain\Refactor\ExtractConstant;
 use Phpactor\CodeTransform\Domain\Refactor\OverrideMethod;
@@ -33,7 +31,7 @@ use Phpactor\Extension\CodeTransformExtra\Rpc\ChangeVisiblityHandler;
 use Phpactor\Extension\CodeTransformExtra\Rpc\ExtractConstantHandler;
 use Phpactor\Extension\CodeTransformExtra\Rpc\ExtractExpressionHandler;
 use Phpactor\Extension\CodeTransformExtra\Rpc\ExtractMethodHandler;
-use Phpactor\Extension\CodeTransformExtra\Rpc\GenerateAccessorHandler;
+use Phpactor\Extension\CodeTransformExtra\Rpc\PropertyAccessGeneratorHandler;
 use Phpactor\Extension\CodeTransformExtra\Rpc\GenerateMethodHandler;
 use Phpactor\Extension\CodeTransformExtra\Rpc\ImportClassHandler;
 use Phpactor\Extension\CodeTransformExtra\Rpc\OverrideMethodHandler;
@@ -41,9 +39,6 @@ use Phpactor\Extension\CodeTransformExtra\Rpc\RenameVariableHandler;
 
 class CodeTransformExtraExtension implements Extension
 {
-    /**
-     * {@inheritDoc}
-     */
     public function configure(Resolver $schema): void
     {
         $schema->setDefaults([
@@ -76,7 +71,7 @@ class CodeTransformExtraExtension implements Extension
             return new ClassInflect(
                 $container->get('application.helper.class_file_normalizer'),
                 $container->get('code_transform.from_existing_generators'),
-                $container->get(LoggingExtension::SERVICE_LOGGER)
+                LoggingExtension::channelLogger($container, 'CT'),
             );
         });
     }
@@ -119,11 +114,20 @@ class CodeTransformExtraExtension implements Extension
         }, [ RpcExtension::TAG_RPC_HANDLER => ['name' => ExtractMethodHandler::NAME] ]);
 
         $container->register('code_transform.rpc.handler.generate_accessor', function (Container $container) {
-            return new GenerateAccessorHandler(
+            return new PropertyAccessGeneratorHandler(
+                'generate_accessor',
                 $container->get(WorseReflectionExtension::SERVICE_REFLECTOR),
-                $container->get(GenerateAccessor::class)
+                $container->get('code_transform.generate_accessor')
             );
-        }, [ RpcExtension::TAG_RPC_HANDLER => ['name' => GenerateAccessorHandler::NAME] ]);
+        }, [ RpcExtension::TAG_RPC_HANDLER => ['name' => 'generate_accessor'] ]);
+
+        $container->register('code_transform.rpc.handler.generate_mutator', function (Container $container) {
+            return new PropertyAccessGeneratorHandler(
+                'generate_mutator',
+                $container->get(WorseReflectionExtension::SERVICE_REFLECTOR),
+                $container->get('code_transform.generate_mutator')
+            );
+        }, [ RpcExtension::TAG_RPC_HANDLER => ['name' => 'generate_mutator'] ]);
 
         $container->register('code_transform.rpc.handler.generate_method', function (Container $container) {
             return new GenerateMethodHandler(
@@ -167,7 +171,7 @@ class CodeTransformExtraExtension implements Extension
         $container->register('code_transform.rpc.handler.import_unresolvable_classes', function (Container $container) {
             return new ImportMissingClassesHandler(
                 $container->get(RpcExtension::SERVICE_REQUEST_HANDLER),
-                $container->get(UnresolvableClassNameFinder::class)
+                $container->get(WorseReflectionExtension::SERVICE_REFLECTOR)
             );
         }, [ RpcExtension::TAG_RPC_HANDLER => ['name' => ImportMissingClassesHandler::NAME] ]);
     }

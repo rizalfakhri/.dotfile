@@ -5,15 +5,14 @@
 :PhpactorClassNew	phpactor.txt	/*:PhpactorClassNew*
 :PhpactorConfig	phpactor.txt	/*:PhpactorConfig*
 :PhpactorContextMenu	phpactor.txt	/*:PhpactorContextMenu*
+:PhpactorCopyClassName	phpactor.txt	/*:PhpactorCopyClassName*
 :PhpactorCopyFile	phpactor.txt	/*:PhpactorCopyFile*
-:PhpactorExtensionInstall	phpactor.txt	/*:PhpactorExtensionInstall*
-:PhpactorExtensionList	phpactor.txt	/*:PhpactorExtensionList*
-:PhpactorExtensionRemove	phpactor.txt	/*:PhpactorExtensionRemove*
 :PhpactorExtractConstant	phpactor.txt	/*:PhpactorExtractConstant*
 :PhpactorExtractExpression	phpactor.txt	/*:PhpactorExtractExpression*
 :PhpactorExtractMethod	phpactor.txt	/*:PhpactorExtractMethod*
 :PhpactorFindReferences	phpactor.txt	/*:PhpactorFindReferences*
 :PhpactorGenerateAccessors	phpactor.txt	/*:PhpactorGenerateAccessors*
+:PhpactorGenerateMutators	phpactor.txt	/*:PhpactorGenerateMutators*
 :PhpactorGotoDefinition	phpactor.txt	/*:PhpactorGotoDefinition*
 :PhpactorGotoDefinitionHsplit	phpactor.txt	/*:PhpactorGotoDefinitionHsplit*
 :PhpactorGotoDefinitionTab	phpactor.txt	/*:PhpactorGotoDefinitionTab*

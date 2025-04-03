@@ -10,8 +10,8 @@ use Phpactor\Extension\Rpc\Response\UpdateFileSourceResponse;
 use Phpactor\Extension\Rpc\Response\EchoResponse;
 use Phpactor\Extension\Rpc\Response\CollectionResponse;
 use Phpactor\Extension\SourceCodeFilesystem\SourceCodeFilesystemExtension;
+use Phpactor\TextDocument\TextDocumentBuilder;
 use Phpactor\WorseReflection\Reflector;
-use Phpactor\WorseReflection\Core\SourceCode;
 use Phpactor\Extension\ClassMover\Application\ClassMemberReferences;
 use Phpactor\WorseReflection\Bridge\PsrLog\ArrayLogger;
 use Phpactor\ClassMover\Domain\Model\ClassMemberQuery;
@@ -20,43 +20,29 @@ use Phpactor\Extension\Rpc\Response\InputCallbackResponse;
 use Phpactor\Extension\Rpc\Response\Input\TextInput;
 use Phpactor\WorseReflection\ReflectorBuilder;
 use Phpactor\Tests\Unit\Extension\Rpc\HandlerTestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use RuntimeException;
 
 class ReferencesHandlerTest extends HandlerTestCase
 {
-    const TEST_PATH = 'test_file.php';
+    const TEST_PATH = 'file:///test_file.php';
 
-    /**
-     * @var ClassReferences
-     */
-    private $classReferences;
+    private ObjectProphecy $classReferences;
 
-    /**
-     * @var Reflector
-     */
-    private $reflector;
+    private Reflector $reflector;
 
-    /**
-     * @var ClassMemberReferences
-     */
-    private $classMemberReferences;
+    private ObjectProphecy $classMemberReferences;
 
-    /**
-     * @var ArrayLogger
-     */
-    private $logger;
+    private ArrayLogger $logger;
 
-    /**
-     * @var FilesystemRegistry
-     */
-    private $filesystemRegistry;
+    private ObjectProphecy $filesystemRegistry;
 
     public function setUp(): void
     {
         $this->classReferences = $this->prophesize(ClassReferences::class);
         $this->classMemberReferences = $this->prophesize(ClassMemberReferences::class);
         $this->logger = new ArrayLogger();
-        $this->reflector = ReflectorBuilder::create()->addSource(SourceCode::fromPath(__FILE__))->withLogger($this->logger)->build();
+        $this->reflector = ReflectorBuilder::create()->addSource(TextDocumentBuilder::fromUri(__FILE__)->build())->withLogger($this->logger)->build();
         $this->filesystemRegistry = $this->prophesize(FilesystemRegistry::class);
     }
 

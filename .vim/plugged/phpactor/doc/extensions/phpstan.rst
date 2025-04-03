@@ -1,12 +1,10 @@
 Phpstan (LSP)
 =============
 
-.. github-link:: phpactor/language-server-phpstan-extension
+The PHPStan extension
 
-The `Phpstan <https://phpstan.org/>`_ extension provides :ref:`language_server` diagnostics.
-
-Installing
-----------
+Enable
+------
 
 
 .. code:: bash
@@ -26,7 +24,7 @@ Phpstan Config
 Your project requires a `phpstan.neon` configuration file defining it's
 `level`:
 
-.. code-block::
+.. code-block:: yaml
 
     # phpstan.neon
     parameters:
@@ -35,4 +33,4 @@ Your project requires a `phpstan.neon` configuration file defining it's
 Usage
 -----
 
-You should automatically recieve diagnostics when the extension is installed.
+You should automatically receive diagnostics when the extension is installed.

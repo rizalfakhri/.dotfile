@@ -22,6 +22,7 @@ let s:zig_syntax_keywords = {
     \ ,             "f16"
     \ ,             "f32"
     \ ,             "f64"
+    \ ,             "f80"
     \ ,             "f128"
     \ ,             "void"
     \ ,             "type"
@@ -118,6 +119,7 @@ let s:zig_syntax_keywords = {
     \ ,                  "@divTrunc"
     \ ,                  "@embedFile"
     \ ,                  "@export"
+    \ ,                  "@extern"
     \ ,                  "@tagName"
     \ ,                  "@TagType"
     \ ,                  "@errorName"
@@ -146,6 +148,7 @@ let s:zig_syntax_keywords = {
     \ ,                  "@offsetOf"
     \ ,                  "@OpaqueType"
     \ ,                  "@panic"
+    \ ,                  "@prefetch"
     \ ,                  "@ptrCast"
     \ ,                  "@ptrToInt"
     \ ,                  "@rem"
@@ -154,6 +157,7 @@ let s:zig_syntax_keywords = {
     \ ,                  "@Type"
     \ ,                  "@shuffle"
     \ ,                  "@reduce"
+    \ ,                  "@select"
     \ ,                  "@setRuntimeSafety"
     \ ,                  "@setEvalBranchQuota"
     \ ,                  "@setFloatMode"
@@ -191,6 +195,7 @@ let s:zig_syntax_keywords = {
     \ ,                  "@Vector"
     \ ,                  "@sin"
     \ ,                  "@cos"
+    \ ,                  "@tan"
     \ ,                  "@exp"
     \ ,                  "@exp2"
     \ ,                  "@log"
@@ -200,6 +205,8 @@ let s:zig_syntax_keywords = {
     \ ,                  "@floor"
     \ ,                  "@ceil"
     \ ,                  "@trunc"
+    \ ,                  "@wasmMemorySize"
+    \ ,                  "@wasmMemoryGrow"
     \ ,                  "@round"]
     \ }
 

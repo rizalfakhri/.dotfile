@@ -12,15 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DebugContainerCommand extends Command
 {
-    /**
-     * @var Container
-     */
-    private $container;
-
-    public function __construct(Container $container)
+    public function __construct(private Container $container)
     {
         parent::__construct();
-        $this->container = $container;
     }
 
     protected function configure(): void
@@ -56,14 +50,14 @@ class DebugContainerCommand extends Command
         ]);
         foreach ($this->container->getServiceIds() as $serviceId) {
             $type = '<not found>';
-        
+
             try {
                 $value = $this->container->get($serviceId);
                 $type = is_object($value) ? get_class($value) : gettype($value);
             } catch (RuntimeException $exception) {
                 $table->addRow(['<error>Error: '.$serviceId.'</>', $exception->getMessage()]);
             }
-        
+
             $table->addRow([$serviceId, $type ]);
         }
         $table->render();

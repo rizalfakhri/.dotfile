@@ -2,7 +2,6 @@
 
 namespace Phpactor\Extension\Navigation;
 
-use Phpactor\ClassFileConverter\PathFinder;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\WorseReflection\WorseReflectionExtension;
@@ -13,6 +12,7 @@ use Phpactor\Extension\Navigation\Navigator\ChainNavigator;
 use Phpactor\Extension\Navigation\Handler\NavigateHandler;
 use Phpactor\Extension\Navigation\Navigator\PathFinderNavigator;
 use Phpactor\Extension\Navigation\Navigator\WorseReflectionNavigator;
+use Phpactor\PathFinder\PathFinder;
 
 class NavigationExtension implements Extension
 {
@@ -20,9 +20,7 @@ class NavigationExtension implements Extension
     const NAVIGATOR_AUTOCREATE = 'navigator.autocreate';
     const SERVICE_PATH_FINDER = 'navigation.path_finder';
 
-    /**
-     * {@inheritDoc}
-     */
+
     public function load(ContainerBuilder $container): void
     {
         $this->registerPathFinder($container);
@@ -30,9 +28,7 @@ class NavigationExtension implements Extension
         $this->registerRpc($container);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     public function configure(Resolver $schema): void
     {
         $schema->setDefaults([
@@ -46,7 +42,7 @@ class NavigationExtension implements Extension
         $container->register(self::SERVICE_PATH_FINDER, function (Container $container) {
             return PathFinder::fromDestinations($container->getParameter(self::PATH_FINDER_DESTINATIONS));
         });
-        
+
         $container->register('application.navigator', function (Container $container) {
             return new Navigator(
                 $container->get('navigation.navigator.chain'),
@@ -72,13 +68,13 @@ class NavigationExtension implements Extension
             foreach ($container->getServiceIdsForTag('navigation.navigator') as $serviceId => $attrs) {
                 $navigators[] = $container->get($serviceId);
             }
-        
+
             return new ChainNavigator($navigators);
         });
         $container->register('navigation.navigator.path_finder', function (Container $container) {
             return new PathFinderNavigator($container->get(self::SERVICE_PATH_FINDER));
         }, [ 'navigation.navigator' => [] ]);
-        
+
         $container->register('navigation.navigator.worse_reflection', function (Container $container) {
             return new WorseReflectionNavigator($container->get(WorseReflectionExtension::SERVICE_REFLECTOR));
         }, [ 'navigation.navigator' => [] ]);

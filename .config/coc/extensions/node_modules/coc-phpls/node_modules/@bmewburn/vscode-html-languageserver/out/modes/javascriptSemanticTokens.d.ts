@@ -16,7 +16,7 @@ export declare const enum TokenType {
     variable = 7,
     property = 8,
     function = 9,
-    member = 10,
+    method = 10,
     _ = 11
 }
 export declare const enum TokenModifier {

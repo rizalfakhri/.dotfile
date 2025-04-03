@@ -15,4 +15,4 @@ export declare function assertCompletion(completions: CompletionList, expected: 
 export declare function testCompletionFor(value: string, expected: {
     count?: number;
     items?: ItemDescription[];
-}, uri?: string, workspaceFolders?: WorkspaceFolder[]): void;
+}, uri?: string, workspaceFolders?: WorkspaceFolder[]): Promise<void>;

@@ -4,7 +4,6 @@ namespace Phpactor\Tests\Unit\Extension\CodeTransformExtra\Rpc;
 
 use Phpactor\Extension\Rpc\Handler;
 use Phpactor\Extension\Rpc\Response\InputCallbackResponse;
-use Phpactor\CodeTransform\Domain\SourceCode;
 use Phpactor\Extension\Rpc\Response\UpdateFileSourceResponse;
 use Phpactor\CodeTransform\Domain\Refactor\ExtractMethod;
 use Phpactor\Extension\CodeTransformExtra\Rpc\ExtractMethodHandler;
@@ -27,7 +26,7 @@ class ExtractMethodHandlerTest extends HandlerTestCase
     /**
      * @var ObjectProphecy<ExtractMethod>
      */
-    private $extractMethod;
+    private ObjectProphecy $extractMethod;
 
     public function setUp(): void
     {

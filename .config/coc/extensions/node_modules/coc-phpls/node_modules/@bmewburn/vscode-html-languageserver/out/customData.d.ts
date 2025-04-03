@@ -1,2 +1,3 @@
 import { IHTMLDataProvider } from 'vscode-html-languageservice';
-export declare function getDataProviders(dataPaths?: string[]): IHTMLDataProvider[];
+import { RequestService } from './requests';
+export declare function fetchHTMLDataProviders(dataPaths: string[], requestService: RequestService): Promise<IHTMLDataProvider[]>;

@@ -2,7 +2,7 @@ Configuration
 =============
 
 
-.. This document is generated via. the `documentation:configuration-reference` command
+.. This document is generated via the `development:generate-documentation` command
 
 
 .. contents::
@@ -25,8 +25,6 @@ CoreExtension
 """"""""""""""""""""""""""
 
 
-
-
 Name of the "dumper" (renderer) to use for some CLI commands
 
 
@@ -38,8 +36,6 @@ Name of the "dumper" (renderer) to use for some CLI commands
 
 ``xdebug_disable``
 """"""""""""""""""
-
-
 
 
 If XDebug should be automatically disabled
@@ -55,8 +51,6 @@ If XDebug should be automatically disabled
 """""""""""
 
 
-
-
 Internal use only - name of the command which was executed
 
 
@@ -70,9 +64,7 @@ Internal use only - name of the command which was executed
 """"""""""""""""""""""""
 
 
-
-
-Internal use only: if an warning will be issed when on develop, may be removed in the future
+Internal use only: if an warning will be issued when on develop, may be removed in the future
 
 
 **Default**: ``true``
@@ -85,12 +77,23 @@ Internal use only: if an warning will be issed when on develop, may be removed i
 """""""""""""""""""""""""
 
 
-
-
 Ensure that PHP has a memory_limit of at least this amount in bytes
 
 
 **Default**: ``1610612736``
+
+
+.. _param_$schema:
+
+
+``$schema``
+"""""""""""
+
+
+Path to JSON schema, which can be used for config autocompletion, use phpactor config:initialize to update
+
+
+**Default**: ``""``
 
 
 .. _ClassToFileExtension:
@@ -107,8 +110,6 @@ ClassToFileExtension
 """"""""""""""""""""""""""""""
 
 
-
-
 Root path of the project (e.g. where composer.json is)
 
 
@@ -120,8 +121,6 @@ Root path of the project (e.g. where composer.json is)
 
 ``class_to_file.brute_force_conversion``
 """"""""""""""""""""""""""""""""""""""""
-
-
 
 
 If composer not found, fallback to scanning all files (very time consuming depending on project size)
@@ -144,8 +143,6 @@ CodeTransformExtension
 """""""""""""""""""""""""""""""""""""
 
 
-
-
 Variants which should be suggested when class-create is invoked
 
 
@@ -157,8 +154,6 @@ Variants which should be suggested when class-create is invoked
 
 ``code_transform.template_paths``
 """""""""""""""""""""""""""""""""
-
-
 
 
 Paths in which to look for code templates
@@ -174,8 +169,6 @@ Paths in which to look for code templates
 """"""""""""""""""""""""""""""
 
 
-
-
 Indentation chars to use in code generation and transformation
 
 
@@ -187,8 +180,6 @@ Indentation chars to use in code generation and transformation
 
 ``code_transform.refactor.generate_accessor.prefix``
 """"""""""""""""""""""""""""""""""""""""""""""""""""
-
-
 
 
 Prefix to use for generated accessors
@@ -204,12 +195,88 @@ Prefix to use for generated accessors
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-
-
 If the first letter of a generated accessor should be made uppercase
 
 
 **Default**: ``false``
+
+
+.. _param_code_transform.refactor.generate_mutator.prefix:
+
+
+``code_transform.refactor.generate_mutator.prefix``
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Prefix to use for generated mutators
+
+
+**Default**: ``"set"``
+
+
+.. _param_code_transform.refactor.generate_mutator.upper_case_first:
+
+
+``code_transform.refactor.generate_mutator.upper_case_first``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+If the first letter of a generated mutator should be made uppercase
+
+
+**Default**: ``true``
+
+
+.. _param_code_transform.refactor.generate_mutator.fluent:
+
+
+``code_transform.refactor.generate_mutator.fluent``
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+If the mutator should be fluent
+
+
+**Default**: ``false``
+
+
+.. _param_code_transform.import_globals:
+
+
+``code_transform.import_globals``
+"""""""""""""""""""""""""""""""""
+
+
+Import functions even if they are in the global namespace
+
+
+**Default**: ``false``
+
+
+.. _param_code_transform.refactor.object_fill.hint:
+
+
+``code_transform.refactor.object_fill.hint``
+""""""""""""""""""""""""""""""""""""""""""""
+
+
+Object fill refactoring: show hint as a comment
+
+
+**Default**: ``true``
+
+
+.. _param_code_transform.refactor.object_fill.named_parameters:
+
+
+``code_transform.refactor.object_fill.named_parameters``
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Object fill refactoring: use named parameters
+
+
+**Default**: ``true``
 
 
 .. _CompletionWorseExtension:
@@ -219,13 +286,291 @@ CompletionWorseExtension
 ------------------------
 
 
+.. _param_completion_worse.completor.doctrine_annotation.enabled:
+
+
+``completion_worse.completor.doctrine_annotation.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``doctrine_annotation`` completor.
+
+Completion for annotations provided by the Doctrine annotation library.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.imported_names.enabled:
+
+
+``completion_worse.completor.imported_names.enabled``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``imported_names`` completor.
+
+Completion for names imported into the current namespace.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.worse_parameter.enabled:
+
+
+``completion_worse.completor.worse_parameter.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``worse_parameter`` completor.
+
+Completion for method or function parameters.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.named_parameter.enabled:
+
+
+``completion_worse.completor.named_parameter.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``named_parameter`` completor.
+
+Completion for named parameters.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.constructor.enabled:
+
+
+``completion_worse.completor.constructor.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``constructor`` completor.
+
+Completion for constructors.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.class_member.enabled:
+
+
+``completion_worse.completor.class_member.enabled``
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``class_member`` completor.
+
+Completion for class members.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.scf_class.enabled:
+
+
+``completion_worse.completor.scf_class.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``scf_class`` completor.
+
+Brute force completion for class names (not recommended).
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.local_variable.enabled:
+
+
+``completion_worse.completor.local_variable.enabled``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``local_variable`` completor.
+
+Completion for local variables.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.declared_function.enabled:
+
+
+``completion_worse.completor.declared_function.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``declared_function`` completor.
+
+Completion for functions defined in the Phpactor runtime.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.declared_constant.enabled:
+
+
+``completion_worse.completor.declared_constant.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``declared_constant`` completor.
+
+Completion for constants defined in the Phpactor runtime.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.declared_class.enabled:
+
+
+``completion_worse.completor.declared_class.enabled``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``declared_class`` completor.
+
+Completion for classes defined in the Phpactor runtime.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.expression_name_search.enabled:
+
+
+``completion_worse.completor.expression_name_search.enabled``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``expression_name_search`` completor.
+
+Completion for class names, constants and functions at expression positions that are located in the index.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.use.enabled:
+
+
+``completion_worse.completor.use.enabled``
+""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``use`` completor.
+
+Completion for use imports.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.attribute.enabled:
+
+
+``completion_worse.completor.attribute.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``attribute`` completor.
+
+Completion for attribute class names.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.class_like.enabled:
+
+
+``completion_worse.completor.class_like.enabled``
+"""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``class_like`` completor.
+
+Completion for class like contexts.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.type.enabled:
+
+
+``completion_worse.completor.type.enabled``
+"""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``type`` completor.
+
+Completion for types.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.keyword.enabled:
+
+
+``completion_worse.completor.keyword.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``keyword`` completor.
+
+Completion for keywords (not very accurate).
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.docblock.enabled:
+
+
+``completion_worse.completor.docblock.enabled``
+"""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable or disable the ``docblock`` completor.
+
+Docblock completion.
+
+
+**Default**: ``true``
+
+
+.. _param_completion_worse.completor.constant.enabled:
+
+
+``completion_worse.completor.constant.enabled``
+"""""""""""""""""""""""""""""""""""""""""""""""
+
+
+**Default**: ``false``
+
+
 .. _param_completion_worse.completor.class.limit:
 
 
 ``completion_worse.completor.class.limit``
 """"""""""""""""""""""""""""""""""""""""""
-
-
 
 
 Suggestion limit for the filesystem based SCF class_completor
@@ -234,28 +579,11 @@ Suggestion limit for the filesystem based SCF class_completor
 **Default**: ``100``
 
 
-.. _param_completion_worse.disabled_completors:
-
-
-``completion_worse.disabled_completors``
-""""""""""""""""""""""""""""""""""""""""
-
-
-
-
-List of completors to disable (e.g. ``scf_class`` and ``declared_function``)
-
-
-**Default**: ``[]``
-
-
 .. _param_completion_worse.name_completion_priority:
 
 
 ``completion_worse.name_completion_priority``
 """""""""""""""""""""""""""""""""""""""""""""
-
-
 
 
 Strategy to use when ordering completion results for classes and functions:
@@ -274,8 +602,6 @@ Strategy to use when ordering completion results for classes and functions:
 """""""""""""""""""""""""""""
 
 
-
-
 Enable or disable completion snippets
 
 
@@ -289,9 +615,20 @@ Enable or disable completion snippets
 """""""""""""""""""""""""""""""""
 
 
-
-
 Enable experimental functionality
+
+
+**Default**: ``false``
+
+
+.. _param_completion_worse.debug:
+
+
+``completion_worse.debug``
+""""""""""""""""""""""""""
+
+
+Include debug info in completion results
 
 
 **Default**: ``false``
@@ -311,24 +648,20 @@ CompletionExtension
 """""""""""""""""""""
 
 
-
-
 If results should be de-duplicated
 
 
 **Default**: ``true``
 
 
-.. _param_completion.dedupe_match_short_description:
+.. _param_completion.dedupe_match_fqn:
 
 
-``completion.dedupe_match_short_description``
-"""""""""""""""""""""""""""""""""""""""""""""
+``completion.dedupe_match_fqn``
+"""""""""""""""""""""""""""""""
 
 
-
-
-If ``completion.dedupe``, match on completion description intead of name
+If ``completion.dedupe``, consider the class FQN in addition to the completion suggestion
 
 
 **Default**: ``true``
@@ -341,12 +674,26 @@ If ``completion.dedupe``, match on completion description intead of name
 """"""""""""""""""""
 
 
-
-
 Sets a limit on the number of completion suggestions for any request
 
 
 **Default**: ``null``
+
+
+.. _param_completion.label_formatter:
+
+
+``completion.label_formatter``
+""""""""""""""""""""""""""""""
+
+
+Definition of how to format entries in the completion list
+
+
+**Default**: ``"helpful"``
+
+
+**Allowed values**: "helpful", "fqn"
 
 
 .. _NavigationExtension:
@@ -363,8 +710,6 @@ NavigationExtension
 """"""""""""""""""""""""""
 
 
-
-
 **Default**: ``[]``
 
 
@@ -373,8 +718,6 @@ NavigationExtension
 
 ``navigator.autocreate``
 """"""""""""""""""""""""
-
-
 
 
 **Default**: ``[]``
@@ -394,6 +737,7 @@ RpcExtension
 """"""""""""""""""""
 
 
+Should replays be stored?
 
 
 **Default**: ``false``
@@ -406,6 +750,7 @@ RpcExtension
 """""""""""""""""""
 
 
+Path where the replays should be stored
 
 
 **Default**: ``"%cache%\/replay.json"``
@@ -425,8 +770,6 @@ SourceCodeFilesystemExtension
 """""""""""""""""""""""""""""""""""""""
 
 
-
-
 **Default**: ``"%project_root%"``
 
 
@@ -437,13 +780,24 @@ WorseReflectionExtension
 ------------------------
 
 
+.. _param_language_server_code_transform.import_globals:
+
+
+``language_server_code_transform.import_globals``
+"""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Show hints for non-imported global classes and functions
+
+
+**Default**: ``false``
+
+
 .. _param_worse_reflection.enable_cache:
 
 
 ``worse_reflection.enable_cache``
 """""""""""""""""""""""""""""""""
-
-
 
 
 If reflection caching should be enabled
@@ -459,12 +813,10 @@ If reflection caching should be enabled
 """""""""""""""""""""""""""""""""""
 
 
-
-
 If caching is enabled, limit the amount of time a cache entry can stay alive
 
 
-**Default**: ``5``
+**Default**: ``1``
 
 
 .. _param_worse_reflection.enable_context_location:
@@ -472,8 +824,6 @@ If caching is enabled, limit the amount of time a cache entry can stay alive
 
 ``worse_reflection.enable_context_location``
 """"""""""""""""""""""""""""""""""""""""""""
-
-
 
 
 If source code is passed to a ``Reflector`` then temporarily make it available as a
@@ -491,8 +841,6 @@ located in another (e.g. when running a Language Server)
 """"""""""""""""""""""""""""""
 
 
-
-
 Cache directory for stubs
 
 
@@ -506,12 +854,26 @@ Cache directory for stubs
 """""""""""""""""""""""""""""
 
 
-
-
 Location of the core PHP stubs - these will be scanned and cached on the first request
 
 
 **Default**: ``"%application_root%\/vendor\/jetbrains\/phpstorm-stubs"``
+
+
+.. _param_worse_reflection.diagnostics.undefined_variable.suggestion_levenshtein_disatance:
+
+
+``worse_reflection.diagnostics.undefined_variable.suggestion_levenshtein_disatance``
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Type: integer
+
+
+Levenshtein distance to use when suggesting corrections for variable names
+
+
+**Default**: ``4``
 
 
 .. _FilePathResolverExtension:
@@ -528,9 +890,7 @@ FilePathResolverExtension
 """""""""""""""""""""""""""""""""""
 
 
-
-
-**Default**: ``"\/home\/daniel\/www\/phpactor\/phpactor"``
+**Default**: ``"\/phpactor"``
 
 
 .. _param_file_path_resolver.app_name:
@@ -538,8 +898,6 @@ FilePathResolverExtension
 
 ``file_path_resolver.app_name``
 """""""""""""""""""""""""""""""
-
-
 
 
 **Default**: ``"phpactor"``
@@ -552,8 +910,6 @@ FilePathResolverExtension
 """""""""""""""""""""""""""""""""""""""
 
 
-
-
 **Default**: ``null``
 
 
@@ -564,8 +920,6 @@ FilePathResolverExtension
 """""""""""""""""""""""""""""""""""
 
 
-
-
 **Default**: ``true``
 
 
@@ -574,8 +928,6 @@ FilePathResolverExtension
 
 ``file_path_resolver.enable_logging``
 """""""""""""""""""""""""""""""""""""
-
-
 
 
 **Default**: ``true``
@@ -595,6 +947,7 @@ LoggingExtension
 """""""""""""""""""
 
 
+Type: boolean
 
 
 **Default**: ``false``
@@ -607,6 +960,7 @@ LoggingExtension
 """""""""""""""""""""""""""
 
 
+Type: boolean
 
 
 **Default**: ``false``
@@ -619,6 +973,7 @@ LoggingExtension
 """"""""""""""""
 
 
+Type: string
 
 
 **Default**: ``"application.log"``
@@ -631,9 +986,13 @@ LoggingExtension
 """""""""""""""""
 
 
+Type: string
 
 
 **Default**: ``"warning"``
+
+
+**Allowed values**: "emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"
 
 
 .. _param_logger.name:
@@ -643,6 +1002,7 @@ LoggingExtension
 """""""""""""""
 
 
+Type: string
 
 
 **Default**: ``"logger"``
@@ -653,8 +1013,6 @@ LoggingExtension
 
 ``logging.formatter``
 """""""""""""""""""""
-
-
 
 
 **Default**: ``null``
@@ -674,8 +1032,6 @@ ComposerAutoloaderExtension
 """""""""""""""""""
 
 
-
-
 Include of the projects autoloader to facilitate class location. Note that when including an autoloader code _may_ be executed. This option may be disabled when using the indexer
 
 
@@ -687,8 +1043,6 @@ Include of the projects autoloader to facilitate class location. Note that when 
 
 ``composer.autoloader_path``
 """"""""""""""""""""""""""""
-
-
 
 
 Path to project's autoloader, can be an array
@@ -704,8 +1058,6 @@ Path to project's autoloader, can be an array
 """"""""""""""""""""""""""""""""
 
 
-
-
 Immediately de-register the autoloader once it has been included (prevent conflicts with Phpactor's autoloader). Some platforms may require this to be disabled
 
 
@@ -717,8 +1069,6 @@ Immediately de-register the autoloader once it has been included (prevent confli
 
 ``composer.class_maps_only``
 """"""""""""""""""""""""""""
-
-
 
 
 Register the composer class maps only, do not register the autoloader - RECOMMENDED
@@ -741,9 +1091,13 @@ ConsoleExtension
 """""""""""""""""""""
 
 
+Verbosity level
 
 
 **Default**: ``32``
+
+
+**Allowed values**: 16, 32, 64, 128, 256
 
 
 .. _param_console.decorated:
@@ -753,132 +1107,13 @@ ConsoleExtension
 """""""""""""""""""""
 
 
+Whether to decorate messages (null for auto-guessing)
 
 
 **Default**: ``null``
 
 
-.. _ExtensionManagerExtension:
-
-
-ExtensionManagerExtension
--------------------------
-
-
-.. _param_extension_manager.extension_vendor_dir:
-
-
-``extension_manager.extension_vendor_dir``
-""""""""""""""""""""""""""""""""""""""""""
-
-
-
-
-**Default**: ``"%application_root%\/extensions"``
-
-
-.. _param_extension_manager.vendor_dir:
-
-
-``extension_manager.vendor_dir``
-""""""""""""""""""""""""""""""""
-
-
-
-
-**Default**: ``"%application_root%\/vendor"``
-
-
-.. _param_extension_manager.config_path:
-
-
-``extension_manager.config_path``
-"""""""""""""""""""""""""""""""""
-
-
-
-
-**Default**: ``"%application_root%\/extensions.json"``
-
-
-.. _param_extension_manager.extension_list_path:
-
-
-``extension_manager.extension_list_path``
-"""""""""""""""""""""""""""""""""""""""""
-
-
-
-
-**Default**: ``"%application_root%\/extensions\/extensions.php"``
-
-
-.. _param_extension_manager.root_package_name:
-
-
-``extension_manager.root_package_name``
-"""""""""""""""""""""""""""""""""""""""
-
-
-
-
-**Default**: ``"phpactor-extensions"``
-
-
-.. _param_extension_manager.minimum_stability:
-
-
-``extension_manager.minimum_stability``
-"""""""""""""""""""""""""""""""""""""""
-
-
-
-
-**Default**: ``"stable"``
-
-
-.. _param_extension_manager.repositories:
-
-
-``extension_manager.repositories``
-""""""""""""""""""""""""""""""""""
-
-
-
-
-**Default**: ``[]``
-
-
-.. _param_extension_manager.quiet:
-
-
-``extension_manager.quiet``
-"""""""""""""""""""""""""""
-
-
-
-
-**Default**: ``false``
-
-
-.. _WorseReferenceFinderExtension:
-
-
-WorseReferenceFinderExtension
------------------------------
-
-
-.. _param_worse_reference_finder.plain_text_break_chars:
-
-
-``worse_reference_finder.plain_text_break_chars``
-"""""""""""""""""""""""""""""""""""""""""""""""""
-
-
-Type: array
-
-
-**Default**: ``[" ","\"","'","|","%","(",")","[","]",":","\r\n","\n","\r"]``
+**Allowed values**: true, false, null
 
 
 .. _PhpExtension:
@@ -893,8 +1128,6 @@ PhpExtension
 
 ``php.version``
 """""""""""""""
-
-
 
 
 Consider this value to be the project\'s version of PHP (e.g. `7.4`). If omitted
@@ -919,8 +1152,6 @@ LanguageServerExtension
 """"""""""""""""""""""""""""""""
 
 
-
-
 **Default**: ``true``
 
 
@@ -929,8 +1160,6 @@ LanguageServerExtension
 
 ``language_server.enable_workspace``
 """"""""""""""""""""""""""""""""""""
-
-
 
 
 If workspace management / text synchronization should be enabled (this isn't required for some language server implementations, e.g. static analyzers)
@@ -946,8 +1175,6 @@ If workspace management / text synchronization should be enabled (this isn't req
 """"""""""""""""""""""""""""""""""""""
 
 
-
-
 Phpactor parameters (config) that apply only to the language server session
 
 
@@ -959,8 +1186,6 @@ Phpactor parameters (config) that apply only to the language server session
 
 ``language_server.method_alias_map``
 """"""""""""""""""""""""""""""""""""
-
-
 
 
 Allow method names to be re-mapped. Useful for maintaining backwards compatibility
@@ -976,8 +1201,6 @@ Allow method names to be re-mapped. Useful for maintaining backwards compatibili
 """""""""""""""""""""""""""""""""""""""""
 
 
-
-
 Amount of time to wait before analyzing the code again for diagnostics
 
 
@@ -991,12 +1214,10 @@ Amount of time to wait before analyzing the code again for diagnostics
 """""""""""""""""""""""""""""""""""""""""
 
 
-
-
 Perform diagnostics when the text document is updated
 
 
-**Default**: ``false``
+**Default**: ``true``
 
 
 .. _param_language_server.diagnostics_on_save:
@@ -1006,9 +1227,20 @@ Perform diagnostics when the text document is updated
 """""""""""""""""""""""""""""""""""""""
 
 
-
-
 Perform diagnostics when the text document is saved
+
+
+**Default**: ``true``
+
+
+.. _param_language_server.diagnostics_on_open:
+
+
+``language_server.diagnostics_on_open``
+"""""""""""""""""""""""""""""""""""""""
+
+
+Perform diagnostics when opening a text document
 
 
 **Default**: ``true``
@@ -1021,24 +1253,33 @@ Perform diagnostics when the text document is saved
 """"""""""""""""""""""""""""""""""""""""
 
 
-
-
 Specify which diagnostic providers should be active (default to all)
 
 
 **Default**: ``null``
 
 
-.. _param_language_server,file_events:
+.. _param_language_server.diagnostic_outsource:
 
 
-``language_server,file_events``
+``language_server.diagnostic_outsource``
+""""""""""""""""""""""""""""""""""""""""
+
+
+If applicable diagnostics should be "outsourced" to a different process
+
+
+**Default**: ``true``
+
+
+.. _param_language_server.file_events:
+
+
+``language_server.file_events``
 """""""""""""""""""""""""""""""
 
 
-
-
-Register to recieve file events
+Register to receive file events
 
 
 **Default**: ``true``
@@ -1051,9 +1292,72 @@ Register to recieve file events
 """"""""""""""""""""""""""""""""""""
 
 
-
-
 **Default**: ``["**\/*.php"]``
+
+
+.. _param_language_server.profile:
+
+
+``language_server.profile``
+"""""""""""""""""""""""""""
+
+
+Logs timing information for incoming LSP requests
+
+
+**Default**: ``false``
+
+
+.. _param_language_server.trace:
+
+
+``language_server.trace``
+"""""""""""""""""""""""""
+
+
+Log incoming and outgoing messages (needs log formatter to be set to ``json``)
+
+
+**Default**: ``false``
+
+
+.. _param_language_server.shutdown_grace_period:
+
+
+``language_server.shutdown_grace_period``
+"""""""""""""""""""""""""""""""""""""""""
+
+
+Amount of time (in milliseconds) to wait before responding to a shutdown notification
+
+
+**Default**: ``200``
+
+
+.. _param_language_server.self_destruct_timeout:
+
+
+``language_server.self_destruct_timeout``
+"""""""""""""""""""""""""""""""""""""""""
+
+
+Wait this amount of time (in milliseconds) after a shutdown request before self-destructing
+
+
+**Default**: ``2500``
+
+
+.. _param_language_server.diagnostic_outsource_timeout:
+
+
+``language_server.diagnostic_outsource_timeout``
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Kill the diagnostics process if it outlives this timeout
+
+
+**Default**: ``5``
 
 
 .. _LanguageServerCompletionExtension:
@@ -1068,8 +1372,6 @@ LanguageServerCompletionExtension
 
 ``language_server_completion.trim_leading_dollar``
 """"""""""""""""""""""""""""""""""""""""""""""""""
-
-
 
 
 If the leading dollar should be trimmed for variable completion suggestions
@@ -1092,12 +1394,10 @@ LanguageServerReferenceFinderExtension
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-
-
 Stop searching for references after this time (in seconds) has expired
 
 
-**Default**: ``10``
+**Default**: ``60``
 
 
 .. _LanguageServerWorseReflectionExtension:
@@ -1114,34 +1414,66 @@ LanguageServerWorseReflectionExtension
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-
-
 Minimum interval to update the workspace index as documents are updated (in milliseconds)
 
 
 **Default**: ``100``
 
 
-.. _LanguageServerHoverExtension:
+.. _param_language_server_worse_reflection.inlay_hints.enable:
 
 
-LanguageServerHoverExtension
-----------------------------
+``language_server_worse_reflection.inlay_hints.enable``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-.. _param_language_server_hover.template_paths:
+Enable inlay hints (experimental)
 
 
-``language_server_hover.template_paths``
-""""""""""""""""""""""""""""""""""""""""
+**Default**: ``false``
 
 
+.. _param_language_server_worse_reflection.inlay_hints.types:
 
 
-Paths in which to look for templates for hover information.
+``language_server_worse_reflection.inlay_hints.types``
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-**Default**: ``["%project_config%\/templates\/markdown","%config%\/templates\/markdown"]``
+Show inlay type hints for variables
+
+
+**Default**: ``false``
+
+
+.. _param_language_server_worse_reflection.inlay_hints.params:
+
+
+``language_server_worse_reflection.inlay_hints.params``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Show inlay hints for parameters
+
+
+**Default**: ``true``
+
+
+.. _LanguageServerIndexerExtension:
+
+
+LanguageServerIndexerExtension
+------------------------------
+
+
+.. _param_language_server_indexer.workspace_symbol_search_limit:
+
+
+``language_server_indexer.workspace_symbol_search_limit``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+**Default**: ``250``
 
 
 .. _LanguageServerCodeTransformExtension:
@@ -1151,21 +1483,6 @@ LanguageServerCodeTransformExtension
 ------------------------------------
 
 
-.. _param_language_server_code_transform.import_globals:
-
-
-``language_server_code_transform.import_globals``
-"""""""""""""""""""""""""""""""""""""""""""""""""
-
-
-
-
-Show hints for non-imported global classes and functions
-
-
-**Default**: ``false``
-
-
 .. _param_language_server_code_transform.import_name.report_non_existing_names:
 
 
@@ -1173,12 +1490,10 @@ Show hints for non-imported global classes and functions
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-
-
 Show an error if a diagnostic name cannot be resolved - can produce false positives
 
 
-**Default**: ``false``
+**Default**: ``true``
 
 
 .. _IndexerExtension:
@@ -1195,6 +1510,7 @@ IndexerExtension
 """"""""""""""""""""""""""""
 
 
+Type: array
 
 
 List of allowed watchers. The first watcher that supports the current system will be used
@@ -1210,6 +1526,7 @@ List of allowed watchers. The first watcher that supports the current system wil
 """"""""""""""""""""""
 
 
+Type: string
 
 
 Path where the index should be saved
@@ -1225,6 +1542,7 @@ Path where the index should be saved
 """"""""""""""""""""""""""""
 
 
+Type: array
 
 
 Glob patterns to include while indexing
@@ -1240,6 +1558,7 @@ Glob patterns to include while indexing
 """"""""""""""""""""""""""""
 
 
+Type: array
 
 
 Glob patterns to exclude while indexing
@@ -1255,6 +1574,7 @@ Glob patterns to exclude while indexing
 """"""""""""""""""""""
 
 
+Type: array
 
 
 Paths to external folders to index. They will be indexed only once, if you want to take any changes into account you will have to reindex your project manually.
@@ -1270,6 +1590,7 @@ Paths to external folders to index. They will be indexed only once, if you want 
 """""""""""""""""""""
 
 
+Type: integer
 
 
 For polling indexers only: the time, in milliseconds, between polls (e.g. filesystem scans)
@@ -1285,12 +1606,29 @@ For polling indexers only: the time, in milliseconds, between polls (e.g. filesy
 """""""""""""""""""""""
 
 
+Type: integer
 
 
 For real-time indexers only: the time, in milliseconds, to buffer the results
 
 
 **Default**: ``500``
+
+
+.. _param_indexer.follow_symlinks:
+
+
+``indexer.follow_symlinks``
+"""""""""""""""""""""""""""
+
+
+Type: boolean
+
+
+To allow indexer to follow symlinks
+
+
+**Default**: ``false``
 
 
 .. _param_indexer.project_root:
@@ -1300,6 +1638,7 @@ For real-time indexers only: the time, in milliseconds, to buffer the results
 """"""""""""""""""""""""
 
 
+Type: string
 
 
 The root path to use for scanning the index
@@ -1315,6 +1654,7 @@ The root path to use for scanning the index
 """""""""""""""""""""""""""""""""
 
 
+Type: boolean
 
 
 Recurse over class implementations to resolve all references
@@ -1330,12 +1670,274 @@ Recurse over class implementations to resolve all references
 """"""""""""""""""""""""""""""""""""""
 
 
+Type: boolean
 
 
 Recurse over class implementations to resolve all class implementations (not just the classes directly implementing the subject)
 
 
 **Default**: ``true``
+
+
+.. _ObjectRendererExtension:
+
+
+ObjectRendererExtension
+-----------------------
+
+
+.. _param_object_renderer.template_paths.markdown:
+
+
+``object_renderer.template_paths.markdown``
+"""""""""""""""""""""""""""""""""""""""""""
+
+
+Paths in which to look for templates for hover information.
+
+
+**Default**: ``["%project_config%\/templates\/markdown","%config%\/templates\/markdown"]``
+
+
+.. _LanguageServerPhpstanExtension:
+
+
+LanguageServerPhpstanExtension
+------------------------------
+
+
+.. _param_language_server_phpstan.enabled:
+
+
+``language_server_phpstan.enabled``
+"""""""""""""""""""""""""""""""""""
+
+
+Type: boolean
+
+
+Enable or disable this extension
+
+
+**Default**: ``false``
+
+
+.. _param_language_server_phpstan.bin:
+
+
+``language_server_phpstan.bin``
+"""""""""""""""""""""""""""""""
+
+
+Path to the PHPStan executable
+
+
+**Default**: ``"%project_root%\/vendor\/bin\/phpstan"``
+
+
+.. _param_language_server_phpstan.level:
+
+
+``language_server_phpstan.level``
+"""""""""""""""""""""""""""""""""
+
+
+Override the PHPStan level
+
+
+**Default**: ``null``
+
+
+.. _LanguageServerPsalmExtension:
+
+
+LanguageServerPsalmExtension
+----------------------------
+
+
+.. _param_language_server_psalm.enabled:
+
+
+``language_server_psalm.enabled``
+"""""""""""""""""""""""""""""""""
+
+
+Type: boolean
+
+
+Enable or disable this extension
+
+
+**Default**: ``false``
+
+
+.. _param_language_server_psalm.bin:
+
+
+``language_server_psalm.bin``
+"""""""""""""""""""""""""""""
+
+
+Type: string
+
+
+Path to psalm if different from vendor/bin/psalm
+
+
+**Default**: ``"%project_root%\/vendor\/bin\/psalm"``
+
+
+.. _param_language_server_psalm.show_info:
+
+
+``language_server_psalm.show_info``
+"""""""""""""""""""""""""""""""""""
+
+
+Type: boolean
+
+
+If infos from psalm should be displayed
+
+
+**Default**: ``true``
+
+
+.. _param_language_server_psalm.use_cache:
+
+
+``language_server_psalm.use_cache``
+"""""""""""""""""""""""""""""""""""
+
+
+Type: boolean
+
+
+If the Psalm cache should be used (see the `--no-cache` option)
+
+
+**Default**: ``true``
+
+
+.. _param_language_server_psalm.error_level:
+
+
+``language_server_psalm.error_level``
+"""""""""""""""""""""""""""""""""""""
+
+
+Override level at which Psalm should report errors (lower => more errors)
+
+
+**Default**: ``null``
+
+
+.. _LanguageServerPhpCsFixerExtension:
+
+
+LanguageServerPhpCsFixerExtension
+---------------------------------
+
+
+.. _param_language_server_php_cs_fixer.enabled:
+
+
+``language_server_php_cs_fixer.enabled``
+""""""""""""""""""""""""""""""""""""""""
+
+
+Type: boolean
+
+
+Enable or disable this extension
+
+
+**Default**: ``false``
+
+
+.. _param_language_server_php_cs_fixer.bin:
+
+
+``language_server_php_cs_fixer.bin``
+""""""""""""""""""""""""""""""""""""
+
+
+Path to the php-cs-fixer executable
+
+
+**Default**: ``"%project_root%\/vendor\/bin\/php-cs-fixer"``
+
+
+.. _param_language_server_php_cs_fixer.env:
+
+
+``language_server_php_cs_fixer.env``
+""""""""""""""""""""""""""""""""""""
+
+
+Environment for PHP CS Fixer (e.g. to set PHP_CS_FIXER_IGNORE_ENV)
+
+
+**Default**: ``{"XDEBUG_MODE":"off","PHP_CS_FIXER_IGNORE_ENV":true}``
+
+
+.. _param_language_server_php_cs_fixer.show_diagnostics:
+
+
+``language_server_php_cs_fixer.show_diagnostics``
+"""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Whether PHP CS Fixer diagnostics are shown
+
+
+**Default**: ``true``
+
+
+.. _LanguageServerBlackfireExtension:
+
+
+LanguageServerBlackfireExtension
+--------------------------------
+
+
+.. _param_blackfire.enabled:
+
+
+``blackfire.enabled``
+"""""""""""""""""""""
+
+
+Type: boolean
+
+
+Enable or disable this extension
+
+
+**Default**: ``false``
+
+
+.. _ProphecyExtension:
+
+
+ProphecyExtension
+-----------------
+
+
+.. _param_prophecy.enabled:
+
+
+``prophecy.enabled``
+""""""""""""""""""""
+
+
+Type: boolean
+
+
+Enable or disable this extension
+
+
+**Default**: ``false``
 
 
 .. _BehatExtension:
@@ -1345,13 +1947,27 @@ BehatExtension
 --------------
 
 
+.. _param_behat.enabled:
+
+
+``behat.enabled``
+"""""""""""""""""
+
+
+Type: boolean
+
+
+Enable or disable this extension
+
+
+**Default**: ``false``
+
+
 .. _param_behat.config_path:
 
 
 ``behat.config_path``
 """""""""""""""""""""
-
-
 
 
 Path to the main behat.yml (including the filename behat.yml)
@@ -1367,41 +1983,93 @@ Path to the main behat.yml (including the filename behat.yml)
 """""""""""""""""""""""""""""
 
 
-
-
 If using Symfony, set this path to the XML container dump to find contexts which are defined as services
 
 
 **Default**: ``null``
 
 
-.. _LanguageServerPhpstanExtension:
+.. _SymfonyExtension:
 
 
-LanguageServerPhpstanExtension
-------------------------------
+SymfonyExtension
+----------------
 
 
-.. _param_language_server_phpstan.bin:
+.. _param_symfony.enabled:
 
 
-``language_server_phpstan.bin``
-"""""""""""""""""""""""""""""""
+``symfony.enabled``
+"""""""""""""""""""
 
 
+Type: boolean
 
 
-**Default**: ``"%project_root%\/vendor\/bin\/phpstan"``
+Enable or disable this extension
 
 
-.. _param_phpstan.level:
+**Default**: ``false``
 
 
-``phpstan.level``
-"""""""""""""""""
+.. _param_symfony.xml_path:
 
 
+``symfony.xml_path``
+""""""""""""""""""""
 
 
-**Default**: ``null``
+Path to the Symfony container XML dump file
+
+
+**Default**: ``"%project_root%\/var\/cache\/dev\/App_KernelDevDebugContainer.xml"``
+
+
+.. _param_completion_worse.completor.symfony.enabled:
+
+
+``completion_worse.completor.symfony.enabled``
+""""""""""""""""""""""""""""""""""""""""""""""
+
+
+Enable/disable the Symfony completor - depends on Symfony extension being enabled
+
+
+**Default**: ``true``
+
+
+.. _param_public_services_only:
+
+
+``public_services_only``
+""""""""""""""""""""""""
+
+
+Only consider public services when providing analysis for the service locator
+
+
+**Default**: ``false``
+
+
+.. _PHPUnitExtension:
+
+
+PHPUnitExtension
+----------------
+
+
+.. _param_phpunit.enabled:
+
+
+``phpunit.enabled``
+"""""""""""""""""""
+
+
+Type: boolean
+
+
+Enable or disable this extension
+
+
+**Default**: ``false``
 

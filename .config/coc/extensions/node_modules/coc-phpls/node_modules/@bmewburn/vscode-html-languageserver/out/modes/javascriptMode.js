@@ -1,308 +1,389 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getJavaScriptMode = void 0;
 const languageModelCache_1 = require("../languageModelCache");
 const languageModes_1 = require("./languageModes");
 const strings_1 = require("../utils/strings");
 const ts = require("typescript");
-const path_1 = require("path");
 const javascriptSemanticTokens_1 = require("./javascriptSemanticTokens");
 const JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
-let jquery_d_ts = path_1.join(__dirname, './jquery.d.ts');
-if (!ts.sys.fileExists(jquery_d_ts)) {
-    jquery_d_ts = path_1.join(__dirname, '../../lib/jquery.d.ts');
-}
-function getJavaScriptMode(documentRegions, languageId) {
-    let jsDocuments = languageModelCache_1.getLanguageModelCache(10, 60, document => documentRegions.get(document).getEmbeddedDocument(languageId));
-    const workingFile = languageId === 'javascript' ? 'vscode://javascript/1.js' : 'vscode://javascript/2.ts';
-    let compilerOptions = { allowNonTsExtensions: true, allowJs: true, lib: ['lib.es6.d.ts'], target: ts.ScriptTarget.Latest, moduleResolution: ts.ModuleResolutionKind.Classic };
-    let currentTextDocument;
-    let scriptFileVersion = 0;
-    function updateCurrentTextDocument(doc) {
-        if (!currentTextDocument || doc.uri !== currentTextDocument.uri || doc.version !== currentTextDocument.version) {
-            currentTextDocument = jsDocuments.get(doc);
-            scriptFileVersion++;
-        }
-    }
-    const host = {
-        getCompilationSettings: () => compilerOptions,
-        getScriptFileNames: () => [workingFile, jquery_d_ts],
-        getScriptKind: (fileName) => fileName.substr(fileName.length - 2) === 'ts' ? ts.ScriptKind.TS : ts.ScriptKind.JS,
-        getScriptVersion: (fileName) => {
-            if (fileName === workingFile) {
-                return String(scriptFileVersion);
-            }
-            return '1';
-        },
-        getScriptSnapshot: (fileName) => {
-            let text = '';
-            if (strings_1.startsWith(fileName, 'vscode:')) {
-                if (fileName === workingFile) {
+function getLanguageServiceHost(scriptKind) {
+    const compilerOptions = { allowNonTsExtensions: true, allowJs: true, lib: ['lib.es6.d.ts'], target: ts.ScriptTarget.Latest, moduleResolution: ts.ModuleResolutionKind.Classic, experimentalDecorators: false };
+    let currentTextDocument = languageModes_1.TextDocument.create('init', 'javascript', 1, '');
+    const jsLanguageService = Promise.resolve().then(() => require('./javascriptLibs')).then(libs => {
+        const host = {
+            getCompilationSettings: () => compilerOptions,
+            getScriptFileNames: () => [currentTextDocument.uri, 'jquery'],
+            getScriptKind: (fileName) => {
+                if (fileName === currentTextDocument.uri) {
+                    return scriptKind;
+                }
+                return fileName.substr(fileName.length - 2) === 'ts' ? ts.ScriptKind.TS : ts.ScriptKind.JS;
+            },
+            getScriptVersion: (fileName) => {
+                if (fileName === currentTextDocument.uri) {
+                    return String(currentTextDocument.version);
+                }
+                return '1';
+            },
+            getScriptSnapshot: (fileName) => {
+                let text = '';
+                if (fileName === currentTextDocument.uri) {
                     text = currentTextDocument.getText();
                 }
-            }
-            else {
-                text = ts.sys.readFile(fileName) || '';
-            }
-            return {
-                getText: (start, end) => text.substring(start, end),
-                getLength: () => text.length,
-                getChangeRange: () => undefined
-            };
+                else {
+                    text = libs.loadLibrary(fileName);
+                }
+                return {
+                    getText: (start, end) => text.substring(start, end),
+                    getLength: () => text.length,
+                    getChangeRange: () => undefined
+                };
+            },
+            getCurrentDirectory: () => '',
+            getDefaultLibFileName: (_options) => 'es6'
+        };
+        return ts.createLanguageService(host);
+    });
+    return {
+        getLanguageService(jsDocument) {
+            return __awaiter(this, void 0, void 0, function* () {
+                currentTextDocument = jsDocument;
+                return jsLanguageService;
+            });
         },
-        getCurrentDirectory: () => '',
-        getDefaultLibFileName: (options) => ts.getDefaultLibFilePath(options)
+        getCompilationSettings() {
+            return compilerOptions;
+        },
+        dispose() {
+            if (jsLanguageService) {
+                jsLanguageService.then(s => s.dispose());
+            }
+        }
     };
-    let jsLanguageService = ts.createLanguageService(host);
+}
+function getJavaScriptMode(documentRegions, languageId, workspace) {
+    let jsDocuments = languageModelCache_1.getLanguageModelCache(10, 60, document => documentRegions.get(document).getEmbeddedDocument(languageId));
+    const host = getLanguageServiceHost(languageId === 'javascript' ? ts.ScriptKind.JS : ts.ScriptKind.TS);
     let globalSettings = {};
     return {
         getId() {
             return languageId;
         },
-        doValidation(document) {
-            updateCurrentTextDocument(document);
-            const syntaxDiagnostics = jsLanguageService.getSyntacticDiagnostics(workingFile);
-            const semanticDiagnostics = jsLanguageService.getSemanticDiagnostics(workingFile);
-            return syntaxDiagnostics.concat(semanticDiagnostics).map((diag) => {
+        doValidation(document, settings = workspace.settings) {
+            return __awaiter(this, void 0, void 0, function* () {
+                host.getCompilationSettings()['experimentalDecorators'] = settings && settings.javascript && settings.javascript.implicitProjectConfig.experimentalDecorators;
+                const jsDocument = jsDocuments.get(document);
+                const languageService = yield host.getLanguageService(jsDocument);
+                const syntaxDiagnostics = languageService.getSyntacticDiagnostics(jsDocument.uri);
+                const semanticDiagnostics = languageService.getSemanticDiagnostics(jsDocument.uri);
+                return syntaxDiagnostics.concat(semanticDiagnostics).map((diag) => {
+                    return {
+                        range: convertRange(jsDocument, diag),
+                        severity: languageModes_1.DiagnosticSeverity.Error,
+                        source: languageId,
+                        message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
+                    };
+                });
+            });
+        },
+        doComplete(document, position, _documentContext) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                let offset = jsDocument.offsetAt(position);
+                let completions = jsLanguageService.getCompletionsAtPosition(jsDocument.uri, offset, { includeExternalModuleExports: false, includeInsertTextCompletions: false });
+                if (!completions) {
+                    return { isIncomplete: false, items: [] };
+                }
+                let replaceRange = convertRange(jsDocument, strings_1.getWordAtText(jsDocument.getText(), offset, JS_WORD_REGEX));
                 return {
-                    range: convertRange(currentTextDocument, diag),
-                    severity: languageModes_1.DiagnosticSeverity.Error,
-                    source: languageId,
-                    message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
+                    isIncomplete: false,
+                    items: completions.entries.map(entry => {
+                        return {
+                            uri: document.uri,
+                            position: position,
+                            label: entry.name,
+                            sortText: entry.sortText,
+                            kind: convertKind(entry.kind),
+                            textEdit: languageModes_1.TextEdit.replace(replaceRange, entry.name),
+                            data: {
+                                languageId,
+                                uri: document.uri,
+                                offset: offset
+                            }
+                        };
+                    })
                 };
             });
         },
-        doComplete(document, position) {
-            updateCurrentTextDocument(document);
-            let offset = currentTextDocument.offsetAt(position);
-            let completions = jsLanguageService.getCompletionsAtPosition(workingFile, offset, { includeExternalModuleExports: false, includeInsertTextCompletions: false });
-            if (!completions) {
-                return { isIncomplete: false, items: [] };
-            }
-            let replaceRange = convertRange(currentTextDocument, strings_1.getWordAtText(currentTextDocument.getText(), offset, JS_WORD_REGEX));
-            return {
-                isIncomplete: false,
-                items: completions.entries.map(entry => {
-                    return {
-                        uri: document.uri,
-                        position: position,
-                        label: entry.name,
-                        sortText: entry.sortText,
-                        kind: convertKind(entry.kind),
-                        textEdit: languageModes_1.TextEdit.replace(replaceRange, entry.name),
-                        data: {
-                            languageId,
-                            uri: document.uri,
-                            offset: offset
-                        }
-                    };
-                })
-            };
-        },
         doResolve(document, item) {
-            updateCurrentTextDocument(document);
-            let details = jsLanguageService.getCompletionEntryDetails(workingFile, item.data.offset, item.label, undefined, undefined, undefined);
-            if (details) {
-                item.detail = ts.displayPartsToString(details.displayParts);
-                item.documentation = ts.displayPartsToString(details.documentation);
-                delete item.data;
-            }
-            return item;
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                let details = jsLanguageService.getCompletionEntryDetails(jsDocument.uri, item.data.offset, item.label, undefined, undefined, undefined);
+                if (details) {
+                    item.detail = ts.displayPartsToString(details.displayParts);
+                    item.documentation = ts.displayPartsToString(details.documentation);
+                    delete item.data;
+                }
+                return item;
+            });
         },
         doHover(document, position) {
-            updateCurrentTextDocument(document);
-            let info = jsLanguageService.getQuickInfoAtPosition(workingFile, currentTextDocument.offsetAt(position));
-            if (info) {
-                let contents = ts.displayPartsToString(info.displayParts);
-                return {
-                    range: convertRange(currentTextDocument, info.textSpan),
-                    contents: languageModes_1.MarkedString.fromPlainText(contents)
-                };
-            }
-            return null;
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                let info = jsLanguageService.getQuickInfoAtPosition(jsDocument.uri, jsDocument.offsetAt(position));
+                if (info) {
+                    const contents = ts.displayPartsToString(info.displayParts);
+                    return {
+                        range: convertRange(jsDocument, info.textSpan),
+                        contents: ['```typescript', contents, '```'].join('\n')
+                    };
+                }
+                return null;
+            });
         },
         doSignatureHelp(document, position) {
-            updateCurrentTextDocument(document);
-            let signHelp = jsLanguageService.getSignatureHelpItems(workingFile, currentTextDocument.offsetAt(position), undefined);
-            if (signHelp) {
-                let ret = {
-                    activeSignature: signHelp.selectedItemIndex,
-                    activeParameter: signHelp.argumentIndex,
-                    signatures: []
-                };
-                signHelp.items.forEach(item => {
-                    let signature = {
-                        label: '',
-                        documentation: undefined,
-                        parameters: []
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                let signHelp = jsLanguageService.getSignatureHelpItems(jsDocument.uri, jsDocument.offsetAt(position), undefined);
+                if (signHelp) {
+                    let ret = {
+                        activeSignature: signHelp.selectedItemIndex,
+                        activeParameter: signHelp.argumentIndex,
+                        signatures: []
                     };
-                    signature.label += ts.displayPartsToString(item.prefixDisplayParts);
-                    item.parameters.forEach((p, i, a) => {
-                        let label = ts.displayPartsToString(p.displayParts);
-                        let parameter = {
-                            label: label,
-                            documentation: ts.displayPartsToString(p.documentation)
+                    signHelp.items.forEach(item => {
+                        let signature = {
+                            label: '',
+                            documentation: undefined,
+                            parameters: []
                         };
-                        signature.label += label;
-                        signature.parameters.push(parameter);
-                        if (i < a.length - 1) {
-                            signature.label += ts.displayPartsToString(item.separatorDisplayParts);
-                        }
+                        signature.label += ts.displayPartsToString(item.prefixDisplayParts);
+                        item.parameters.forEach((p, i, a) => {
+                            let label = ts.displayPartsToString(p.displayParts);
+                            let parameter = {
+                                label: label,
+                                documentation: ts.displayPartsToString(p.documentation)
+                            };
+                            signature.label += label;
+                            signature.parameters.push(parameter);
+                            if (i < a.length - 1) {
+                                signature.label += ts.displayPartsToString(item.separatorDisplayParts);
+                            }
+                        });
+                        signature.label += ts.displayPartsToString(item.suffixDisplayParts);
+                        ret.signatures.push(signature);
                     });
-                    signature.label += ts.displayPartsToString(item.suffixDisplayParts);
-                    ret.signatures.push(signature);
+                    return ret;
+                }
+                return null;
+            });
+        },
+        doRename(document, position, newName) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                const jsDocumentPosition = jsDocument.offsetAt(position);
+                const { canRename } = jsLanguageService.getRenameInfo(jsDocument.uri, jsDocumentPosition);
+                if (!canRename) {
+                    return null;
+                }
+                const renameInfos = jsLanguageService.findRenameLocations(jsDocument.uri, jsDocumentPosition, false, false);
+                const edits = [];
+                renameInfos === null || renameInfos === void 0 ? void 0 : renameInfos.map(renameInfo => {
+                    edits.push({
+                        range: convertRange(jsDocument, renameInfo.textSpan),
+                        newText: newName,
+                    });
                 });
-                return ret;
-            }
-            return null;
+                return {
+                    changes: { [document.uri]: edits },
+                };
+            });
         },
         findDocumentHighlight(document, position) {
-            updateCurrentTextDocument(document);
-            const highlights = jsLanguageService.getDocumentHighlights(workingFile, currentTextDocument.offsetAt(position), [workingFile]);
-            const out = [];
-            for (const entry of highlights || []) {
-                for (const highlight of entry.highlightSpans) {
-                    out.push({
-                        range: convertRange(currentTextDocument, highlight.textSpan),
-                        kind: highlight.kind === 'writtenReference' ? languageModes_1.DocumentHighlightKind.Write : languageModes_1.DocumentHighlightKind.Text
-                    });
-                }
-            }
-            return out;
-        },
-        findDocumentSymbols(document) {
-            updateCurrentTextDocument(document);
-            let items = jsLanguageService.getNavigationBarItems(workingFile);
-            if (items) {
-                let result = [];
-                let existing = Object.create(null);
-                let collectSymbols = (item, containerLabel) => {
-                    let sig = item.text + item.kind + item.spans[0].start;
-                    if (item.kind !== 'script' && !existing[sig]) {
-                        let symbol = {
-                            name: item.text,
-                            kind: convertSymbolKind(item.kind),
-                            location: {
-                                uri: document.uri,
-                                range: convertRange(currentTextDocument, item.spans[0])
-                            },
-                            containerName: containerLabel
-                        };
-                        existing[sig] = true;
-                        result.push(symbol);
-                        containerLabel = item.text;
-                    }
-                    if (item.childItems && item.childItems.length > 0) {
-                        for (let child of item.childItems) {
-                            collectSymbols(child, containerLabel);
-                        }
-                    }
-                };
-                items.forEach(item => collectSymbols(item));
-                return result;
-            }
-            return [];
-        },
-        findDefinition(document, position) {
-            updateCurrentTextDocument(document);
-            let definition = jsLanguageService.getDefinitionAtPosition(workingFile, currentTextDocument.offsetAt(position));
-            if (definition) {
-                return definition.filter(d => d.fileName === workingFile).map(d => {
-                    return {
-                        uri: document.uri,
-                        range: convertRange(currentTextDocument, d.textSpan)
-                    };
-                });
-            }
-            return null;
-        },
-        findReferences(document, position) {
-            updateCurrentTextDocument(document);
-            let references = jsLanguageService.getReferencesAtPosition(workingFile, currentTextDocument.offsetAt(position));
-            if (references) {
-                return references.filter(d => d.fileName === workingFile).map(d => {
-                    return {
-                        uri: document.uri,
-                        range: convertRange(currentTextDocument, d.textSpan)
-                    };
-                });
-            }
-            return [];
-        },
-        getSelectionRange(document, position) {
-            updateCurrentTextDocument(document);
-            function convertSelectionRange(selectionRange) {
-                const parent = selectionRange.parent ? convertSelectionRange(selectionRange.parent) : undefined;
-                return languageModes_1.SelectionRange.create(convertRange(currentTextDocument, selectionRange.textSpan), parent);
-            }
-            const range = jsLanguageService.getSmartSelectionRange(workingFile, currentTextDocument.offsetAt(position));
-            return convertSelectionRange(range);
-        },
-        format(document, range, formatParams, settings = globalSettings) {
-            currentTextDocument = documentRegions.get(document).getEmbeddedDocument('javascript', true);
-            scriptFileVersion++;
-            let formatterSettings = settings && settings.javascript && settings.javascript.format;
-            let initialIndentLevel = computeInitialIndent(document, range, formatParams);
-            let formatSettings = convertOptions(formatParams, formatterSettings, initialIndentLevel + 1);
-            let start = currentTextDocument.offsetAt(range.start);
-            let end = currentTextDocument.offsetAt(range.end);
-            let lastLineRange = null;
-            if (range.end.line > range.start.line && (range.end.character === 0 || strings_1.isWhitespaceOnly(currentTextDocument.getText().substr(end - range.end.character, range.end.character)))) {
-                end -= range.end.character;
-                lastLineRange = languageModes_1.Range.create(languageModes_1.Position.create(range.end.line, 0), range.end);
-            }
-            let edits = jsLanguageService.getFormattingEditsForRange(workingFile, start, end, formatSettings);
-            if (edits) {
-                let result = [];
-                for (let edit of edits) {
-                    if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
-                        result.push({
-                            range: convertRange(currentTextDocument, edit.span),
-                            newText: edit.newText
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                const highlights = jsLanguageService.getDocumentHighlights(jsDocument.uri, jsDocument.offsetAt(position), [jsDocument.uri]);
+                const out = [];
+                for (const entry of highlights || []) {
+                    for (const highlight of entry.highlightSpans) {
+                        out.push({
+                            range: convertRange(jsDocument, highlight.textSpan),
+                            kind: highlight.kind === 'writtenReference' ? languageModes_1.DocumentHighlightKind.Write : languageModes_1.DocumentHighlightKind.Text
                         });
                     }
                 }
-                if (lastLineRange) {
-                    result.push({
-                        range: lastLineRange,
-                        newText: generateIndent(initialIndentLevel, formatParams)
+                return out;
+            });
+        },
+        findDocumentSymbols(document) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                let items = jsLanguageService.getNavigationBarItems(jsDocument.uri);
+                if (items) {
+                    let result = [];
+                    let existing = Object.create(null);
+                    let collectSymbols = (item, containerLabel) => {
+                        let sig = item.text + item.kind + item.spans[0].start;
+                        if (item.kind !== 'script' && !existing[sig]) {
+                            let symbol = {
+                                name: item.text,
+                                kind: convertSymbolKind(item.kind),
+                                location: {
+                                    uri: document.uri,
+                                    range: convertRange(jsDocument, item.spans[0])
+                                },
+                                containerName: containerLabel
+                            };
+                            existing[sig] = true;
+                            result.push(symbol);
+                            containerLabel = item.text;
+                        }
+                        if (item.childItems && item.childItems.length > 0) {
+                            for (let child of item.childItems) {
+                                collectSymbols(child, containerLabel);
+                            }
+                        }
+                    };
+                    items.forEach(item => collectSymbols(item));
+                    return result;
+                }
+                return [];
+            });
+        },
+        findDefinition(document, position) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                let definition = jsLanguageService.getDefinitionAtPosition(jsDocument.uri, jsDocument.offsetAt(position));
+                if (definition) {
+                    return definition.filter(d => d.fileName === jsDocument.uri).map(d => {
+                        return {
+                            uri: document.uri,
+                            range: convertRange(jsDocument, d.textSpan)
+                        };
                     });
                 }
-                return result;
-            }
-            return [];
+                return null;
+            });
+        },
+        findReferences(document, position) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                let references = jsLanguageService.getReferencesAtPosition(jsDocument.uri, jsDocument.offsetAt(position));
+                if (references) {
+                    return references.filter(d => d.fileName === jsDocument.uri).map(d => {
+                        return {
+                            uri: document.uri,
+                            range: convertRange(jsDocument, d.textSpan)
+                        };
+                    });
+                }
+                return [];
+            });
+        },
+        getSelectionRange(document, position) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                function convertSelectionRange(selectionRange) {
+                    const parent = selectionRange.parent ? convertSelectionRange(selectionRange.parent) : undefined;
+                    return languageModes_1.SelectionRange.create(convertRange(jsDocument, selectionRange.textSpan), parent);
+                }
+                const range = jsLanguageService.getSmartSelectionRange(jsDocument.uri, jsDocument.offsetAt(position));
+                return convertSelectionRange(range);
+            });
+        },
+        format(document, range, formatParams, settings = globalSettings) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = documentRegions.get(document).getEmbeddedDocument('javascript', true);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                let formatterSettings = settings && settings.javascript && settings.javascript.format;
+                let initialIndentLevel = computeInitialIndent(document, range, formatParams);
+                let formatSettings = convertOptions(formatParams, formatterSettings, initialIndentLevel + 1);
+                let start = jsDocument.offsetAt(range.start);
+                let end = jsDocument.offsetAt(range.end);
+                let lastLineRange = null;
+                if (range.end.line > range.start.line && (range.end.character === 0 || strings_1.isWhitespaceOnly(jsDocument.getText().substr(end - range.end.character, range.end.character)))) {
+                    end -= range.end.character;
+                    lastLineRange = languageModes_1.Range.create(languageModes_1.Position.create(range.end.line, 0), range.end);
+                }
+                let edits = jsLanguageService.getFormattingEditsForRange(jsDocument.uri, start, end, formatSettings);
+                if (edits) {
+                    let result = [];
+                    for (let edit of edits) {
+                        if (edit.span.start >= start && edit.span.start + edit.span.length <= end) {
+                            result.push({
+                                range: convertRange(jsDocument, edit.span),
+                                newText: edit.newText
+                            });
+                        }
+                    }
+                    if (lastLineRange) {
+                        result.push({
+                            range: lastLineRange,
+                            newText: generateIndent(initialIndentLevel, formatParams)
+                        });
+                    }
+                    return result;
+                }
+                return [];
+            });
         },
         getFoldingRanges(document) {
-            updateCurrentTextDocument(document);
-            let spans = jsLanguageService.getOutliningSpans(workingFile);
-            let ranges = [];
-            for (let span of spans) {
-                let curr = convertRange(currentTextDocument, span.textSpan);
-                let startLine = curr.start.line;
-                let endLine = curr.end.line;
-                if (startLine < endLine) {
-                    let foldingRange = { startLine, endLine };
-                    let match = document.getText(curr).match(/^\s*\/(?:(\/\s*#(?:end)?region\b)|(\*|\/))/);
-                    if (match) {
-                        foldingRange.kind = match[1] ? languageModes_1.FoldingRangeKind.Region : languageModes_1.FoldingRangeKind.Comment;
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                let spans = jsLanguageService.getOutliningSpans(jsDocument.uri);
+                let ranges = [];
+                for (let span of spans) {
+                    let curr = convertRange(jsDocument, span.textSpan);
+                    let startLine = curr.start.line;
+                    let endLine = curr.end.line;
+                    if (startLine < endLine) {
+                        let foldingRange = { startLine, endLine };
+                        let match = document.getText(curr).match(/^\s*\/(?:(\/\s*#(?:end)?region\b)|(\*|\/))/);
+                        if (match) {
+                            foldingRange.kind = match[1] ? languageModes_1.FoldingRangeKind.Region : languageModes_1.FoldingRangeKind.Comment;
+                        }
+                        ranges.push(foldingRange);
                     }
-                    ranges.push(foldingRange);
                 }
-            }
-            return ranges;
+                return ranges;
+            });
         },
         onDocumentRemoved(document) {
             jsDocuments.onDocumentRemoved(document);
         },
         getSemanticTokens(document) {
-            updateCurrentTextDocument(document);
-            return javascriptSemanticTokens_1.getSemanticTokens(jsLanguageService, currentTextDocument, workingFile);
+            return __awaiter(this, void 0, void 0, function* () {
+                const jsDocument = jsDocuments.get(document);
+                const jsLanguageService = yield host.getLanguageService(jsDocument);
+                return javascriptSemanticTokens_1.getSemanticTokens(jsLanguageService, jsDocument, jsDocument.uri);
+            });
         },
         getSemanticTokenLegend() {
             return javascriptSemanticTokens_1.getSemanticTokenLegend();
         },
         dispose() {
-            jsLanguageService.dispose();
+            host.dispose();
             jsDocuments.dispose();
         }
     };

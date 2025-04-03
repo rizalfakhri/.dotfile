@@ -3,12 +3,12 @@
 namespace Phpactor\Extension\ClassMover\Application;
 
 use Exception;
-use Phpactor\ClassFileConverter\Exception\NoMatchingSourceException;
-use Phpactor\ClassFileConverter\PathFinder;
 use Phpactor\ClassMover\ClassMover as ClassMoverFacade;
 use Phpactor\ClassMover\Domain\Name\FullyQualifiedName;
 use Phpactor\Filesystem\Domain\FilePath;
 use Phpactor\Filesystem\Domain\Filesystem;
+use Phpactor\PathFinder\Exception\NoMatchingSourceException;
+use Phpactor\PathFinder\PathFinder;
 use Phpactor\Phpactor;
 use Phpactor\Extension\Core\Application\Helper\ClassFileNormalizer;
 use Phpactor\Filesystem\Domain\FilesystemRegistry;
@@ -18,36 +18,12 @@ use RuntimeException;
 
 class ClassMover
 {
-    /**
-     * @var ClassFileNormalizer
-     */
-    private $classFileNormalizer;
-
-    /**
-     * @var ClassMoverFacade
-     */
-    private $classMover;
-
-    /**
-     * @var FilesystemRegistry
-     */
-    private $filesystemRegistry;
-
-    /**
-     * @var PathFinder
-     */
-    private $pathFinder;
-
     public function __construct(
-        ClassFileNormalizer $classFileNormalizer,
-        ClassMoverFacade $classMover,
-        FilesystemRegistry $filesystemRegistry,
-        PathFinder $pathFinder
+        private ClassFileNormalizer $classFileNormalizer,
+        private ClassMoverFacade $classMover,
+        private FilesystemRegistry $filesystemRegistry,
+        private PathFinder $pathFinder
     ) {
-        $this->classFileNormalizer = $classFileNormalizer;
-        $this->filesystemRegistry = $filesystemRegistry;
-        $this->classMover = $classMover;
-        $this->pathFinder = $pathFinder;
     }
 
     public function getRelatedFiles(string $src): array
@@ -56,7 +32,7 @@ class ClassMover
             return array_filter($this->pathFinder->destinationsFor($src), function (string $filePath) {
                 return (bool) file_exists($filePath);
             });
-        } catch (NoMatchingSourceException $e) {
+        } catch (NoMatchingSourceException) {
             // TODO: Make pathfinder return it's own exception here, this is the class-to-file exception
             return [];
         }
@@ -107,6 +83,9 @@ class ClassMover
     {
         $filesystem = $this->filesystemRegistry->get($filesystemName);
         $destPath = Phpactor::normalizePath($destPath);
+        if (str_ends_with($destPath, '/')) {
+            $destPath = $destPath . basename($srcPath);
+        }
 
         $srcPath = $filesystem->createPath($srcPath);
         $destPath = $filesystem->createPath($destPath);
@@ -140,7 +119,7 @@ class ClassMover
     private function replaceThoseReferences(ClassMoverLogger $logger, Filesystem $filesystem, array $files): void
     {
         foreach ($files as $paths) {
-            list($srcPath, $destPath) = $paths;
+            [$srcPath, $destPath] = $paths;
 
             $srcPath = $filesystem->createPath($srcPath);
             $destPath = $filesystem->createPath($destPath);
@@ -178,16 +157,16 @@ class ClassMover
         $paths = [
             $src => $dest
         ];
-        
+
         if ($moveRelatedFiles) {
             $oldPaths = $this->getRelatedFiles($src);
             $newPaths = $this->pathFinder->destinationsFor($dest);
-        
+
             foreach ($oldPaths as $oldType => $oldPath) {
                 if (!isset($newPaths[$oldType])) {
                     continue;
                 }
-        
+
                 $newPath = $newPaths[$oldType];
                 $paths[$oldPath] = $newPath;
             }

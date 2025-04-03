@@ -4,6 +4,6 @@ export interface SemanticTokenProvider {
         types: string[];
         modifiers: string[];
     };
-    getSemanticTokens(document: TextDocument, ranges?: Range[]): number[];
+    getSemanticTokens(document: TextDocument, ranges?: Range[]): Promise<number[]>;
 }
 export declare function newSemanticTokenProvider(languageModes: LanguageModes): SemanticTokenProvider;

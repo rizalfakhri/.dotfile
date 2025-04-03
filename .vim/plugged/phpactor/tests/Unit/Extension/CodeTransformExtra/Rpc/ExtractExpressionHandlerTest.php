@@ -6,7 +6,6 @@ use Phpactor\CodeTransform\Domain\Refactor\ExtractExpression;
 use Phpactor\Extension\CodeTransformExtra\Rpc\ExtractExpressionHandler;
 use Phpactor\Extension\Rpc\Handler;
 use Phpactor\Extension\Rpc\Response\InputCallbackResponse;
-use Phpactor\CodeTransform\Domain\SourceCode;
 use Phpactor\Extension\Rpc\Response\UpdateFileSourceResponse;
 use Phpactor\Extension\Rpc\Response\Input\TextInput;
 use Phpactor\Tests\Unit\Extension\Rpc\HandlerTestCase;
@@ -25,7 +24,7 @@ class ExtractExpressionHandlerTest extends HandlerTestCase
     /**
      * @var ObjectProphecy<ExtractExpression>
      */
-    private $extractExpression;
+    private ObjectProphecy $extractExpression;
 
     public function setUp(): void
     {

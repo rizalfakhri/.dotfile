@@ -26,10 +26,16 @@ setlocal fo-=t fo+=croql
 let b:julia_vim_loaded = 1
 
 let b:undo_ftplugin = "setlocal include< suffixesadd< comments< commentstring<"
-      \ . " define< fo< shiftwidth< expandtab< indentexpr< indentkeys< cinoptions< completefunc<"
+      \ . " expandtab< shiftwidth<"
+      \ . " define< fo< indentexpr< indentkeys< cinoptions< completefunc<"
       \ . " | unlet! b:commentary_format"
       \ . " | unlet! b:smartcomment_force_linemode"
       \ . " | unlet! b:julia_vim_loaded"
+      
+if !exists("g:julia_set_indentation") || g:julia_set_indentation != 0
+    " As suggested by Style Guide.
+    setlocal expandtab shiftwidth=4
+endif
 
 " MatchIt plugin support
 if exists("loaded_matchit")
@@ -72,7 +78,7 @@ if exists("loaded_matchit")
     elseif attr == 'juliaBlKeyword'
       return b:julia_begin_keywordsm . ':' . b:julia_end_keywords
     elseif attr == 'juliaException'
-      return b:julia_begin_keywordsm . ':\<\%(catch\|finally\)\>:' . b:julia_end_keywords
+      return b:julia_begin_keywordsm . ':\<\%(catch\|else\|finally\)\>:' . b:julia_end_keywords
     endif
     return '\<\>:\<\>'
   endfunction

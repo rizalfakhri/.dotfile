@@ -358,13 +358,18 @@ function! sj#ruby#SplitBlock()
   if search('\S\%#', 'Wbn')
     let multiline_block = ' '.multiline_block
   endif
-
-  let body = join(split(body, '\s*;\s*'), "\n")
+  
   let replacement = substitute(body, '^'.pattern.'$', multiline_block, '')
+
   " remove leftover whitespace
   let replacement = substitute(replacement, '\s*\n', '\n', 'g')
 
   call sj#ReplaceMotion('Va{', replacement)
+
+  normal! j0
+  while sj#SearchSkip(';', sj#SkipSyntax(['rubyString']), 'W', line('.')) > 0
+    call execute("normal! r\<cr>") 
+  endwhile
 
   return 1
 endfunction
@@ -518,7 +523,7 @@ function! sj#ruby#SplitOptions()
 
   let start_lineno = line('.')
   let [from, to, args, opts, hash_type, cursor_arg] =
-        \ sj#argparser#ruby#ParseArguments(from, to, getline('.'))
+        \ sj#argparser#ruby#ParseArguments(from, to, getline('.'), { 'expand_options': 1 })
 
   if !(from <= col('.') && col('.') <= to)
     " then this is not around the cursor, bail out
@@ -669,7 +674,10 @@ function! sj#ruby#SplitArray()
     return 0
   endif
 
-  let [from, to, args, opts; _rest] = sj#argparser#ruby#ParseArguments(from + 1, to - 1, getline('.'))
+  let [from, to, args, opts; _rest] = sj#argparser#ruby#ParseArguments(from + 1, to - 1, getline('.'), {
+        \ 'expand_options': sj#settings#Read('ruby_expand_options_in_arrays')
+        \ })
+
   if from < 0
     return 0
   endif
@@ -932,9 +940,9 @@ function! sj#ruby#JoinModuleNamespace()
     return 0
   endif
 
-  let namespace_pattern = '^\s*module\s\+\zs[A-Z]\(\k\|::\)\+\s*$'
-  let class_pattern = '^\s*class\s\+\zs[A-Z]\k\+\s*\(\k\|::\)\+\s*\%(<\s\+\S\+\)\=$'
-  let describe_pattern = '^\s*\%(RSpec\.\)\=describe\s\+\zs[A-Z]\(\k\|::\)\+\s*do'
+  let namespace_pattern = '^\s*module\s\+\zs[A-Z]\(\k\|::\)*\s*$'
+  let class_pattern = '^\s*class\s\+\zs[A-Z]\k*\s*\(\k\|::\)\+\s*\%(<\s\+\S\+\)\=$'
+  let describe_pattern = '^\s*\%(RSpec\.\)\=describe\s\+\zs[A-Z]\(\k\|::\)*\s*do'
 
   if search(namespace_pattern, 'Wbc', line('.')) <= 0
     return 0
@@ -1013,7 +1021,7 @@ function! sj#ruby#JoinModuleNamespace()
 endfunction
 
 function! sj#ruby#SplitModuleNamespace()
-  let namespace_pattern = '^\s*\%(module\|class\|\%\(RSpec\.\)\=describe\)\s\+[A-Z]\k\+::'
+  let namespace_pattern = '^\s*\%(module\|class\|\%\(RSpec\.\)\=describe\)\s\+[A-Z]\k*::'
 
   if search(namespace_pattern, 'Wbc', line('.')) <= 0
     return 0
@@ -1032,7 +1040,7 @@ function! sj#ruby#SplitModuleNamespace()
   endif
 
   " get the module path
-  if search('\V'.keyword.'\m\s\+\zs[A-Z]\k\+', 'W', line('.')) <= 0
+  if search('\V'.keyword.'\m\s\+\zs[A-Z]\k*', 'W', line('.')) <= 0
     return 0
   endif
   let module_path = expand('<cWORD>')
@@ -1080,7 +1088,7 @@ endfunction
 
 function! sj#ruby#SplitEndlessDef()
   " taken from vim-ruby
-  let endless_def_pattern = '\<def\s\+\k\+[!?]\=\%((.*)\|\s\)\zs\s*\zs='
+  let endless_def_pattern = '\<def\s\+\%(\k\+\.\)\=\k\+[!?]\=\%((.*)\|\s\)\zs\s*\zs='
   if search(endless_def_pattern, 'Wce', line('.')) <= 0
         \ && search(endless_def_pattern, 'Wcbe', line('.')) <= 0
     return 0
@@ -1096,7 +1104,8 @@ function! sj#ruby#SplitEndlessDef()
 endfunction
 
 function! sj#ruby#JoinOnelineDef()
-  if search('\<def\s\+\k\+[!?]\=\%((.*)\)\s*\%(#.*\)\=$', 'Wbc', line('.')) <= 0
+  " adapted from vim-ruby
+  if search('\<def\s\+\%(\k\+\.\)\=\k\+[!?]\=\%((.*)\)\s*\%(#.*\)\=$', 'Wbc', line('.')) <= 0
     return 0
   endif
 
